@@ -1,27 +1,66 @@
 {
   "name": "fluxo.io",
   "version": "1.0.0",
-  "description": "A new project with Husky and GitHub Actions setup",
-  "main": "index.js",
+  "description": "Full-stack application with frontend, backend, and AWS deployment",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
     "prepare": "husky install",
-    "lint": "echo 'Running linter...' && exit 0",
-    "test": "echo 'Running tests...' && exit 0",
-    "build": "echo 'Building project...' && exit 0",
-    "format": "echo 'Formatting code...' && exit 0",
-    "type-check": "echo 'Running type check...' && exit 0"
+    "install:all": "npm install && npm run install:frontend && npm run install:backend",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm run test",
+    "test:backend": "cd backend && npm run test",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "format": "npm run format:frontend && npm run format:backend",
+    "format:frontend": "cd frontend && npm run format",
+    "format:backend": "cd backend && npm run format",
+    "type-check": "npm run type-check:frontend && npm run type-check:backend",
+    "type-check:frontend": "cd frontend && npm run type-check",
+    "type-check:backend": "cd backend && npm run type-check",
+    "deploy:aws": "npm run deploy:frontend:aws && npm run deploy:backend:aws",
+    "deploy:frontend:aws": "cd frontend && npm run deploy:aws",
+    "deploy:backend:aws": "cd backend && npm run deploy:aws",
+    "deploy:staging": "npm run deploy:aws:staging",
+    "deploy:production": "npm run deploy:aws:production",
+    "deploy:aws:staging": "aws s3 sync frontend/dist/ s3://fluxo-staging-frontend --delete && aws lambda update-function-code --function-name fluxo-staging-backend --zip-file fileb://backend/dist.zip",
+    "deploy:aws:production": "aws s3 sync frontend/dist/ s3://fluxo-production-frontend --delete && aws lambda update-function-code --function-name fluxo-production-backend --zip-file fileb://backend/dist.zip"
   },
-  "keywords": ["husky", "github-actions", "git-hooks"],
+  "keywords": [
+    "fullstack",
+    "frontend",
+    "backend",
+    "aws",
+    "husky",
+    "github-actions"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "husky": "^8.0.3",
-    "lint-staged": "^15.2.0"
+    "lint-staged": "^15.2.0",
+    "concurrently": "^8.2.2"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "echo 'Linting staged files...'",
-      "echo 'Formatting staged files...'"
+    "frontend/**/*.{js,jsx,ts,tsx}": [
+      "cd frontend && npm run lint:staged",
+      "cd frontend && npm run format:staged"
+    ],
+    "backend/**/*.{js,ts}": [
+      "cd backend && npm run lint:staged",
+      "cd backend && npm run format:staged"
     ],
     "*.{json,md,yml,yaml}": [
       "echo 'Formatting config files...'"
