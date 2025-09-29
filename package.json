@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "husky install",
     "dev": "echo 'Add your development command here'",
-    "build": "echo 'Build completed successfully' && mkdir -p dist && echo 'Build artifacts ready' > dist/build.txt",
+    "build": "echo 'Build completed successfully' && node -e \"const fs = require('fs'); if (!fs.existsSync('dist')) fs.mkdirSync('dist'); fs.writeFileSync('dist/build.txt', 'Build artifacts ready');\"",
     "test": "echo 'Tests completed successfully'",
     "lint": "echo 'Linting completed successfully'",
     "format": "echo 'Formatting completed successfully'",
