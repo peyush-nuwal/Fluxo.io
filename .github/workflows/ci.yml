@@ -96,9 +96,9 @@ jobs:
     # - name: Run performance tests
     #   run: npm run test:performance
 
-  # Job 3: Build Frontend and Backend
+  # Job 3: Build Application
   build:
-    name: 🏗️ Build Full-Stack Application
+    name: 🏗️ Build Application
     runs-on: ubuntu-latest
     needs: [lint-and-format, test]
     
@@ -112,33 +112,17 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
-    - name: Install root dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: Install frontend dependencies
-      run: npm run install:frontend
+    - name: Build application
+      run: npm run build
       
-    - name: Install backend dependencies
-      run: npm run install:backend
-      
-    - name: Build frontend
-      run: npm run build:frontend
-      
-    - name: Build backend
-      run: npm run build:backend
-      
-    - name: Upload frontend build artifacts
+    - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: frontend-build
-        path: frontend/dist/
-        retention-days: 7
-        
-    - name: Upload backend build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: backend-build
-        path: backend/dist/
+        name: build-files
+        path: dist/
         retention-days: 7
         
     # Add more build steps here:
@@ -171,9 +155,9 @@ jobs:
       with:
         sarif_file: 'trivy-results.sarif'
 
-  # Job 5: Deploy to AWS (only on main branch)
-  deploy-aws:
-    name: 🚀 Deploy to AWS
+  # Job 5: Deploy (only on main branch)
+  deploy:
+    name: 🚀 Deploy
     runs-on: ubuntu-latest
     needs: [build, security]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -185,108 +169,47 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Download frontend build artifacts
+    - name: Download build artifacts
       uses: actions/download-artifact@v3
       with:
-        name: frontend-build
-        path: frontend/dist/
+        name: build-files
+        path: dist/
         
-    - name: Download backend build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: backend-build
-        path: backend/dist/
-        
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
-        
-    - name: Deploy frontend to S3
-      run: |
-        aws s3 sync frontend/dist/ s3://${{ secrets.S3_BUCKET_FRONTEND }} --delete
-        aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
-        
-    - name: Package backend for Lambda
-      run: |
-        cd backend/dist
-        zip -r ../../backend-lambda.zip .
-        
-    - name: Deploy backend to Lambda
-      run: |
-        aws lambda update-function-code \
-          --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
-          --zip-file fileb://backend-lambda.zip
-          
-    - name: Update Lambda environment variables
-      run: |
-        aws lambda update-function-configuration \
-          --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
-          --environment Variables='{
-            "NODE_ENV":"production",
-            "API_URL":"https://${{ secrets.API_DOMAIN }}"
-          }'
+    # Add your deployment steps here:
+    # 
+    # For Vercel:
+    # - name: Deploy to Vercel
+    #   uses: amondnet/vercel-action@v25
+    #   with:
+    #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+    #     vercel-org-id: ${{ secrets.ORG_ID }}
+    #     vercel-project-id: ${{ secrets.PROJECT_ID }}
+    #     working-directory: ./
+    # 
+    # For AWS S3:
+    # - name: Deploy to AWS S3
+    #   uses: aws-actions/configure-aws-credentials@v2
+    #   with:
+    #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     aws-region: us-east-1
+    # - name: Deploy to S3
+    #   run: aws s3 sync dist/ s3://your-bucket-name --delete
+    # 
+    # For Docker:
+    # - name: Build Docker image
+    #   run: docker build -t your-app:${{ github.sha }} .
+    # - name: Push to registry
+    #   run: docker push your-registry/your-app:${{ github.sha }}
     
     - name: Deployment notification
-      run: echo "AWS deployment completed successfully!"
+      run: echo "Deployment completed successfully!"
 
-  # Job 6: Deploy to Staging (only on develop branch)
-  deploy-staging:
-    name: 🧪 Deploy to Staging
-    runs-on: ubuntu-latest
-    needs: [build, security]
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-    
-    environment: staging
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Download frontend build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: frontend-build
-        path: frontend/dist/
-        
-    - name: Download backend build artifacts
-      uses: actions/download-artifact@v3
-      with:
-        name: backend-build
-        path: backend/dist/
-        
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
-        
-    - name: Deploy frontend to S3 (Staging)
-      run: |
-        aws s3 sync frontend/dist/ s3://${{ secrets.S3_BUCKET_FRONTEND_STAGING }} --delete
-        
-    - name: Package backend for Lambda (Staging)
-      run: |
-        cd backend/dist
-        zip -r ../../backend-lambda-staging.zip .
-        
-    - name: Deploy backend to Lambda (Staging)
-      run: |
-        aws lambda update-function-code \
-          --function-name ${{ secrets.LAMBDA_FUNCTION_NAME_STAGING }} \
-          --zip-file fileb://backend-lambda-staging.zip
-    
-    - name: Staging deployment notification
-      run: echo "Staging deployment completed successfully!"
-
-  # Job 7: Cleanup (runs after all jobs)
+  # Job 6: Cleanup (runs after all jobs)
   cleanup:
     name: 🧹 Cleanup
     runs-on: ubuntu-latest
-    needs: [lint-and-format, test, build, security, deploy-aws, deploy-staging]
+    needs: [lint-and-format, test, build, security]
     if: always()
     
     steps:

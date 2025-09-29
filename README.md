@@ -30,10 +30,12 @@ A new project with Husky and GitHub Actions setup for automated code quality, te
 ### Available Scripts
 
 - `npm run prepare` - Initialize Husky git hooks
-- `npm run lint` - Run code linting
-- `npm run test` - Run tests
-- `npm run build` - Build the project
-- `npm run format` - Format code
+- `npm run dev` - Start development server (add your command)
+- `npm run build` - Build the project (add your command)
+- `npm run test` - Run tests (add your command)
+- `npm run lint` - Run code linting (add your command)
+- `npm run format` - Format code (add your command)
+- `npm run type-check` - Run type checking (add your command)
 
 ## 🔧 Git Hooks (Husky)
 
@@ -68,15 +70,24 @@ Runs on every push and pull request:
 5. **Deploy** - Automatic deployment to production (main branch only)
 6. **Cleanup** - Clean up artifacts and caches
 
-### Release Workflow (`.github/workflows/release.yml`)
+## 📝 How to Customize
 
-Handles automated releases:
+### Adding Your Own Scripts
 
-1. **Create Release** - Generate changelog and create GitHub release
-2. **Publish to NPM** - Publish package to npm registry
-3. **Notify Team** - Send notifications to team channels
+Update the `scripts` section in `package.json`:
 
-## 📝 How to Add More Steps
+```json
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "test": "jest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit"
+  }
+}
+```
 
 ### Adding More Husky Hooks
 
@@ -188,6 +199,8 @@ Update `package.json`:
 ## 🔐 Environment Variables
 
 ### Required Secrets (GitHub Repository Settings)
+
+Add these in your GitHub repository settings under Settings → Secrets and variables → Actions:
 
 - `NPM_TOKEN` - For publishing to npm
 - `VERCEL_TOKEN` - For Vercel deployment
