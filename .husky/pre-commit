@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Pre-commit hook - runs before each commit
+# This hook ensures code quality and consistency before commits are made
+
+echo "🔍 Running pre-commit checks..."
+
+# Run lint-staged to check only staged files
+# lint-staged will run the commands defined in package.json under "lint-staged"
+npx lint-staged
+
+# Add more pre-commit checks here:
+# 
+# 1. Run tests on staged files:
+#   npm run test -- --passWithNoTests
+#
+# 2. Type checking (if using TypeScript):
+#   npm run type-check
+#
+# 3. Security audit:
+#   npm audit --audit-level moderate
+#
+# 4. Check for console.log statements:
+#   npx no-console-logs
+#
+# 5. Validate commit message format:
+#   npx commitlint --edit $1
+
+echo "✅ Pre-commit checks completed successfully!"

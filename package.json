@@ -1,0 +1,30 @@
+{
+  "name": "fluxo.io",
+  "version": "1.0.0",
+  "description": "A new project with Husky and GitHub Actions setup",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install",
+    "lint": "echo 'Running linter...' && exit 0",
+    "test": "echo 'Running tests...' && exit 0",
+    "build": "echo 'Building project...' && exit 0",
+    "format": "echo 'Formatting code...' && exit 0",
+    "type-check": "echo 'Running type check...' && exit 0"
+  },
+  "keywords": ["husky", "github-actions", "git-hooks"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "echo 'Linting staged files...'",
+      "echo 'Formatting staged files...'"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "echo 'Formatting config files...'"
+    ]
+  }
+}
