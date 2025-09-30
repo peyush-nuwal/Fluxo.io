@@ -5,11 +5,13 @@ A modern monorepo built with Turborepo, featuring automated CI/CD with GitHub Ac
 ## 🚀 Quick Start
 
 1. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
 
 2. **Start development:**
+
    ```bash
    pnpm dev
    ```
@@ -18,6 +20,31 @@ A modern monorepo built with Turborepo, featuring automated CI/CD with GitHub Ac
    ```bash
    pnpm build
    ```
+
+## 🔧 Git Hooks (Husky)
+
+This project uses Husky to manage Git hooks for code quality:
+
+### Pre-commit Hook
+
+- Runs `lint-staged` to check only staged files
+- Automatically fixes ESLint issues and formats code with Prettier
+- **Location:** `.husky/pre-commit`
+
+### Commit Message Hook
+
+- Validates commit message format using Conventional Commits
+- Ensures consistent commit history
+- **Location:** `.husky/commit-msg`
+
+### Available Scripts
+
+- `pnpm prepare` - Initialize Husky git hooks
+- `pnpm dev` - Start development server
+- `pnpm build` - Build all packages
+- `pnpm lint` - Run ESLint across the codebase
+- `pnpm format` - Format code with Prettier
+- `pnpm type-check` - Run TypeScript type checking
 
 ## 🤖 CI/CD Pipeline
 
@@ -37,24 +64,24 @@ test:
   name: 🧪 Test
   runs-on: ubuntu-latest
   needs: build
-  
+
   steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
-        
+        node-version: "18"
+
     - name: Setup pnpm
       uses: pnpm/action-setup@v2
       with:
         version: 8
-        
+
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
-      
+
     - name: Run tests
       run: pnpm test
 ```
