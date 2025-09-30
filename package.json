@@ -1,35 +1,20 @@
 {
   "name": "fluxo.io",
-  "version": "1.0.0",
-  "description": "A new project with Husky and GitHub Actions setup",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "prepare": "husky install",
-    "dev": "echo 'Add your development command here'",
-    "build": "echo 'Build completed successfully' && node -e \"const fs = require('fs'); if (!fs.existsSync('dist')) fs.mkdirSync('dist'); fs.writeFileSync('dist/build.txt', 'Build artifacts ready');\"",
-    "test": "echo 'Tests completed successfully'",
-    "lint": "echo 'Linting completed successfully'",
-    "format": "echo 'Formatting completed successfully'",
-    "type-check": "echo 'Type checking completed successfully'"
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
   },
-  "keywords": [
-    "husky",
-    "github-actions",
-    "git-hooks"
-  ],
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
-    "husky": "^8.0.3",
-    "lint-staged": "^15.2.0"
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.8",
+    "typescript": "5.9.2"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "echo 'Linting staged files...'",
-      "echo 'Formatting staged files...'"
-    ],
-    "*.{json,md,yml,yaml}": [
-      "echo 'Formatting config files...'"
-    ]
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=18"
   }
 }

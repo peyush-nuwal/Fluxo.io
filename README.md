@@ -1,236 +1,135 @@
-# Fluxo.io
+# Turborepo starter
 
-A new project with Husky and GitHub Actions setup for automated code quality, testing, and deployment.
+This Turborepo starter is maintained by the Turborepo core team.
 
-## 🚀 Quick Start
+## Using this example
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+Run the following command:
 
-2. **Initialize Husky:**
-   ```bash
-   npm run prepare
-   ```
-
-3. **Make your first commit:**
-   ```bash
-   git add .
-   git commit -m "feat: initial project setup"
-   ```
-
-## 🛠️ Development Setup
-
-### Prerequisites
-- Node.js 16+ 
-- npm or yarn
-- Git
-
-### Available Scripts
-
-- `npm run prepare` - Initialize Husky git hooks
-- `npm run dev` - Start development server (add your command)
-- `npm run build` - Build the project (add your command)
-- `npm run test` - Run tests (add your command)
-- `npm run lint` - Run code linting (add your command)
-- `npm run format` - Format code (add your command)
-- `npm run type-check` - Run type checking (add your command)
-
-## 🔧 Git Hooks (Husky)
-
-This project uses Husky to manage Git hooks for code quality:
-
-### Pre-commit Hook
-- Runs `lint-staged` to check only staged files
-- Ensures code formatting and linting before commits
-- **Location:** `.husky/pre-commit`
-
-### Pre-push Hook  
-- Runs full test suite
-- Builds the project to ensure everything compiles
-- Lints the entire codebase
-- **Location:** `.husky/pre-push`
-
-### Commit Message Hook
-- Validates commit message format (Conventional Commits)
-- Ensures consistent commit history
-- **Location:** `.husky/commit-msg`
-
-## 🤖 GitHub Actions
-
-### CI/CD Pipeline (`.github/workflows/ci.yml`)
-
-Runs on every push and pull request:
-
-1. **Lint and Format Check** - Code quality validation
-2. **Run Tests** - Unit tests across multiple Node.js versions
-3. **Build Application** - Compile and build the project
-4. **Security Scan** - Vulnerability scanning with Trivy
-5. **Deploy** - Automatic deployment to production (main branch only)
-6. **Cleanup** - Clean up artifacts and caches
-
-## 📝 How to Customize
-
-### Adding Your Own Scripts
-
-Update the `scripts` section in `package.json`:
-
-```json
-{
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "test": "jest",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "type-check": "tsc --noEmit"
-  }
-}
+```sh
+npx create-turbo@latest
 ```
 
-### Adding More Husky Hooks
+## What's inside?
 
-1. **Create a new hook file:**
-   ```bash
-   touch .husky/post-commit
-   chmod +x .husky/post-commit
-   ```
+This Turborepo includes the following packages/apps:
 
-2. **Add your custom logic:**
-   ```bash
-   #!/usr/bin/env sh
-   . "$(dirname -- "$0")/_/husky.sh"
-   
-   echo "Running post-commit tasks..."
-   # Your custom commands here
-   ```
+### Apps and Packages
 
-3. **Available hook types:**
-   - `pre-commit` - Before commit
-   - `pre-push` - Before push
-   - `commit-msg` - Validate commit message
-   - `post-commit` - After commit
-   - `pre-rebase` - Before rebase
-   - `post-merge` - After merge
+- `docs`: a [Next.js](https://nextjs.org/) app
+- `web`: another [Next.js](https://nextjs.org/) app
+- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
-### Adding More GitHub Actions Steps
+Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
-#### In CI Pipeline:
+### Utilities
 
-1. **Add a new job:**
-   ```yaml
-   new-job:
-     name: 🆕 New Job
-     runs-on: ubuntu-latest
-     needs: [previous-job]
-     
-     steps:
-     - name: Checkout code
-       uses: actions/checkout@v4
-     - name: Your custom step
-       run: echo "Custom action"
-   ```
+This Turborepo has some additional tools already setup for you:
 
-2. **Add steps to existing jobs:**
-   ```yaml
-   - name: Your new step
-     run: npm run your-script
-   ```
+- [TypeScript](https://www.typescriptlang.org/) for static type checking
+- [ESLint](https://eslint.org/) for code linting
+- [Prettier](https://prettier.io) for code formatting
 
-#### Common Additions:
+### Build
 
-**Code Quality:**
-```yaml
-- name: Type checking
-  run: npm run type-check
+To build all apps and packages, run the following command:
 
-- name: Security audit
-  run: npm audit --audit-level moderate
+```
+cd my-turborepo
 
-- name: Bundle size check
-  run: npm run bundle-analyzer
+# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
+turbo build
+
+# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
+npx turbo build
+yarn dlx turbo build
+pnpm exec turbo build
 ```
 
-**Testing:**
-```yaml
-- name: Integration tests
-  run: npm run test:integration
+You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
 
-- name: E2E tests
-  run: npm run test:e2e
+```
+# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
+turbo build --filter=docs
 
-- name: Performance tests
-  run: npm run test:performance
+# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
+npx turbo build --filter=docs
+yarn exec turbo build --filter=docs
+pnpm exec turbo build --filter=docs
 ```
 
-**Deployment:**
-```yaml
-- name: Deploy to staging
-  run: npm run deploy:staging
-  if: github.ref == 'refs/heads/develop'
+### Develop
 
-- name: Deploy to production
-  run: npm run deploy:production
-  if: github.ref == 'refs/heads/main'
+To develop all apps and packages, run the following command:
+
+```
+cd my-turborepo
+
+# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
+turbo dev
+
+# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
+npx turbo dev
+yarn exec turbo dev
+pnpm exec turbo dev
 ```
 
-### Adding More Lint-staged Rules
+You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
 
-Update `package.json`:
+```
+# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
+turbo dev --filter=web
 
-```json
-{
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md,yml,yaml}": [
-      "prettier --write"
-    ],
-    "*.{css,scss}": [
-      "stylelint --fix"
-    ]
-  }
-}
+# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
+npx turbo dev --filter=web
+yarn exec turbo dev --filter=web
+pnpm exec turbo dev --filter=web
 ```
 
-## 🔐 Environment Variables
+### Remote Caching
 
-### Required Secrets (GitHub Repository Settings)
+> [!TIP]
+> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
 
-Add these in your GitHub repository settings under Settings → Secrets and variables → Actions:
+Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
 
-- `NPM_TOKEN` - For publishing to npm
-- `VERCEL_TOKEN` - For Vercel deployment
-- `AWS_ACCESS_KEY_ID` - For AWS deployment
-- `AWS_SECRET_ACCESS_KEY` - For AWS deployment
-- `SLACK_WEBHOOK` - For Slack notifications
+By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
 
-### Local Environment
+```
+cd my-turborepo
 
-Create a `.env` file for local development:
-```bash
-NODE_ENV=development
-API_URL=http://localhost:3000
+# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
+turbo login
+
+# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
+npx turbo login
+yarn exec turbo login
+pnpm exec turbo login
 ```
 
-## 📚 Additional Resources
+This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
 
-- [Husky Documentation](https://typicode.github.io/husky/)
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Conventional Commits](https://www.conventionalcommits.org/)
-- [Lint-staged Documentation](https://github.com/okonet/lint-staged)
+Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
 
-## 🤝 Contributing
+```
+# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
+turbo link
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and commit: `git commit -m 'feat: add amazing feature'`
-4. Push to the branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
+npx turbo link
+yarn exec turbo link
+pnpm exec turbo link
+```
 
-## 📄 License
+## Useful Links
 
-This project is licensed under the MIT License.
+Learn more about the power of Turborepo:
+
+- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
+- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
+- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
+- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
+- [Configuration Options](https://turborepo.com/docs/reference/configuration)
+- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
