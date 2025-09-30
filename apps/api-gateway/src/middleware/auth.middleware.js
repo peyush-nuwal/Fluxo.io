@@ -2,8 +2,17 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config.js";
 
 export const verifyToken = (req, res, next) => {
-  // Don’t protect login/signup
-  if (req.path.includes("/login") || req.path.includes("/signup")) {
+  // Don't protect auth endpoints (signup, signin, signout)
+  if (
+    req.path.includes("/signup") ||
+    req.path.includes("/signin") ||
+    req.path.includes("/signout")
+  ) {
+    return next();
+  }
+
+  // Don't protect health check
+  if (req.path === "/health") {
     return next();
   }
 
