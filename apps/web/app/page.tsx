@@ -31,9 +31,10 @@ export default function Home() {
           height={38}
           priority
         />
+        <span className="text-red-500">this is web app</span>
         <ol>
           <li>
-            Get started by editing <code>apps/web/app/page.tsx</code>
+            this is <code>apps/web/app/page.tsx</code>
           </li>
           <li>Save and see your changes instantly.</li>
         </ol>
