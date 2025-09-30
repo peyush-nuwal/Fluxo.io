@@ -1,6 +1,63 @@
-# Turborepo starter
+# Fluxo.io
 
-This Turborepo starter is maintained by the Turborepo core team.
+A modern monorepo built with Turborepo, featuring automated CI/CD with GitHub Actions and code quality tools.
+
+## 🚀 Quick Start
+
+1. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
+
+2. **Start development:**
+   ```bash
+   pnpm dev
+   ```
+
+3. **Build all packages:**
+   ```bash
+   pnpm build
+   ```
+
+## 🤖 CI/CD Pipeline
+
+This project includes a minimal GitHub Actions workflow (`.github/workflows/ci.yml`) that runs on every push and pull request:
+
+- **Build**: Compiles all packages and apps
+- **Lint**: Runs ESLint across the codebase
+- **Type Check**: Validates TypeScript types
+
+### Adding More Jobs
+
+To add more CI jobs, uncomment and modify the example in `.github/workflows/ci.yml`:
+
+```yaml
+# Example: How to add more jobs
+test:
+  name: 🧪 Test
+  runs-on: ubuntu-latest
+  needs: build
+  
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: 8
+        
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+      
+    - name: Run tests
+      run: pnpm test
+```
 
 ## Using this example
 
