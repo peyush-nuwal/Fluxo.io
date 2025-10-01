@@ -16,6 +16,9 @@ importers:
       "@eslint/js":
         specifier: ^9.34.0
         version: 9.34.0
+      "@next/eslint-plugin-next":
+        specifier: ^15.5.0
+        version: 15.5.0
       "@typescript-eslint/eslint-plugin":
         specifier: ^8.45.0
         version: 8.45.0(@typescript-eslint/parser@8.45.0(eslint@9.36.0(jiti@2.6.0))(typescript@5.9.2))(eslint@9.36.0(jiti@2.6.0))(typescript@5.9.2)
