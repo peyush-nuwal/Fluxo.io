@@ -1,0 +1,157 @@
+{"level":"info","message":"::1 - - [01/Oct/2025:13:14:10 +0000] \"POST /health HTTP/1.1\" 404 146 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:14:15 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:14:19 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:14:21 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:14:22 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:14:23 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:14:25 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:14:26 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:14:27 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:14:28 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:15:07 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:15:08 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:15:09 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:15:11 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:15:12 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:25 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:26 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:28 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:29 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:30 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:31 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:33 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:34 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:35 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:36 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:37 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:16:39 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:19:01 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:19:02 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:19:03 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api"}
+{"level":"info","message":"::1 - - [01/Oct/2025:13:19:05 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:07:33.563Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:07:33 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:07:33.576Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:07:34.911Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:07:34 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:07:34.914Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:07:36.035Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:07:36 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:07:36.038Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:07:37.181Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:07:37 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:07:37.183Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:07:38.295Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:07:38 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:07:38.298Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:07:39.496Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:07:39 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:07:39.500Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:07:40.506Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:07:40 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:07:40.508Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:07:41.770Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:07:41 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:07:41.774Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:02.812Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:02 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:02.826Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:04.347Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:04 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:04.349Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:05.668Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:05 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:05.671Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:06.719Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:06 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:06.722Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:07.755Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:07 +0000] \"GET /health HTTP/1.1\" 200 107 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:07.757Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:08.860Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:08 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:08.862Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:10.084Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:10 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:10.094Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:11.358Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:11 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:11.360Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:12.533Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:12 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:12.543Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:13.944Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:13 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:13.948Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:10:15.158Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:10:15 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:10:15.172Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:14.419Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:14 +0000] \"GET /health HTTP/1.1\" 200 110 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:14.435Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:25.246Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:25 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:25.260Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:26.507Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:26 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:26.509Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:27.604Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:27 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:27.608Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:28.687Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:28 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:28.689Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:29.893Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:29 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:29.903Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:30.795Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:30 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:30.799Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:31.919Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:31 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:31.921Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:33.087Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:33 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:33.089Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:34.009Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:34 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:34.015Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:34.966Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:34 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:34.968Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:36.048Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:36 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:36.051Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:36.892Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:36 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:36.899Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:37.872Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:37 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:37.874Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:38.829Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:38 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:38.832Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:39.973Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:39 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:39.975Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:40.730Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:40 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:40.734Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:41.735Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:41 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:41.737Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:14:42.963Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:14:42 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:14:42.969Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:29:50.371Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:29:50 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:29:50.424Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:29:52.058Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:29:52 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:29:52.061Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:29:53.822Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:29:53 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:29:53.825Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:29:55.264Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:29:55 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:29:55.300Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:29:56.417Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:29:56 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:29:56.431Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:29:57.690Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:29:57 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:29:57.703Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:29:58.933Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:29:58 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:29:58.942Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:30:00.204Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:30:00 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:30:00.207Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:30:01.478Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:30:01 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:30:01.482Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:30:31.977Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:14:30:31 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:30:31.991Z"}
