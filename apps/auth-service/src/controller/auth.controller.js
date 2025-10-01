@@ -1,11 +1,16 @@
 import logger from "../config/logger.js";
-import { authenticateUser, createUser } from "../service/auth.service.js";
+import {
+  authenticateUser,
+  createUser,
+  changeUserPassword,
+} from "../service/auth.service.js";
 import { cookies } from "../utils/cookie.js";
 import { formatValidationsError } from "../utils/format.js";
 import { jwttoken } from "../utils/jwt.js";
 import {
   signInSchema,
   signUpSchema,
+  changePasswordSchema,
 } from "../../../../packages/zod-schemas/index.js";
 
 // controllers/auth.controller.js
@@ -110,5 +115,50 @@ export const signOut = (req, res) => {
     return res
       .status(500)
       .json({ error: "Internal server error during sign out" });
+  }
+};
+
+export const updatePassword = async (req, res) => {
+  try {
+    // Verify JWT token first
+    const decoded = jwttoken.verify(req.cookies.token);
+    if (!decoded) {
+      return res.status(401).json({ error: "Invalid or expired token" });
+    }
+
+    const validationResult = changePasswordSchema.safeParse(req.body);
+    if (!validationResult.success) {
+      return res.status(400).json({
+        error: "validation failed",
+        details: formatValidationsError(validationResult.error),
+      });
+    }
+
+    const { oldPassword, newPassword } = validationResult.data;
+    const userEmail = decoded.email; // Use email from JWT token, not request body
+
+    await changeUserPassword(userEmail, oldPassword, newPassword);
+
+    logger.info(`Password changed successfully for user: ${userEmail}`);
+    return res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    logger.error("Error changing password:", error);
+
+    // Handle specific error cases
+    if (error.message === "User does not exist") {
+      return res.status(404).json({ error: "User not found" });
+    }
+    if (error.message === "Invalid credentials") {
+      return res.status(401).json({ error: "Current password is incorrect" });
+    }
+    if (error.message.includes("Login with")) {
+      return res
+        .status(400)
+        .json({ error: "Cannot change password for social login accounts" });
+    }
+
+    return res
+      .status(500)
+      .json({ error: "Internal server error while changing password" });
   }
 };

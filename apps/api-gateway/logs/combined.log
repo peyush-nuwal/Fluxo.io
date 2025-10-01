@@ -155,3 +155,84 @@
 {"level":"info","message":"::1 - - [01/Oct/2025:14:30:01 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:30:01.482Z"}
 {"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T14:30:31.977Z"}
 {"level":"info","message":"::1 - - [01/Oct/2025:14:30:31 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T14:30:31.991Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T17:05:26.977Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:05:27 +0000] \"GET /health HTTP/1.1\" 200 109 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:05:27.005Z"}
+{"level":"info","message":"Hello from fluxo api gateway","service":"acquisitions-api","timestamp":"2025-10-01T17:05:33.959Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:05:33 +0000] \"GET /health HTTP/1.1\" 200 108 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:05:33.987Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:06:57.201Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:06:57 +0000] \"GET /api/v1/auth/signin HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:06:57.259Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:07:01.943Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:07:01 +0000] \"GET /api/v1/auth/signin HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:07:01.954Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:07:07.631Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:07:08 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 126 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:07:08.877Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:11:52.010Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:11:52 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:11:52.039Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:12:06.690Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:12:06 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:12:06.699Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:12:08.344Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:12:08 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:12:08.362Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:12:11.500Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:12:11 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:12:11.516Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:12:58.377Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:12:58 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:12:58.399Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:12:59.973Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:12:59 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:12:59.992Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:13:27.317Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:13:28 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 126 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:13:28.519Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:13:42.899Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:13:43 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 126 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:13:43.392Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:13:44.941Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:13:45 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 126 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:13:45.196Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:13:48.975Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:13:48 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 400 144 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:13:48.981Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:13:53.970Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:13:54 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 126 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:13:54.459Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:14:12.984Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:14:12 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:14:12.997Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:14:15.413Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:14:15 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:14:15.455Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:14:21.943Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:14:21 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:14:21.956Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:16:00.397Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:16:00 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:16:00.412Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:18:14.711Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:18:14 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:18:14.765Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:19:36.221Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:19:36 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:19:36.264Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:21:54.210Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:21:54 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:21:54.244Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:21:56.284Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:21:56 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:21:56.326Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:23:08.289Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:23:08 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:23:08.343Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:23:09.795Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:23:09 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:23:09.816Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:24:56.255Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:24:56 +0000] \"POST /api/v1/auth//api/test-json HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:24:56.286Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:25:01.445Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:25:01 +0000] \"POST /api/v1/auth/api/test-json HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:25:01.454Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:25:03.045Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:25:03 +0000] \"POST /api/v1/auth/api/test-json HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:25:03.069Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:25:19 +0000] \"POST /api/v1/test-json HTTP/1.1\" 404 156 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:25:19.629Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:25:32.283Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:25:32 +0000] \"POST /api/v1/auth/test-json HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:25:32.315Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:25:34.222Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:25:34 +0000] \"POST /api/v1/auth/test-json HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:25:34.240Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:26:28.566Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:26:28 +0000] \"POST /api/v1/auth/test-json HTTP/1.1\" 200 28 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:26:28.617Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:27:24.840Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:27:26 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 126 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:27:26.311Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:28:09.591Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:28:09 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:28:09.622Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:28:14.126Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:28:14 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 500 280 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:28:14.154Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:29:37.311Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:29:37 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:29:37.353Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:29:39.401Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:29:39 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 400 92 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:29:39.414Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:31:27.514Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:31:28 +0000] \"POST /api/v1/auth/update-password HTTP/1.1\" 200 43 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:31:28.610Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:31:48.691Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:31:49 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 401 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:31:49.239Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:31:59.246Z"}
+{"level":"info","message":"::1 - - [01/Oct/2025:17:31:59 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 126 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:31:59.765Z"}

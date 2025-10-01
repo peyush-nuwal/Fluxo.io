@@ -112,3 +112,41 @@ export const authenticateUser = async (email, password) => {
 
   return user; // controller decides what to do with it
 };
+
+// change user password
+export const changeUserPassword = async (email, oldPassword, newPassword) => {
+  try {
+    const user = await isUserExist(email);
+    if (!user) throw new Error("User does not exist");
+
+    if (user.auth_provider !== "local") {
+      throw new Error(`Login with ${user.auth_provider}`);
+    }
+
+    const isPasswordCorrect = await comparePassword(oldPassword, user.password);
+    if (!isPasswordCorrect) throw new Error("Invalid credentials");
+
+    const hashed_password = await hashPassword(newPassword);
+    await db
+      .update(users)
+      .set({ password: hashed_password })
+      .where(eq(users.email, email));
+
+    logger.info(`Password changed for user ${email}`);
+    return { message: "Password changed successfully" };
+  } catch (error) {
+    logger.error("Error changing password:", error);
+
+    // Preserve specific error messages for controller to handle
+    if (
+      error.message === "User does not exist" ||
+      error.message === "Invalid credentials" ||
+      error.message.includes("Login with")
+    ) {
+      throw error; // Let controller handle these specific errors
+    }
+
+    // Only wrap unexpected errors
+    throw new Error("Internal server error while changing password");
+  }
+};
