@@ -16,6 +16,11 @@ export const verifyToken = (req, res, next) => {
     return next();
   }
 
+  // Don't protect root API endpoint
+  if (req.path === "/api/v1") {
+    return next();
+  }
+
   const token = req.headers["authorization"]?.split(" ")[1];
   if (!token) return res.status(401).json({ error: "No token provided" });
 
