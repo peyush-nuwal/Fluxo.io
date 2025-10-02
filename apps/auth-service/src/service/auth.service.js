@@ -79,12 +79,14 @@ export const createUser = async ({
         email,
         password: hashed_password,
         auth_provider,
+        email_verified: false, // Email verification required for local auth
       })
       .returning({
         id: users.id,
         name: users.name,
         email: users.email,
         auth_provider: users.auth_provider,
+        email_verified: users.email_verified,
         created_at: users.created_at,
       });
 
@@ -150,3 +152,32 @@ export const changeUserPassword = async (email, oldPassword, newPassword) => {
     throw new Error("Internal server error while changing password");
   }
 };
+
+// Mark email as verified
+export const markEmailAsVerified = async (userId) => {
+  try {
+    await db
+      .update(users)
+      .set({ email_verified: true })
+      .where(eq(users.id, userId));
+
+    logger.info(`Email verified for user ${userId}`);
+    return { success: true, message: "Email verified successfully" };
+  } catch (error) {
+    logger.error("Error marking email as verified:", error);
+    throw new Error("Internal server error while verifying email");
+  }
+};
+
+// change User email
+
+// export const changeUserEmail = async (email, newEmail) => {
+//   try {
+//   } catch (error) {
+//     logger.error("Error changing email:", error);
+//     throw new Error("Internal server error while changing email");
+//   }
+// };
+
+
+

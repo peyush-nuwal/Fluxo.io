@@ -4,6 +4,7 @@ import {
   createUser,
   changeUserPassword,
 } from "../service/auth.service.js";
+import { generateAndStoreOTP } from "../service/otp.service.js";
 import { cookies } from "../utils/cookie.js";
 import { formatValidationsError } from "../utils/format.js";
 import { jwttoken } from "../utils/jwt.js";
@@ -31,23 +32,22 @@ export const signUp = async (req, res) => {
     //Auth service
     const user = await createUser({ name, email, password });
 
-    // creating jwt token
-    const token = await jwttoken.sign({
-      id: user.id,
-      email: user.email,
-    });
+    // Generate and send email verification OTP
+    await generateAndStoreOTP(user.id, email, "email_verification");
 
-    //setting cookie
-    cookies.set(res, "token", token);
-
-    logger.info(`User register successfully with email: ${email}`);
+    logger.info(
+      `User registered successfully with email: ${email}, verification email sent`
+    );
     return res.status(201).json({
-      message: "User registered",
+      message:
+        "User registered successfully. Please verify your email to continue.",
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
+        email_verified: user.email_verified,
       },
+      requiresEmailVerification: true,
     });
   } catch (error) {
     logger.error("sign up failed", error);
@@ -73,6 +73,16 @@ export const signIn = async (req, res) => {
 
     const user = await authenticateUser(email, password);
 
+    // Check if email is verified
+    if (!user.email_verified) {
+      return res.status(403).json({
+        error: "Email not verified",
+        message: "Please verify your email before signing in",
+        email: user.email,
+        requiresEmailVerification: true,
+      });
+    }
+
     const token = await jwttoken.sign({
       id: user.id,
       email: user.email,
@@ -86,6 +96,7 @@ export const signIn = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        email_verified: user.email_verified,
       },
     });
   } catch (error) {
@@ -99,6 +110,7 @@ export const signIn = async (req, res) => {
   }
 };
 
+// sign out
 export const signOut = (req, res) => {
   try {
     // Clear the auth cookie
@@ -118,6 +130,7 @@ export const signOut = (req, res) => {
   }
 };
 
+// update password
 export const updatePassword = async (req, res) => {
   try {
     // Verify JWT token first
@@ -139,8 +152,20 @@ export const updatePassword = async (req, res) => {
 
     await changeUserPassword(userEmail, oldPassword, newPassword);
 
+    // Generate new JWT token after password change
+    const newToken = await jwttoken.sign({
+      id: decoded.id,
+      email: decoded.email,
+    });
+
+    // Set new token cookie
+    cookies.set(res, "token", newToken);
+
     logger.info(`Password changed successfully for user: ${userEmail}`);
-    return res.status(200).json({ message: "Password changed successfully" });
+    return res.status(200).json({
+      message: "Password changed successfully",
+      token: newToken, // Optional: return new token
+    });
   } catch (error) {
     logger.error("Error changing password:", error);
 

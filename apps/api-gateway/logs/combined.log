@@ -236,3 +236,38 @@
 {"level":"info","message":"::1 - - [01/Oct/2025:17:31:49 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 401 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:31:49.239Z"}
 {"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-01T17:31:59.246Z"}
 {"level":"info","message":"::1 - - [01/Oct/2025:17:31:59 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 126 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-01T17:31:59.765Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:18:20.719Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:20:06.163Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:20:07 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 500 34 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:20:07.536Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:21:55.004Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:21:56 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 500 34 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:21:56.380Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:22:48.920Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:22:49 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 500 34 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:22:49.802Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:24:10.471Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:24:11 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 500 34 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:24:11.462Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:24:40.759Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:24:41 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 500 34 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:24:41.846Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:32:25.984Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:32:27 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 500 34 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:32:27.258Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:33:08.722Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:33:09 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 500 34 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:33:09.782Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:33:11.896Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:33:12 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 500 34 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:33:12.320Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:40:27.877Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:40:34 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 200 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:40:34.674Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:47:22.233Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:47:22 +0000] \"POST /api/v1/auth/sign-up HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:47:22.259Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:47:28.973Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:47:28 +0000] \"POST /api/v1/auth/sign-up HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:47:28.991Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:47:37.763Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:47:38 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 201 137 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:47:38.837Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T14:47:58.210Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:14:48:03 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 200 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T14:48:03.303Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T16:34:34.927Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:16:34:43 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 200 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T16:34:43.564Z"}
+{"level":"info","message":"Proxy request path resolver","service":"acquisitions-api","timestamp":"2025-10-02T16:38:41.708Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:16:38:48 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 200 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"acquisitions-api","timestamp":"2025-10-02T16:38:48.553Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-02T16:47:45.703Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:16:47:51 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 200 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-02T16:47:51.856Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-02T16:49:30.051Z"}
+{"level":"info","message":"::1 - - [02/Oct/2025:16:49:36 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 200 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-02T16:49:36.710Z"}
