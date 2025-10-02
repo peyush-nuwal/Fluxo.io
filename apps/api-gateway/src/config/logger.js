@@ -7,7 +7,7 @@ const logger = winston.createLogger({
     winston.format.errors({ stack: true }),
     winston.format.json(),
   ),
-  defaultMeta: { service: "acquisitions-api" },
+  defaultMeta: { service: "fluxo-api-gateway" },
   transports: [
     new winston.transports.File({ filename: "logs/error.log", level: "error" }),
 

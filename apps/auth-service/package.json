@@ -25,6 +25,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/morgan": "^1.9.10",
     "@types/node": "^24.6.0",
+    "@types/nodemailer": "^7.0.2",
     "@types/winston": "^2.4.4",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
@@ -42,6 +43,7 @@
     "zod": "^4.1.11"
   },
   "dependencies": {
+    "nodemailer": "^7.0.6",
     "uuid": "^13.0.0"
   }
 }

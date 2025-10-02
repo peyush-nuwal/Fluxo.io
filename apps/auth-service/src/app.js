@@ -63,7 +63,7 @@ app.use((req, res) => {
 });
 
 // Global error handler (must have 4 params)
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   logger.error(err.stack);
   res.status(500).json({ message: "Internal Server Error" });
 });
