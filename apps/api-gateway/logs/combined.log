@@ -271,3 +271,79 @@
 {"level":"info","message":"::1 - - [02/Oct/2025:16:47:51 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 200 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-02T16:47:51.856Z"}
 {"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-02T16:49:30.051Z"}
 {"level":"info","message":"::1 - - [02/Oct/2025:16:49:36 +0000] \"POST /api/v1/auth/otp/generate HTTP/1.1\" 200 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-02T16:49:36.710Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:07:07.048Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:07:08 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:07:08.279Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:07:19.951Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:07:20 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 403 143 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:07:20.417Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:34:46.535Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:34:54 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 500 33 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:34:54.075Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:37:18.881Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:37:19 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:37:19.541Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:37:58.666Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:37:59 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:37:59.011Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:38:05.548Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:38:05 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:38:05.907Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:38:38.294Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:38:38 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:38:38.629Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:39:10.403Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:39:11 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:39:11.009Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:39:29.025Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:39:29 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:39:29.407Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:41:53.225Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:41:53 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:41:53.927Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:41:55.955Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:41:56 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:41:56.145Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:42:43.005Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:42:48 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 201 279 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:42:48.453Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:42:56.638Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:42:56 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:42:56.974Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:43:23.286Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:43:29 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 201 278 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:43:29.094Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:49:36.529Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:49:37 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 31 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:49:37.654Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:54:29.986Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:54:30 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 500 280 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:54:30.081Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:57:20.236Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:57:25 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 201 278 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:57:25.523Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:58:03.214Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:58:03 +0000] \"POST /api/v1/auth/otp/verify HTTP/1.1\" 404 26 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:58:03.574Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:58:14.896Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:14:58:15 +0000] \"POST /api/v1/auth/otp/verify HTTP/1.1\" 200 60 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T14:58:15.879Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T15:44:06.260Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:15:44:06 +0000] \"POST /api/v1/auth/email/change/request HTTP/1.1\" 500 280 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T15:44:06.300Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T15:44:55.352Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:15:44:55 +0000] \"POST /api/v1/auth/email/change/request HTTP/1.1\" 400 50 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T15:44:55.452Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T15:45:18.008Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:15:45:23 +0000] \"POST /api/v1/auth/email/change/request HTTP/1.1\" 200 68 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T15:45:23.878Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:18:20.773Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:18:20 +0000] \"POST /api/v1/auth/email/change/request HTTP/1.1\" 400 50 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:18:20.822Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:18:28.447Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:18:28 +0000] \"POST /api/v1/auth/email/change/request HTTP/1.1\" 400 50 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:18:28.510Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:18:46.838Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:18:46 +0000] \"POST /api/v1/auth/email/change/verify%20 HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:18:46.848Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:19:02.505Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:19:06 +0000] \"POST /api/v1/auth/email/change/request HTTP/1.1\" 200 68 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:19:06.983Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:19:41.873Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:19:41 +0000] \"POST /api/v1/auth/email/change/verify%20 HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:19:41.885Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:20:40.494Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:20:40 +0000] \"POST /api/v1/auth/email/change/verify%20 HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:20:40.513Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:20:45.164Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:20:45 +0000] \"POST /api/v1/auth/email/change/verify%20 HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:20:45.174Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:20:58.957Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:20:58 +0000] \"POST /api/v1/auth/email/change/verify%20 HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:20:58.967Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:21:46.719Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:21:46 +0000] \"POST /api/v1/auth/email/change/verify%20 HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:21:46.737Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:22:12.040Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:22:12 +0000] \"POST /api/v1/auth/email/change/verify HTTP/1.1\" 400 27 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:22:12.709Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:22:23.140Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:22:27 +0000] \"POST /api/v1/auth/email/change/request HTTP/1.1\" 200 68 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:22:27.294Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:23:24.041Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:23:24 +0000] \"POST /api/v1/auth/email/change/verify HTTP/1.1\" 400 27 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:23:24.715Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:23:32.742Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:23:33 +0000] \"POST /api/v1/auth/email/change/verify HTTP/1.1\" 400 27 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:23:33.376Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:23:42.196Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:23:42 +0000] \"POST /api/v1/auth/email/change/verify HTTP/1.1\" 400 27 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:23:42.849Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:24:09.762Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:24:14 +0000] \"POST /api/v1/auth/email/change/request HTTP/1.1\" 200 68 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:24:14.724Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:24:31.566Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:24:32 +0000] \"POST /api/v1/auth/email/change/verify HTTP/1.1\" 200 40 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:24:32.718Z"}
