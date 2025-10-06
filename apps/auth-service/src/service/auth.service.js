@@ -4,6 +4,8 @@ import { db } from "../config/database.js";
 import { eq } from "drizzle-orm";
 import users from "../models/user.model.js";
 import { v4 as uuidv4 } from "uuid";
+import { getOTPStatus, verifyOTP } from "./otp.service.js";
+
 // salt rounds
 const SALT_ROUNDS = 10;
 
@@ -179,5 +181,97 @@ export const markEmailAsVerified = async (userId) => {
 //   }
 // };
 
+// verify user email
+export const verifyUserEmail = async (email) => {
+  try {
+    const user = await isUserExist(email);
+    if (!user) {
+      return {
+        success: false,
+        code: "USER_NOT_FOUND",
+        message: "User does not exist",
+      };
+    }
 
+    if (user.auth_provider !== "local") {
+      return {
+        success: false,
+        code: "VERIFICATION_NOT_APPLICABLE",
+        message: "Email verification not required",
+      };
+    }
 
+    if (user.email_verified) {
+      // idempotent success: no-op
+      return {
+        success: true,
+        code: "ALREADY_VERIFIED",
+        message: "Email already verified",
+      };
+    }
+
+    const otpStatus = await getOTPStatus(user.id, "email_verification");
+
+    if (otpStatus.isExpired) {
+      return {
+        success: false,
+        code: "OTP_EXPIRED",
+        message: "Email verification OTP has expired",
+      };
+    }
+
+    if (otpStatus.hasActiveOTP) {
+      return {
+        success: false,
+        code: "OTP_ACTIVE",
+        message: "Email verification OTP is active",
+      };
+    }
+    if (otpStatus.remainingAttempts <= 0) {
+      return {
+        success: false,
+        code: "OTP_MAX_ATTEMPTS",
+        message:
+          "Email verification OTP has reached the maximum number of attempts",
+      };
+    }
+    if (otpStatus.attempts >= otpStatus.remainingAttempts) {
+      return {
+        success: false,
+        code: "OTP_MAX_ATTEMPTS",
+        message:
+          "Email verification OTP has reached the maximum number of attempts",
+      };
+    }
+
+    const result = await verifyOTP(
+      user.id,
+      user.email,
+      otpStatus.otp_code,
+      "email_verification",
+    );
+    if (!result?.success) {
+      return {
+        success: false,
+        code: "VERIFY_INTERNAL_ERROR",
+        message: "Unable to verify email at this time",
+      };
+    }
+
+    return {
+      success: true,
+      code: "VERIFIED",
+      message: "Email verified successfully",
+    };
+  } catch (err) {
+    logger.error("Error verifying user email", {
+      error: err?.message,
+      stack: err?.stack,
+    });
+    return {
+      success: false,
+      code: "VERIFY_UNEXPECTED_ERROR",
+      message: "Unable to verify email at this time",
+    };
+  }
+};

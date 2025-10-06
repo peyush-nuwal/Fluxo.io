@@ -5,6 +5,7 @@
 You can send emails from a "no-reply" address without creating a new email account. Here are your options:
 
 ### Option 1: Use Your Domain (Recommended)
+
 ```env
 # Your actual Gmail credentials for authentication
 EMAIL_USER=gokunuwal@gmail.com
@@ -17,6 +18,7 @@ EMAIL_DOMAIN=fluxo.io
 ```
 
 ### Option 2: Use Gmail's Domain
+
 ```env
 # Your actual Gmail credentials for authentication
 EMAIL_USER=gokunuwal@gmail.com
@@ -29,6 +31,7 @@ EMAIL_DOMAIN=gmail.com
 ```
 
 ### Option 3: Use a Custom Business Email
+
 ```env
 # Your actual Gmail credentials for authentication
 EMAIL_USER=gokunuwal@gmail.com
@@ -41,6 +44,7 @@ EMAIL_DOMAIN=yourbusiness.com
 ```
 
 ### Option 4: Use Your Gmail with Alias
+
 ```env
 # Your actual Gmail credentials for authentication
 EMAIL_USER=gokunuwal@gmail.com
@@ -61,6 +65,7 @@ EMAIL_DOMAIN=gmail.com
 ## Example Email Headers
 
 When using the configuration, recipients will see:
+
 ```
 From: no-reply@fluxo.io
 To: user@example.com
@@ -68,6 +73,7 @@ Subject: Email Verification Code
 ```
 
 Instead of:
+
 ```
 From: gokunuwal@gmail.com
 To: user@example.com
@@ -90,15 +96,17 @@ EMAIL_DOMAIN=fluxo.io
 ## Testing
 
 1. **Test email configuration:**
+
    ```
    GET http://localhost:4001/api/v1/auth/otp/test-email
    ```
 
 2. **Test OTP generation:**
+
    ```
    POST http://localhost:4001/api/v1/auth/otp/generate
    Content-Type: application/json
-   
+
    {
      "email": "test@example.com",
      "purpose": "email_verification"
@@ -115,6 +123,7 @@ EMAIL_DOMAIN=fluxo.io
 ## Troubleshooting
 
 If you get authentication errors:
+
 - Make sure you're using an App Password, not your regular Gmail password
 - Verify that 2-factor authentication is enabled on your Gmail account
 - Check that the `EMAIL_FROM` address doesn't conflict with your authentication email
