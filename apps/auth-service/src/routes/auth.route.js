@@ -21,6 +21,8 @@ router.post("/api/v1/auth/signup", signUp);
 router.post("/api/v1/auth/signin", signIn);
 router.post("/api/v1/auth/signout", signOut);
 
+// email verification via OTP only (no token link)
+
 // password reset routes
 router.post("/api/v1/auth/update-password", updatePassword);
 

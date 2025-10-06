@@ -28,19 +28,26 @@ export const signUp = async (req, res) => {
     }
 
     const { name, email, password } = validationResult.data;
+    const normalizedEmail = email.trim().toLowerCase();
 
     //Auth service
-    const user = await createUser({ name, email, password });
-
+    const user = await createUser({ name, email: normalizedEmail, password });
     // Generate and send email verification OTP
-    await generateAndStoreOTP(user.id, email, "email_verification");
+    const result = await generateAndStoreOTP(
+      user.id,
+      normalizedEmail,
+      "email_verification",
+    );
+    if (!result?.success) {
+      return res.status(400).json({ error: result.message });
+    }
 
     logger.info(
-      `User registered successfully with email: ${email}, verification email sent`
+      `User registered successfully with email: ${normalizedEmail}. We have sent a verification OTP to your email.`,
     );
     return res.status(201).json({
       message:
-        "User registered successfully. Please verify your email to continue.",
+        "User registered successfully. A verification OTP has been sent to your email. Please verify to continue.",
       user: {
         id: user.id,
         name: user.name,
@@ -187,3 +194,5 @@ export const updatePassword = async (req, res) => {
       .json({ error: "Internal server error while changing password" });
   }
 };
+
+// token-based verifyEmail removed; OTP-based verification is used instead
