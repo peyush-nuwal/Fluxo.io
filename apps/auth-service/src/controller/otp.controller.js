@@ -9,7 +9,7 @@ import {
   testEmailConfiguration,
 } from "../service/otp.service.js";
 import { markEmailAsVerified } from "../service/auth.service.js";
-import { changeUserEmail } from "../service/auth.service.js";
+import { changeUserEmail, resetUserPassword } from "../service/auth.service.js";
 import { jwttoken } from "../utils/jwt.js";
 import { formatValidationsError } from "../utils/format.js";
 import {
@@ -17,6 +17,11 @@ import {
   verifyOTPSchema,
   resendOTPSchema,
   getOTPStatusSchema,
+  requestEmailChangeSchema,
+  verifyEmailChangeSchema,
+  forgotPasswordSchema,
+  verifyPasswordResetOTPSchema,
+  resetPasswordSchema,
 } from "../../../../packages/zod-schemas/index.js";
 
 /**
@@ -37,6 +42,7 @@ export const generateOTP = async (req, res) => {
 
     // Check if user exists
     const user = await isUserExist(email);
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -47,13 +53,34 @@ export const generateOTP = async (req, res) => {
     logger.info(
       `OTP generated successfully for user: ${email}, purpose: ${purpose}`,
     );
+
     return res.status(200).json({
       message: "OTP sent successfully",
       expiresIn: result.expiresIn,
     });
   } catch (error) {
     logger.error("Generate OTP failed:", error);
-    return res.status(500).json({ error: "Failed to generate OTP" });
+
+    // Handle specific error cases
+    if (error.message.includes("Email configuration")) {
+      return res.status(503).json({
+        error: "Email service unavailable",
+        message: "We're having trouble sending emails. Please try again later.",
+      });
+    }
+    if (error.message.includes("User not found")) {
+      return res.status(404).json({
+        error: "User not found",
+        message:
+          "No account found with this email. Please check your email or sign up.",
+      });
+    }
+
+    return res.status(500).json({
+      error: "OTP generation failed",
+      message:
+        "Something went wrong while generating the OTP. Please try again.",
+    });
   }
 };
 
@@ -75,6 +102,7 @@ export const verifyOTPCode = async (req, res) => {
 
     // Check if user exists
     const user = await isUserExist(email);
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -91,6 +119,7 @@ export const verifyOTPCode = async (req, res) => {
     logger.info(
       `OTP verified successfully for user: ${email}, purpose: ${purpose}`,
     );
+
     return res.status(200).json({
       message: "OTP verified successfully",
       emailVerified: purpose === "email_verification",
@@ -100,57 +129,93 @@ export const verifyOTPCode = async (req, res) => {
 
     // Handle specific error cases
     if (error.message === "Invalid or expired OTP") {
-      return res.status(400).json({ error: "Invalid or expired OTP" });
+      return res.status(400).json({
+        error: "Invalid or expired OTP",
+        message:
+          "The OTP you entered is invalid or has expired. Please request a new one.",
+      });
     }
     if (error.message === "OTP has expired") {
-      return res.status(400).json({ error: "OTP has expired" });
+      return res.status(400).json({
+        error: "OTP expired",
+        message: "The OTP has expired. Please request a new one.",
+      });
     }
     if (error.message === "Maximum verification attempts exceeded") {
-      return res
-        .status(429)
-        .json({ error: "Maximum verification attempts exceeded" });
+      return res.status(429).json({
+        error: "Too many attempts",
+        message:
+          "You've exceeded the maximum number of attempts. Please request a new OTP.",
+      });
     }
     if (error.message === "Invalid OTP code") {
-      return res.status(400).json({ error: "Invalid OTP code" });
+      return res.status(400).json({
+        error: "Invalid OTP",
+        message:
+          "The OTP code you entered is incorrect. Please check and try again.",
+      });
+    }
+    if (error.message === "User not found") {
+      return res.status(404).json({
+        error: "User not found",
+        message:
+          "No account found with this email. Please check your email or sign up.",
+      });
     }
 
-    return res.status(500).json({ error: "Failed to verify OTP" });
+    return res.status(500).json({
+      error: "OTP verification failed",
+      message:
+        "Something went wrong while verifying the OTP. Please try again.",
+    });
   }
 };
 
-// Request OTP for email change
+/**
+ * Request OTP for email change
+ */
 export const requestEmailChange = async (req, res) => {
   try {
     // Verify JWT token first
     const decoded = jwttoken.verify(req.cookies.token);
+
     if (!decoded) {
       return res.status(401).json({ error: "Invalid or expired token" });
     }
 
-    const { newEmail } = req.body || {};
-    if (!newEmail) {
-      return res.status(400).json({ error: "newEmail is required" });
+    // Validate request body
+    const validationResult = requestEmailChangeSchema.safeParse(req.body);
+
+    if (!validationResult.success) {
+      return res.status(400).json({
+        error: "validation failed",
+        details: formatValidationsError(validationResult.error),
+      });
     }
 
+    const { newEmail } = validationResult.data;
     const normalizedCurrent = decoded.email; // Use email from JWT token
     const normalizedNew = newEmail.trim().toLowerCase();
 
     if (normalizedCurrent === normalizedNew) {
-      return res
-        .status(400)
-        .json({ error: "New email must be different from current email" });
+      return res.status(400).json({
+        error: "New email must be different from current email",
+      });
     }
 
     const user = await isUserExist(normalizedCurrent);
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+
     // Generate OTP to new email to confirm ownership
     const result = await generateAndStoreOTP(
       user.id,
       normalizedNew,
       "email_change",
     );
+
     if (!result?.success) {
       return res.status(400).json({ error: result.message });
     }
@@ -158,36 +223,64 @@ export const requestEmailChange = async (req, res) => {
     logger.info(
       `Email change OTP sent to new email for user: ${normalizedCurrent} -> ${normalizedNew}`,
     );
+
     return res.status(200).json({
       message: "OTP sent to new email for verification",
       expiresIn: result.expiresIn,
     });
   } catch (error) {
     logger.error("Request email change OTP failed:", error);
-    return res.status(500).json({ error: "Failed to request email change" });
+
+    // Handle specific error cases
+    if (error.message.includes("Email configuration")) {
+      return res.status(503).json({
+        error: "Email service unavailable",
+        message: "We're having trouble sending emails. Please try again later.",
+      });
+    }
+    if (error.message.includes("User not found")) {
+      return res.status(404).json({
+        error: "User not found",
+        message: "User account not found. Please sign in again.",
+      });
+    }
+
+    return res.status(500).json({
+      error: "Email change request failed",
+      message:
+        "Something went wrong while requesting email change. Please try again.",
+    });
   }
 };
 
-// Verify OTP and change email
+/**
+ * Verify OTP and change email
+ */
 export const verifyEmailChange = async (req, res) => {
   try {
     // Verify JWT token first
     const decoded = jwttoken.verify(req.cookies.token);
+
     if (!decoded) {
       return res.status(401).json({ error: "Invalid or expired token" });
     }
 
-    const { newEmail, otpCode } = req.body || {};
-    if (!newEmail || !otpCode) {
-      return res
-        .status(400)
-        .json({ error: "newEmail and otpCode are required" });
+    // Validate request body
+    const validationResult = verifyEmailChangeSchema.safeParse(req.body);
+
+    if (!validationResult.success) {
+      return res.status(400).json({
+        error: "validation failed",
+        details: formatValidationsError(validationResult.error),
+      });
     }
 
+    const { newEmail, otpCode } = validationResult.data;
     const normalizedCurrent = decoded.email; // Use email from JWT token
     const normalizedNew = newEmail.trim().toLowerCase();
 
     const user = await isUserExist(normalizedCurrent);
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -201,30 +294,66 @@ export const verifyEmailChange = async (req, res) => {
     logger.info(
       `Email changed after OTP verification: ${normalizedCurrent} -> ${normalizedNew}`,
     );
-    return res.status(200).json({ message: "Email changed successfully" });
+
+    return res.status(200).json({
+      message: "Email changed successfully",
+    });
   } catch (error) {
     logger.error("Verify email change failed:", error);
+
+    // Handle specific error cases
     if (error.message === "Invalid or expired OTP") {
-      return res.status(400).json({ error: "Invalid or expired OTP" });
+      return res.status(400).json({
+        error: "Invalid or expired OTP",
+        message:
+          "The OTP you entered is invalid or has expired. Please request a new one.",
+      });
     }
     if (error.message === "OTP has expired") {
-      return res.status(400).json({ error: "OTP has expired" });
+      return res.status(400).json({
+        error: "OTP expired",
+        message: "The OTP has expired. Please request a new one.",
+      });
     }
     if (error.message === "Maximum verification attempts exceeded") {
-      return res
-        .status(429)
-        .json({ error: "Maximum verification attempts exceeded" });
+      return res.status(429).json({
+        error: "Too many attempts",
+        message:
+          "You've exceeded the maximum number of attempts. Please request a new OTP.",
+      });
     }
     if (error.message === "Invalid OTP code") {
-      return res.status(400).json({ error: "Invalid OTP code" });
+      return res.status(400).json({
+        error: "Invalid OTP",
+        message:
+          "The OTP code you entered is incorrect. Please check and try again.",
+      });
     }
     if (error.message === "User does not exist") {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({
+        error: "User not found",
+        message: "User account not found. Please sign in again.",
+      });
     }
     if (error.message === "Email already in use") {
-      return res.status(409).json({ error: "Email already in use" });
+      return res.status(409).json({
+        error: "Email already in use",
+        message:
+          "This email is already registered with another account. Please use a different email.",
+      });
     }
-    return res.status(500).json({ error: "Failed to verify email change" });
+    if (error.message.includes("Login with")) {
+      return res.status(400).json({
+        error: "Social login account",
+        message: "Cannot change email for social login accounts.",
+      });
+    }
+
+    return res.status(500).json({
+      error: "Email change failed",
+      message:
+        "Something went wrong while changing your email. Please try again.",
+    });
   }
 };
 
@@ -355,3 +484,218 @@ export const cleanupOTPs = async (req, res) => {
 };
 
 // forgot password
+
+/**
+ * Request password reset OTP
+ */
+export const forgotPassword = async (req, res) => {
+  try {
+    // Validate request body
+    const validationResult = forgotPasswordSchema.safeParse(req.body);
+    if (!validationResult.success) {
+      return res.status(400).json({
+        error: "validation failed",
+        details: formatValidationsError(validationResult.error),
+      });
+    }
+
+    const { email } = validationResult.data;
+
+    const user = await isUserExist(email);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const result = await generateAndStoreOTP(user.id, email, "password_reset");
+    if (!result?.success) {
+      return res.status(400).json({ error: result.message });
+    }
+
+    logger.info(`Password reset OTP sent to email: ${email}`);
+    return res.status(200).json({
+      message: "Password reset OTP sent successfully",
+      expiresIn: result.expiresIn,
+    });
+  } catch (error) {
+    logger.error("Forgot password failed:", error);
+
+    // Handle specific error cases
+    if (error.message.includes("Email configuration")) {
+      return res.status(503).json({
+        error: "Email service unavailable",
+        message: "We're having trouble sending emails. Please try again later.",
+      });
+    }
+    if (error.message.includes("User not found")) {
+      return res.status(404).json({
+        error: "User not found",
+        message:
+          "No account found with this email. Please check your email or sign up.",
+      });
+    }
+
+    return res.status(500).json({
+      error: "Password reset request failed",
+      message:
+        "Something went wrong while requesting password reset. Please try again.",
+    });
+  }
+};
+
+// verify password reset OTP
+
+/**
+ * Step 1: Verify OTP only (returns success if valid)
+ */
+export const verifyPasswordResetOTP = async (req, res) => {
+  try {
+    // Validate request body
+    const validationResult = verifyPasswordResetOTPSchema.safeParse(req.body);
+    if (!validationResult.success) {
+      return res.status(400).json({
+        error: "validation failed",
+        details: formatValidationsError(validationResult.error),
+      });
+    }
+
+    const { email, otpCode } = validationResult.data;
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await isUserExist(normalizedEmail);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Verify OTP only
+    await verifyOTP(user.id, normalizedEmail, otpCode, "password_reset");
+
+    // Generate a short-lived reset token (5 minutes)
+    const resetToken = await jwttoken.sign(
+      {
+        id: user.id,
+        email: normalizedEmail,
+        purpose: "password_reset",
+      },
+      { expiresIn: "5m" },
+    );
+
+    logger.info(
+      `Password reset OTP verified successfully for user: ${normalizedEmail}`,
+    );
+    return res.status(200).json({
+      message: "OTP verified successfully. You can now reset your password.",
+      verified: true,
+      resetToken: resetToken,
+    });
+  } catch (error) {
+    logger.error("Verify password reset OTP failed:", error);
+
+    // Handle specific error cases
+    if (error.message === "Invalid or expired OTP") {
+      return res.status(400).json({
+        error: "Invalid or expired OTP",
+        message:
+          "The OTP you entered is invalid or has expired. Please request a new one.",
+      });
+    }
+    if (error.message === "OTP has expired") {
+      return res.status(400).json({
+        error: "OTP expired",
+        message: "The OTP has expired. Please request a new one.",
+      });
+    }
+    if (error.message === "Maximum verification attempts exceeded") {
+      return res.status(429).json({
+        error: "Too many attempts",
+        message:
+          "You've exceeded the maximum number of attempts. Please request a new OTP.",
+      });
+    }
+    if (error.message === "Invalid OTP code") {
+      return res.status(400).json({
+        error: "Invalid OTP",
+        message:
+          "The OTP code you entered is incorrect. Please check and try again.",
+      });
+    }
+    if (error.message === "User does not exist") {
+      return res.status(404).json({
+        error: "User not found",
+        message:
+          "No account found with this email. Please check your email or sign up.",
+      });
+    }
+
+    return res.status(500).json({
+      error: "OTP verification failed",
+      message:
+        "Something went wrong while verifying the OTP. Please try again.",
+    });
+  }
+};
+
+/**
+ * Step 2: Reset password (requires valid reset token from step 1)
+ */
+export const resetPassword = async (req, res) => {
+  try {
+    // Validate request body
+    const validationResult = resetPasswordSchema.safeParse(req.body);
+    if (!validationResult.success) {
+      return res.status(400).json({
+        error: "validation failed",
+        details: formatValidationsError(validationResult.error),
+      });
+    }
+
+    const { resetToken, newPassword } = validationResult.data;
+
+    // Verify the reset token
+    const decoded = jwttoken.verify(resetToken);
+    if (!decoded || decoded.purpose !== "password_reset") {
+      return res.status(401).json({ error: "Invalid or expired reset token" });
+    }
+
+    const normalizedEmail = decoded.email;
+    const user = await isUserExist(normalizedEmail);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Reset password
+    await resetUserPassword(normalizedEmail, newPassword);
+
+    logger.info(`Password reset successfully for user: ${normalizedEmail}`);
+    return res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    logger.error("Reset password failed:", error);
+
+    // Handle specific error cases
+    if (error.message === "User does not exist") {
+      return res.status(404).json({
+        error: "User not found",
+        message: "User account not found. Please request a new password reset.",
+      });
+    }
+    if (error.message.includes("Login with")) {
+      return res.status(400).json({
+        error: "Social login account",
+        message:
+          "Cannot reset password for social login accounts. Please use the social login provider to manage your password.",
+      });
+    }
+    if (error.message.includes("Invalid or expired")) {
+      return res.status(401).json({
+        error: "Invalid or expired reset token",
+        message:
+          "The reset token is invalid or has expired. Please request a new password reset.",
+      });
+    }
+
+    return res.status(500).json({
+      error: "Password reset failed",
+      message:
+        "Something went wrong while resetting your password. Please try again.",
+    });
+  }
+};
