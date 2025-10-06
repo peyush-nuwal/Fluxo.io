@@ -12,6 +12,8 @@ import {
   getOTPStatusController,
   cleanupOTPs,
   testEmailConfig,
+  requestEmailChange,
+  verifyEmailChange,
 } from "../controller/otp.controller.js";
 
 const router = express.Router();
@@ -33,5 +35,9 @@ router.post("/api/v1/auth/otp/resend", resendOTPCode);
 router.get("/api/v1/auth/otp/status", getOTPStatusController);
 router.get("/api/v1/auth/otp/test-email", testEmailConfig); // Test email configuration
 router.delete("/api/v1/auth/otp/cleanup", cleanupOTPs); // Admin utility
+
+// Email change via OTP
+router.post("/api/v1/auth/email/change/request", requestEmailChange);
+router.post("/api/v1/auth/email/change/verify", verifyEmailChange);
 
 export default router;

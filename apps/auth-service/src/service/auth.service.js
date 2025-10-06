@@ -173,13 +173,46 @@ export const markEmailAsVerified = async (userId) => {
 
 // change User email
 
-// export const changeUserEmail = async (email, newEmail) => {
-//   try {
-//   } catch (error) {
-//     logger.error("Error changing email:", error);
-//     throw new Error("Internal server error while changing email");
-//   }
-// };
+export const changeUserEmail = async (email, newEmail) => {
+  try {
+    const normalizedCurrent = email.trim().toLowerCase();
+    const normalizedNew = newEmail.trim().toLowerCase();
+
+    const user = await isUserExist(normalizedCurrent);
+    if (!user) throw new Error("User does not exist");
+
+    if (user.auth_provider !== "local") {
+      throw new Error(`Login with ${user.auth_provider}`);
+    }
+
+    // Ensure new email not already taken
+    const newEmailUser = await isUserExist(normalizedNew);
+    if (newEmailUser) {
+      throw new Error("Email already in use");
+    }
+
+    await db
+      .update(users)
+      .set({ email: normalizedNew })
+      .where(eq(users.email, normalizedCurrent));
+
+    logger.info(
+      `Email changed for user ${normalizedCurrent} -> ${normalizedNew}`,
+    );
+    return { message: "Email changed successfully" };
+  } catch (error) {
+    logger.error("Error changing email:", error);
+    if (
+      error.message === "User does not exist" ||
+      error.message === "Email already in use" ||
+      (typeof error.message === "string" &&
+        error.message.startsWith("Login with"))
+    ) {
+      throw error;
+    }
+    throw new Error("Internal server error while changing email");
+  }
+};
 
 // verify user email
 export const verifyUserEmail = async (email) => {

@@ -1,5 +1,5 @@
 import logger from "../config/logger.js";
-import { isUserExist } from "../service/auth.service.js";
+import { isUserExist, comparePassword } from "../service/auth.service.js";
 import {
   generateAndStoreOTP,
   verifyOTP,
@@ -9,6 +9,8 @@ import {
   testEmailConfiguration,
 } from "../service/otp.service.js";
 import { markEmailAsVerified } from "../service/auth.service.js";
+import { changeUserEmail } from "../service/auth.service.js";
+import { jwttoken } from "../utils/jwt.js";
 import { formatValidationsError } from "../utils/format.js";
 import {
   generateOTPSchema,
@@ -42,7 +44,9 @@ export const generateOTP = async (req, res) => {
     // Generate and send OTP
     const result = await generateAndStoreOTP(user.id, email, purpose);
 
-    logger.info(`OTP generated successfully for user: ${email}, purpose: ${purpose}`);
+    logger.info(
+      `OTP generated successfully for user: ${email}, purpose: ${purpose}`,
+    );
     return res.status(200).json({
       message: "OTP sent successfully",
       expiresIn: result.expiresIn,
@@ -84,7 +88,9 @@ export const verifyOTPCode = async (req, res) => {
       logger.info(`Email verified successfully for user: ${email}`);
     }
 
-    logger.info(`OTP verified successfully for user: ${email}, purpose: ${purpose}`);
+    logger.info(
+      `OTP verified successfully for user: ${email}, purpose: ${purpose}`,
+    );
     return res.status(200).json({
       message: "OTP verified successfully",
       emailVerified: purpose === "email_verification",
@@ -100,13 +106,125 @@ export const verifyOTPCode = async (req, res) => {
       return res.status(400).json({ error: "OTP has expired" });
     }
     if (error.message === "Maximum verification attempts exceeded") {
-      return res.status(429).json({ error: "Maximum verification attempts exceeded" });
+      return res
+        .status(429)
+        .json({ error: "Maximum verification attempts exceeded" });
     }
     if (error.message === "Invalid OTP code") {
       return res.status(400).json({ error: "Invalid OTP code" });
     }
 
     return res.status(500).json({ error: "Failed to verify OTP" });
+  }
+};
+
+// Request OTP for email change
+export const requestEmailChange = async (req, res) => {
+  try {
+    // Verify JWT token first
+    const decoded = jwttoken.verify(req.cookies.token);
+    if (!decoded) {
+      return res.status(401).json({ error: "Invalid or expired token" });
+    }
+
+    const { newEmail } = req.body || {};
+    if (!newEmail) {
+      return res.status(400).json({ error: "newEmail is required" });
+    }
+
+    const normalizedCurrent = decoded.email; // Use email from JWT token
+    const normalizedNew = newEmail.trim().toLowerCase();
+
+    if (normalizedCurrent === normalizedNew) {
+      return res
+        .status(400)
+        .json({ error: "New email must be different from current email" });
+    }
+
+    const user = await isUserExist(normalizedCurrent);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    // Generate OTP to new email to confirm ownership
+    const result = await generateAndStoreOTP(
+      user.id,
+      normalizedNew,
+      "email_change",
+    );
+    if (!result?.success) {
+      return res.status(400).json({ error: result.message });
+    }
+
+    logger.info(
+      `Email change OTP sent to new email for user: ${normalizedCurrent} -> ${normalizedNew}`,
+    );
+    return res.status(200).json({
+      message: "OTP sent to new email for verification",
+      expiresIn: result.expiresIn,
+    });
+  } catch (error) {
+    logger.error("Request email change OTP failed:", error);
+    return res.status(500).json({ error: "Failed to request email change" });
+  }
+};
+
+// Verify OTP and change email
+export const verifyEmailChange = async (req, res) => {
+  try {
+    // Verify JWT token first
+    const decoded = jwttoken.verify(req.cookies.token);
+    if (!decoded) {
+      return res.status(401).json({ error: "Invalid or expired token" });
+    }
+
+    const { newEmail, otpCode } = req.body || {};
+    if (!newEmail || !otpCode) {
+      return res
+        .status(400)
+        .json({ error: "newEmail and otpCode are required" });
+    }
+
+    const normalizedCurrent = decoded.email; // Use email from JWT token
+    const normalizedNew = newEmail.trim().toLowerCase();
+
+    const user = await isUserExist(normalizedCurrent);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Verify OTP that was sent to the new email
+    await verifyOTP(user.id, normalizedNew, otpCode, "email_change");
+
+    // Perform the change
+    await changeUserEmail(normalizedCurrent, normalizedNew);
+
+    logger.info(
+      `Email changed after OTP verification: ${normalizedCurrent} -> ${normalizedNew}`,
+    );
+    return res.status(200).json({ message: "Email changed successfully" });
+  } catch (error) {
+    logger.error("Verify email change failed:", error);
+    if (error.message === "Invalid or expired OTP") {
+      return res.status(400).json({ error: "Invalid or expired OTP" });
+    }
+    if (error.message === "OTP has expired") {
+      return res.status(400).json({ error: "OTP has expired" });
+    }
+    if (error.message === "Maximum verification attempts exceeded") {
+      return res
+        .status(429)
+        .json({ error: "Maximum verification attempts exceeded" });
+    }
+    if (error.message === "Invalid OTP code") {
+      return res.status(400).json({ error: "Invalid OTP code" });
+    }
+    if (error.message === "User does not exist") {
+      return res.status(404).json({ error: "User not found" });
+    }
+    if (error.message === "Email already in use") {
+      return res.status(409).json({ error: "Email already in use" });
+    }
+    return res.status(500).json({ error: "Failed to verify email change" });
   }
 };
 
@@ -135,7 +253,9 @@ export const resendOTPCode = async (req, res) => {
     // Resend OTP
     const result = await resendOTP(user.id, email, purpose);
 
-    logger.info(`OTP resent successfully for user: ${email}, purpose: ${purpose}`);
+    logger.info(
+      `OTP resent successfully for user: ${email}, purpose: ${purpose}`,
+    );
     return res.status(200).json({
       message: "OTP resent successfully",
       expiresIn: result.expiresIn,
@@ -186,12 +306,12 @@ export const getOTPStatusController = async (req, res) => {
 export const testEmailConfig = async (req, res) => {
   try {
     const result = await testEmailConfiguration();
-    
+
     // Show current email configuration
     const emailFromName = process.env.EMAIL_FROM_NAME || "no-replay@Fluxo.io";
-    const emailUser = process.env.EMAIL_USER || 'Not set';
-    const emailService = process.env.EMAIL_SERVICE || 'gmail';
-    
+    const emailUser = process.env.EMAIL_USER || "Not set";
+    const emailService = process.env.EMAIL_SERVICE || "gmail";
+
     logger.info("Email configuration test successful");
     return res.status(200).json({
       message: "Email configuration is working correctly",
@@ -201,14 +321,14 @@ export const testEmailConfig = async (req, res) => {
         fromAddress: `${emailFromName} <${emailUser}>`,
         authUser: emailUser,
         service: emailService,
-        displayFormat: `${emailFromName} <${emailUser}>`
-      }
+        displayFormat: `${emailFromName} <${emailUser}>`,
+      },
     });
   } catch (error) {
     logger.error("Email configuration test failed:", error);
-    return res.status(500).json({ 
+    return res.status(500).json({
       error: "Email configuration test failed",
-      details: error.message 
+      details: error.message,
     });
   }
 };
@@ -221,7 +341,9 @@ export const cleanupOTPs = async (req, res) => {
     // This could be protected by admin middleware in the future
     const result = await cleanupExpiredOTPs();
 
-    logger.info(`OTP cleanup completed: ${result.deletedCount} expired OTPs removed`);
+    logger.info(
+      `OTP cleanup completed: ${result.deletedCount} expired OTPs removed`,
+    );
     return res.status(200).json({
       message: "Expired OTPs cleaned up successfully",
       deletedCount: result.deletedCount,
@@ -231,3 +353,5 @@ export const cleanupOTPs = async (req, res) => {
     return res.status(500).json({ error: "Failed to cleanup OTPs" });
   }
 };
+
+// forgot password
