@@ -6,8 +6,14 @@ import users from "../models/user.model.js";
 import { v4 as uuidv4 } from "uuid";
 import { getOTPStatus, verifyOTP } from "./otp.service.js";
 
-// salt rounds
+// ========================================
+// Configuration
+// ========================================
 const SALT_ROUNDS = 10;
+
+// ========================================
+// Password Utilities
+// ========================================
 
 /**
  * Hash a plain text password using bcrypt
@@ -32,6 +38,10 @@ export const comparePassword = async (password, hash) => {
     throw new Error("Internal server error while verifying password");
   }
 };
+
+// ========================================
+// User Management
+// ========================================
 
 /**
  * Check if a user exists by email
@@ -103,21 +113,36 @@ export const createUser = async ({
   }
 };
 
-// sign in
+// ========================================
+// Authentication
+// ========================================
+
+/**
+ * Authenticate user with email and password
+ */
 export const authenticateUser = async (email, password) => {
   const user = await isUserExist(email);
+
   if (!user) throw new Error("User does not exist");
 
   if (user.auth_provider !== "local") {
     throw new Error(`Login with ${user.auth_provider}`);
   }
+
   const isPasswordCorrect = await comparePassword(password, user.password);
+
   if (!isPasswordCorrect) throw new Error("Invalid credentials");
 
   return user; // controller decides what to do with it
 };
 
-// change user password
+// ========================================
+// Password Management
+// ========================================
+
+/**
+ * Change user password
+ */
 export const changeUserPassword = async (email, oldPassword, newPassword) => {
   try {
     const user = await isUserExist(email);
@@ -155,7 +180,13 @@ export const changeUserPassword = async (email, oldPassword, newPassword) => {
   }
 };
 
-// Mark email as verified
+// ========================================
+// Email Verification
+// ========================================
+
+/**
+ * Mark email as verified
+ */
 export const markEmailAsVerified = async (userId) => {
   try {
     await db
@@ -164,6 +195,7 @@ export const markEmailAsVerified = async (userId) => {
       .where(eq(users.id, userId));
 
     logger.info(`Email verified for user ${userId}`);
+
     return { success: true, message: "Email verified successfully" };
   } catch (error) {
     logger.error("Error marking email as verified:", error);
@@ -171,8 +203,13 @@ export const markEmailAsVerified = async (userId) => {
   }
 };
 
-// change User email
+// ========================================
+// Email Management
+// ========================================
 
+/**
+ * Change user email
+ */
 export const changeUserEmail = async (email, newEmail) => {
   try {
     const normalizedCurrent = email.trim().toLowerCase();
@@ -211,6 +248,40 @@ export const changeUserEmail = async (email, newEmail) => {
       throw error;
     }
     throw new Error("Internal server error while changing email");
+  }
+};
+
+/**
+ * Reset user password (for forgot password flow)
+ */
+export const resetUserPassword = async (email, newPassword) => {
+  try {
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await isUserExist(normalizedEmail);
+    if (!user) throw new Error("User does not exist");
+
+    if (user.auth_provider !== "local") {
+      throw new Error(`Login with ${user.auth_provider}`);
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+    await db
+      .update(users)
+      .set({ password: hashedPassword })
+      .where(eq(users.email, normalizedEmail));
+
+    logger.info(`Password reset for user ${normalizedEmail}`);
+    return { message: "Password reset successfully" };
+  } catch (error) {
+    logger.error("Error resetting password:", error);
+    if (
+      error.message === "User does not exist" ||
+      (typeof error.message === "string" &&
+        error.message.startsWith("Login with"))
+    ) {
+      throw error;
+    }
+    throw new Error("Internal server error while resetting password");
   }
 };
 

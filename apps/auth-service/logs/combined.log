@@ -330,3 +330,24 @@
 {"level":"info","message":"Email changed for user gokunuwal@gmail.com -> gotunuwal@gmail.com","service":"fluxo-auth-api","timestamp":"2025-10-06T16:24:32.715Z"}
 {"level":"info","message":"Email changed after OTP verification: gokunuwal@gmail.com -> gotunuwal@gmail.com","service":"fluxo-auth-api","timestamp":"2025-10-06T16:24:32.716Z"}
 {"level":"info","message":"::1 - - [06/Oct/2025:16:24:32 +0000] \"POST /api/v1/auth/email/change/verify HTTP/1.1\" 200 40 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:24:32.717Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:42:38 +0000] \"POST /api/v1/auth/forgot-password HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:42:38.428Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:42:43 +0000] \"POST /api/v1/auth/forgot-password HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:42:43.780Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:42:45 +0000] \"POST /api/v1/auth/forgot-password HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:42:45.778Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:43:22 +0000] \"POST /api/v1/auth/password/forgot-password HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:43:22.036Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:43:25 +0000] \"POST /api/v1/auth/password/forgot-password HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:43:25.132Z"}
+{"level":"info","message":"New OTP generated and stored for user 606ee3ff-935c-45d6-b3e2-9d8b48e4b8fe, purpose: password_reset","service":"fluxo-auth-api","timestamp":"2025-10-06T16:44:53.311Z"}
+{"level":"info","message":"Creating email transporter with service: gmail, user: gokunuwal@gmail.com","service":"fluxo-auth-api","timestamp":"2025-10-06T16:44:53.317Z"}
+{"level":"info","message":"OTP email sent successfully to gotunuwal@gmail.com for purpose: password_reset","service":"fluxo-auth-api","timestamp":"2025-10-06T16:44:56.924Z"}
+{"level":"info","message":"Password reset OTP sent to email: gotunuwal@gmail.com","service":"fluxo-auth-api","timestamp":"2025-10-06T16:44:56.925Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:44:56 +0000] \"POST /api/v1/auth/password/forgot-password HTTP/1.1\" 200 66 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:44:56.934Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:45:24 +0000] \"POST /api/v1/auth/verify-password-reset-otp HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:45:24.378Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:45:54 +0000] \"POST /api/v1/auth/password/verify-password-reset-otp HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:45:54.967Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:45:56 +0000] \"POST /api/v1/auth/password/verify-password-reset-otp HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:45:56.970Z"}
+{"level":"info","message":"OTP verified successfully for user 606ee3ff-935c-45d6-b3e2-9d8b48e4b8fe, purpose: password_reset","service":"fluxo-auth-api","timestamp":"2025-10-06T16:46:02.507Z"}
+{"level":"info","message":"Password reset OTP verified successfully for user: gotunuwal@gmail.com","service":"fluxo-auth-api","timestamp":"2025-10-06T16:46:02.515Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:46:02 +0000] \"POST /api/v1/auth/password/verify-reset-password-otp HTTP/1.1\" 200 368 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:46:02.516Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:46:35 +0000] \"POST /api/v1/auth/password/reset HTTP/1.1\" 400 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:46:35.073Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:46:39 +0000] \"POST /api/v1/auth/password/reset HTTP/1.1\" 400 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:46:39.363Z"}
+{"level":"info","message":"Password reset for user gotunuwal@gmail.com","service":"fluxo-auth-api","timestamp":"2025-10-06T16:46:57.798Z"}
+{"level":"info","message":"Password reset successfully for user: gotunuwal@gmail.com","service":"fluxo-auth-api","timestamp":"2025-10-06T16:46:57.801Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:46:57 +0000] \"POST /api/v1/auth/password/reset HTTP/1.1\" 200 41 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-auth-api","timestamp":"2025-10-06T16:46:57.803Z"}

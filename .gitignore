@@ -2,6 +2,9 @@
 node_modules/
 .pnpm-store/
 
+
+# Logs
+logs/
 # Build outputs
 dist/
 build/

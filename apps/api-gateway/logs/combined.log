@@ -347,3 +347,36 @@
 {"level":"info","message":"::1 - - [06/Oct/2025:16:24:14 +0000] \"POST /api/v1/auth/email/change/request HTTP/1.1\" 200 68 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:24:14.724Z"}
 {"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:24:31.566Z"}
 {"level":"info","message":"::1 - - [06/Oct/2025:16:24:32 +0000] \"POST /api/v1/auth/email/change/verify HTTP/1.1\" 200 40 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:24:32.718Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:36:53.034Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:36:53 +0000] \"POST /api/v1/auth/forgot-password HTTP/1.1\" 500 280 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:36:53.166Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:37:04.930Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:37:05 +0000] \"POST /api/v1/auth/forgot-password HTTP/1.1\" 500 280 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:37:05.057Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:42:38.360Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:42:38 +0000] \"POST /api/v1/auth/forgot-password HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:42:38.423Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:42:43.768Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:42:43 +0000] \"POST /api/v1/auth/forgot-password HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:42:43.782Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:42:45.769Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:42:45 +0000] \"POST /api/v1/auth/forgot-password HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:42:45.779Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:43:22.028Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:43:22 +0000] \"POST /api/v1/auth/password/forgot-password HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:43:22.038Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:43:25.126Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:43:25 +0000] \"POST /api/v1/auth/password/forgot-password HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:43:25.134Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:43:51.174Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:43:51 +0000] \"POST /api/v1/auth/password/forgot-password HTTP/1.1\" 500 280 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:43:51.187Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:44:26.407Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:44:52.001Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:44:56 +0000] \"POST /api/v1/auth/password/forgot-password HTTP/1.1\" 200 66 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:44:56.942Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:45:24.368Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:45:24 +0000] \"POST /api/v1/auth/verify-password-reset-otp HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:45:24.379Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:45:54.900Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:45:54 +0000] \"POST /api/v1/auth/password/verify-password-reset-otp HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:45:54.961Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:45:56.956Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:45:56 +0000] \"POST /api/v1/auth/password/verify-password-reset-otp HTTP/1.1\" 404 29 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:45:56.971Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:01.368Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:46:02 +0000] \"POST /api/v1/auth/password/verify-reset-password-otp HTTP/1.1\" 200 368 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:02.517Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:35.066Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:46:35 +0000] \"POST /api/v1/auth/password/reset HTTP/1.1\" 400 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:35.076Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:39.353Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:46:39 +0000] \"POST /api/v1/auth/password/reset HTTP/1.1\" 400 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:39.364Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:56.583Z"}
+{"level":"info","message":"::1 - - [06/Oct/2025:16:46:57 +0000] \"POST /api/v1/auth/password/reset HTTP/1.1\" 200 41 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:57.805Z"}
