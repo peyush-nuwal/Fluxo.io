@@ -69,7 +69,10 @@ export const createUser = async ({
   name,
   email,
   password,
+  google_id = null,
+  github_id = null,
   auth_provider = "local",
+  email_verified = false,
 }) => {
   try {
     // Reuse isUserExist
@@ -91,7 +94,9 @@ export const createUser = async ({
         email,
         password: hashed_password,
         auth_provider,
-        email_verified: false, // Email verification required for local auth
+        google_id,
+        github_id,
+        email_verified: auth_provider === "local" ? email_verified : true,
       })
       .returning({
         id: users.id,
@@ -378,4 +383,27 @@ export const verifyUserEmail = async (email) => {
       message: "Unable to verify email at this time",
     };
   }
+};
+
+// Authenticate or create OAuth user
+export const authenticateOAuthUser = async (profile, provider) => {
+  const email = profile.emails[0].value;
+  let user = await isUserExist(email);
+
+  if (!user) {
+    // Create OAuth user
+    user = await createUser({
+      name: profile.displayName || profile.username,
+      email,
+      password: null,
+      auth_provider: provider,
+      google_id: provider === "google" ? profile.id : null,
+      github_id: provider === "github" ? profile.id : null,
+      email_verified: true,
+    });
+  } else if (user.auth_provider !== provider) {
+    throw new Error(`Login with ${user.auth_provider}`);
+  }
+
+  return user; // Controller or route generates JWT
 };

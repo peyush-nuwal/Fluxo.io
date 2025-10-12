@@ -43,7 +43,11 @@
     "zod": "^4.1.11"
   },
   "dependencies": {
+    "express-session": "^1.18.2",
     "nodemailer": "^7.0.6",
+    "passport": "^0.7.0",
+    "passport-github": "^1.1.0",
+    "passport-google-oauth20": "^2.0.0",
     "uuid": "^13.0.0"
   }
 }
