@@ -380,3 +380,200 @@
 {"level":"info","message":"::1 - - [06/Oct/2025:16:46:39 +0000] \"POST /api/v1/auth/password/reset HTTP/1.1\" 400 51 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:39.364Z"}
 {"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:56.583Z"}
 {"level":"info","message":"::1 - - [06/Oct/2025:16:46:57 +0000] \"POST /api/v1/auth/password/reset HTTP/1.1\" 200 41 \"-\" \"PostmanRuntime/7.48.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-06T16:46:57.805Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T14:56:16.751Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:14:56:24 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 201 280 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T14:56:24.292Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T14:57:12.746Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:14:57:12 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 400 63 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T14:57:12.757Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T14:57:21.113Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:14:57:25 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 201 279 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T14:57:25.403Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:00:07.337Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:15:00:07 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 134 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:00:07.644Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:00:56.717Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:15:00:57 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 134 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:00:57.031Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:01:03.158Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:15:01:07 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 201 272 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:01:07.824Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:12:27.117Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:15:12:32 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 201 272 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:12:32.270Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:15:48.257Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:15:15:55 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 201 280 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:15:55.784Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:17:57.680Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:15:18:02 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 201 278 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:18:02.046Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:18:50.347Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:15:18:51 +0000] \"POST /api/v1/auth/otp/verify HTTP/1.1\" 200 60 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T15:18:51.337Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:14:01.510Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:14:01 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 500 280 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:14:01.530Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:30:20.908Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:30:20 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 500 280 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:30:20.916Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:33:41.332Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:33:42 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:33:42.299Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:33:53.903Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:33:53 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:33:53.911Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:33:55.242Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:33:55 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:33:55.250Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:33:56.621Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:33:56 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:33:56.631Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:34:42.495Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:34:42 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:34:42.501Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:23.422Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:23 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:23.442Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:24.320Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:24 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:24.328Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:24.880Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:24 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:24.891Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:25.470Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:25 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:25.478Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:26.057Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:26 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:26.072Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:26.508Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:26 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:26.514Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:26.708Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:26 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:26.714Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:26.891Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:26 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:26.896Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:27.071Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:27 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:27.079Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:27.243Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:27 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:27.250Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:27.444Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:27 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:27.448Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:27.550Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:35:27 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:35:27.557Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:03.045Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:36:03 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:03.054Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:03.631Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:36:03 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:03.638Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:03.893Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:36:03 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:03.898Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:04.109Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:36:04 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:04.113Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:31.119Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:36:31 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:31.123Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:31.799Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:36:31 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:31.805Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:32.017Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:36:32 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:36:32.024Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:02.678Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:02 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:02.684Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:03.851Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:03 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:03.857Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:04.450Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:04 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:04.455Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:04.731Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:04 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:04.736Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:04.933Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:04 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:04.939Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:05.164Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:05 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:05.171Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:07.870Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:07 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:07.873Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:08.592Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:08 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:08.600Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:09.098Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:09 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:09.102Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:11.584Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:11 +0000] \"HEAD /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:11.589Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:14.774Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:14 +0000] \"POST /api/v1/auth/oauth/google HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:14.786Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:18.860Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:37:18 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:37:18.864Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:09.376Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:09 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:09.382Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:10.264Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:10 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:10.270Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:10.886Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:10 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:10.890Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:11.885Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:11 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:11.896Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:12.004Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:12 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:12.009Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:12.168Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:12 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:12.174Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:12.339Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:12 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:12.346Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:12.666Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:12 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:12.672Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:32.875Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:32 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:32.882Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:34.361Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:34 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:34.367Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:34.971Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:34 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:34.996Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:35.131Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:35 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:35.142Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:38.178Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:38 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:38.186Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:39.151Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:39 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:39.157Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:42.353Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:42 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:42.356Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:43.126Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:43 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:43.133Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:43.724Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:40:43 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:40:43.731Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:48.350Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:48 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:48.373Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:49.234Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:49 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:49.243Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:49.791Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:49 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:49.796Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:49.994Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:50 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.005Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.195Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:50 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.207Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.364Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:50 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.371Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.523Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:50 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.530Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.699Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:50 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.707Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.876Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:50 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:50.886Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:51.079Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:51 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:51.087Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:51.248Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:44:51 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:44:51.290Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:06.449Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:47:06 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:06.463Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:07.077Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:47:07 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:07.083Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:07.287Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:47:07 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:07.294Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:07.601Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:47:07 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:07.608Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:07.772Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:47:07 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:07.779Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:07.925Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:47:07 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:07.932Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:25.391Z"}
+{"level":"info","message":"::1 - - [12/Oct/2025:16:47:25 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:47:25.396Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:48:56.540Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:48:56 +0000] \"GET /api/v1/auth/oauth/google HTTP/1.1\" 302 0 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:48:56.558Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:49:08.640Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:49:10 +0000] \"GET /api/v1/auth/oauth/google/callback?code=4%2F0AVGzR1C_Js4QF1eD63r_yRAzR-d9BwUmynhmqi4OPbaBlIuF0UtUjkWOEYxIWtEOD_Qj0A&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=2&prompt=consent HTTP/1.1\" 500 35 \"https://accounts.google.com/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:49:10.538Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:49:10 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:49:10.703Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:04.837Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:54:05 +0000] \"GET /api/v1/auth/oauth/google/callback?code=4%2F0AVGzR1C_Js4QF1eD63r_yRAzR-d9BwUmynhmqi4OPbaBlIuF0UtUjkWOEYxIWtEOD_Qj0A&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=2&prompt=consent HTTP/1.1\" 500 35 \"https://accounts.google.com/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:05.317Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:54:05 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:05.397Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:06.157Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:54:06 +0000] \"GET /api/v1/auth/oauth/google/callback?code=4%2F0AVGzR1C_Js4QF1eD63r_yRAzR-d9BwUmynhmqi4OPbaBlIuF0UtUjkWOEYxIWtEOD_Qj0A&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=2&prompt=consent HTTP/1.1\" 500 35 \"https://accounts.google.com/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:06.323Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:54:06 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:06.432Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:14.318Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:54:15 +0000] \"GET /api/v1/auth/oauth/google/callback?code=4%2F0AVGzR1DqBQ7n5Z7td2iJq2BdaKWNUwI69e92kD5oonkHn_RzD876oPSct_WndqSJR8TvZA&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=2&prompt=none HTTP/1.1\" 500 35 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:15.907Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:54:16 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:16.066Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:17.869Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:54:18 +0000] \"GET /api/v1/auth/oauth/google/callback?code=4%2F0AVGzR1DqBQ7n5Z7td2iJq2BdaKWNUwI69e92kD5oonkHn_RzD876oPSct_WndqSJR8TvZA&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid&authuser=2&prompt=none HTTP/1.1\" 500 35 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:18.008Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:54:18 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:54:18.090Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:55:26.277Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:55:27 +0000] \"GET /api/v1/auth/oauth/google/callback?code=4%2F0AVGzR1DhAEb5yVyMcG88lsfOh7nuEFZ4-AsCHj93uZXPDD2PAHPk9yHGpgVORSXBVxgpRQ&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=2&prompt=none HTTP/1.1\" 500 35 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:55:27.293Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:55:27 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:55:27.442Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:59:28.908Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:59:30 +0000] \"GET /api/v1/auth/oauth/google/callback?code=4%2F0AVGzR1AJQRqMhzW2B7Clqu9-j2_OL-nExHNM3_MENIhCRljJTrbalIPgHmrbFOvNBvZvBg&scope=email+profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=2&prompt=none HTTP/1.1\" 500 35 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:59:30.195Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:16:59:30 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T16:59:30.337Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:01:53.842Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:17:01:55 +0000] \"GET /api/v1/auth/oauth/google/callback?code=4%2F0AVGzR1D8z5rCKUP-bRnzQeUEdAgN2PfnCvaxNWkZk5FeeEZwuibDJVQuVfrh7QdVnQEvbg&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+openid+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&authuser=2&prompt=none HTTP/1.1\" 302 520 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:01:55.040Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:01:55.053Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:17:01:55 +0000] \"GET /api/v1/auth/oauth/google/undefined/oauth-success?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMxMzRlOGMzLWIwZmEtNDE1My04MjcwLTU4Y2NiOWU0OGVmMyIsIm5hbWUiOiJnb2t1IG51d2FsIiwiZW1haWwiOiJnb2t1bnV3YWxAZ21haWwuY29tIiwicGFzc3dvcmQiOm51bGwsImF1dGhfcHJvdmlkZXIiOiJnb29nbGUiLCJnb29nbGVfaWQiOiIxMDg1MDU5NzU3MzExMDk4ODgzNDEiLCJnaXRodWJfaWQiOm51bGwsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJjcmVhdGVkX2F0IjoiMjAyNS0xMC0xMlQxNjo1NDoxNi4yMTVaIiwiaWF0IjoxNzYwMjg4NTE1LCJleHAiOjE3NjAzNzQ5MTV9.YqJ5dOppbzxfrdTlhGkMM-XPMwe7vYNjxGOcY49QNi8 HTTP/1.1\" 404 29 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:01:55.067Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:17:01:55 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:01:55.273Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:02:00.684Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:17:02:00 +0000] \"GET /api/v1/auth/oauth/google/undefined/oauth-success?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMxMzRlOGMzLWIwZmEtNDE1My04MjcwLTU4Y2NiOWU0OGVmMyIsIm5hbWUiOiJnb2t1IG51d2FsIiwiZW1haWwiOiJnb2t1bnV3YWxAZ21haWwuY29tIiwicGFzc3dvcmQiOm51bGwsImF1dGhfcHJvdmlkZXIiOiJnb29nbGUiLCJnb29nbGVfaWQiOiIxMDg1MDU5NzU3MzExMDk4ODgzNDEiLCJnaXRodWJfaWQiOm51bGwsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJjcmVhdGVkX2F0IjoiMjAyNS0xMC0xMlQxNjo1NDoxNi4yMTVaIiwiaWF0IjoxNzYwMjg4NTE1LCJleHAiOjE3NjAzNzQ5MTV9.YqJ5dOppbzxfrdTlhGkMM-XPMwe7vYNjxGOcY49QNi8 HTTP/1.1\" 404 29 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:02:00.692Z"}
+{"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:17:02:00 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:02:00.758Z"}

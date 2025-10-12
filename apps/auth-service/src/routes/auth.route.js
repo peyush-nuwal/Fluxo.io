@@ -18,7 +18,8 @@ import {
   verifyPasswordResetOTP,
   resetPassword,
 } from "../controller/otp.controller.js";
-
+import passport from "../config/passport.js";
+import { jwttoken } from "../utils/jwt.js";
 const router = express.Router();
 
 // ========================================
@@ -58,5 +59,46 @@ router.post(
   verifyPasswordResetOTP,
 );
 router.post("/api/v1/auth/password/reset", resetPassword);
+
+// o auth service
+// Google OAuth
+// Google OAuth
+router.get(
+  "/api/v1/auth/oauth/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    session: false,
+  }),
+);
+
+router.get(
+  "/api/v1/auth/oauth/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    session: false,
+  }),
+  (req, res) => {
+    const token = jwttoken.sign(req.user); // make sure your user object has this
+    res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
+  },
+);
+
+// GitHub OAuth
+router.get(
+  "/api/v1/auth/oauth/github",
+  passport.authenticate("github", { scope: ["user:email"], session: false }),
+);
+
+router.get(
+  "/api/v1/auth/oauth/github/callback",
+  passport.authenticate("github", {
+    failureRedirect: "/login",
+    session: false,
+  }),
+  (req, res) => {
+    const token = jwttoken.sign(req.user);
+    res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
+  },
+);
 
 export default router;

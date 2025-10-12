@@ -33,7 +33,7 @@ app.use(
 );
 
 // Arcjet security middleware (rate limiting, bot detection, shield)
-app.use(securityMiddleware);
+// app.use(securityMiddleware);
 
 // Health check
 app.get("/health", (req, res) => {
