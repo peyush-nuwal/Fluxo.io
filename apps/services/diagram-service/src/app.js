@@ -2,18 +2,21 @@ import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
-// import cookieParser from "cookie-parser";
 
 import logger from "./config/logger.js";
+
+// routes
+import projectRoutes from "./routes/index.js";
+import { connectRedis } from "./services/redis.service.js";
 
 const app = express();
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "15mb" }));
 app.use(express.urlencoded({ extended: true, limit: "15mb" }));
-// app.use(cookieParser());
 app.use(helmet());
 
+connectRedis();
 // HTTP request logging with Winston + Morgan
 app.use(
   morgan("combined", {
@@ -34,8 +37,8 @@ app.get("/api", (req, res) => {
   });
 });
 
-// Auth routes
-// app.use("/", authRoutes);
+// project routes
+app.use("/", projectRoutes);
 
 // 404 handler
 app.use((req, res) => {
