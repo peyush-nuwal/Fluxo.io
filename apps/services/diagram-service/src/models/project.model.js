@@ -1,15 +1,9 @@
-import { json } from "drizzle-orm/gel-core";
-import {
-  pgTable,
-  text,
-  timestamp,
-  varchar,
-  boolean,
-} from "drizzle-orm/pg-core";
+import { json } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, boolean } from "drizzle-orm/pg-core";
 
 const projects = pgTable("projects", {
-  id: varchar("id").primaryKey(),
-  user_id: varchar("user_id").notNull(),
+  id: uuid("id").primaryKey().defaultRandom(),
+  user_id: uuid("user_id").notNull(),
   title: text("title").notNull(),
   description: text("description"),
   thumbnail_url: text("thumbnail_url"),

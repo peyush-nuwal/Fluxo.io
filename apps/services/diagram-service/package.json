@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.913.0",
+    "@neondatabase/serverless": "^1.0.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",
@@ -32,7 +33,7 @@
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.8.1",
-    "drizzle-kit": "^0.31.5",
+    "drizzle-kit": "0.28.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }
