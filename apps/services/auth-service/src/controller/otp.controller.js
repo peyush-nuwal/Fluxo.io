@@ -22,7 +22,7 @@ import {
   forgotPasswordSchema,
   verifyPasswordResetOTPSchema,
   resetPasswordSchema,
-} from "../../../../packages/zod-schemas/index.js";
+} from "../../../../../packages/zod-schemas/index.js";
 
 /**
  * Generate and send OTP

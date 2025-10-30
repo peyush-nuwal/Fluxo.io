@@ -7,6 +7,10 @@ const JWT_EXPIRES_IN = "1d";
 export const jwttoken = {
   sign: (payload) => {
     try {
+      logger.info("Signing JWT with secret:", {
+        secretLength: JWT_SECRET?.length,
+        secretStart: JWT_SECRET?.substring(0, 10),
+      });
       return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     } catch (error) {
       logger.error("Failed to authenticate token", error);

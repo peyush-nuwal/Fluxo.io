@@ -1,18 +1,21 @@
 import { Router } from "express";
-// import * as projectController from "../controllers/project.controller";
+import {
+  getAllProjects,
+  createProject,
+  getProjectById,
+  updateProject,
+  deleteProject,
+} from "../controllers/project.controller.js";
 // import * as diagramController from "../controllers/diagram.controller";
 
 const router = Router();
 
-// // Project routes
-router.get("testing", () => {
-  console.log("diagram routes working");
-});
-// router.get("/projects", projectController.getAllProjects);
-// router.post("/projects", projectController.createProject);
-// router.get("/projects/:id", projectController.getProjectById);
-// router.put("/projects/:id", projectController.updateProject);
-// router.delete("/projects/:id", projectController.deleteProject);
+// Project routes
+router.get("/api/v1/projects", getAllProjects);
+router.post("/api/v1/projects", createProject);
+router.get("/api/v1/projects/:id", getProjectById);
+router.put("/api/v1/projects/:id", updateProject);
+router.delete("/api/v1/projects/:id", deleteProject);
 
 // // Diagram routes
 // router.get("/projects/:projectId/diagrams", diagramController.getDiagramsByProject);
