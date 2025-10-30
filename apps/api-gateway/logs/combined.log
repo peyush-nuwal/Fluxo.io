@@ -577,3 +577,300 @@
 {"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:02:00.684Z"}
 {"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:17:02:00 +0000] \"GET /api/v1/auth/oauth/google/undefined/oauth-success?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMxMzRlOGMzLWIwZmEtNDE1My04MjcwLTU4Y2NiOWU0OGVmMyIsIm5hbWUiOiJnb2t1IG51d2FsIiwiZW1haWwiOiJnb2t1bnV3YWxAZ21haWwuY29tIiwicGFzc3dvcmQiOm51bGwsImF1dGhfcHJvdmlkZXIiOiJnb29nbGUiLCJnb29nbGVfaWQiOiIxMDg1MDU5NzU3MzExMDk4ODgzNDEiLCJnaXRodWJfaWQiOm51bGwsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJjcmVhdGVkX2F0IjoiMjAyNS0xMC0xMlQxNjo1NDoxNi4yMTVaIiwiaWF0IjoxNzYwMjg4NTE1LCJleHAiOjE3NjAzNzQ5MTV9.YqJ5dOppbzxfrdTlhGkMM-XPMwe7vYNjxGOcY49QNi8 HTTP/1.1\" 404 29 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:02:00.692Z"}
 {"level":"info","message":"::ffff:127.0.0.1 - - [12/Oct/2025:17:02:00 +0000] \"GET /favicon.ico HTTP/1.1\" 404 150 \"-\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:143.0) Gecko/20100101 Firefox/143.0\"","service":"fluxo-api-gateway","timestamp":"2025-10-12T17:02:00.758Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:24:36 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 404 161 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:24:36.068Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:25:01.108Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:25:01 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 500 280 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:25:01.119Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:28:24.581Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:28:27 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 500 93 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:28:27.463Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:30:37.151Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:30:38 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 500 93 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:30:38.293Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:32:17.853Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:32:18 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 404 108 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:32:18.444Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:32:28.409Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:32:28 +0000] \"POST /api/v1/auth/signup HTTP/1.1\" 409 134 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:32:28.803Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:32:51.995Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:32:52 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 155 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:32:52.493Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:33:31 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 404 161 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:33:31.426Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:33:36 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 404 161 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:33:36.100Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:44:48.781Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:44:50 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 155 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:44:50.277Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:44:57 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:44:57.335Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:44:59 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:44:59.000Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:46:58.427Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:46:58 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 155 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:46:58.924Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:47:09.958Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:47:10 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 155 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:47:10.393Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:47:47 +0000] \"GET /api/v1/api/v1/projects?id=497505de-d193-4eb6-8f4c-6fabbbdc69a0 HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:47:47.940Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:47:49 +0000] \"GET /api/v1/api/v1/projects?id=497505de-d193-4eb6-8f4c-6fabbbdc69a0 HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:47:49.212Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:50:58.951Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:50:59 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 155 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:50:59.828Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:52:08.474Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:52:08 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 500 280 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:52:08.650Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:52:09.070Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:52:09 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 500 280 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:52:09.220Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:52:10.690Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:52:10 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 500 280 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:52:10.722Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:52:11.740Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:52:12 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 393 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:52:12.496Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:53:43 +0000] \"POST /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:53:43.564Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:53:44 +0000] \"POST /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:53:44.544Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:53:53 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:53:53.173Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:53:53 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:53:53.907Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:17:54:00 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T17:54:00.105Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:01:19 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:01:19.005Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:01:20 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:01:20.292Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:01:39.561Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:01:40 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 393 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:01:40.723Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:02:31 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:02:31.534Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:02:38 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:02:38.292Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:02:39 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:02:39.239Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:04:59 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:04:59.577Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:05:00 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:05:00.570Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:05:01 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:05:01.515Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:05:02 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:05:02.434Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:05:03 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:05:03.153Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:05:56 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:05:56.034Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:05:57 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:05:57.245Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:06:01.163Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:06:01 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 393 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:06:01.717Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:06:18.644Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:06:19 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 393 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:06:19.189Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:06:33 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:06:33.166Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:06:49 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 401 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:06:49.816Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:06:50 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 401 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:06:50.488Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:07:19 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:07:19.227Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:07:20 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:07:20.196Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:07:21 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:07:21.187Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:07:25 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:07:25.865Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:07:37 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:07:37.763Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:07:38 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:07:38.866Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:07:45 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:07:45.023Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:07:55 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 401 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:07:55.655Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:00 +0000] \"GET /api/v1/api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:00.632Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:08 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:08.933Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:09 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:09.784Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:10 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:10.013Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:10 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:10.431Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:10 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:10.617Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:10 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:10.816Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:10 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:10.979Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:11 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:11.177Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:15 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:15.042Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:15 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:15.890Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:16 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:16.084Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:16 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:16.294Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:16 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:16.508Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:16 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:16.712Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:24 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:24.267Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:08:25 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:08:25.526Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:10:44.688Z","tokenStart":"Bearer"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:10:44.697Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:10:44 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:10:44.704Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:10:45.383Z","tokenStart":"Bearer"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:10:45.385Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:10:45 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:10:45.388Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:11:38.046Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:11:39 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 393 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:11:39.321Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:01.636Z","tokenStart":"Bearer"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:01.638Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:12:01 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:01.642Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:02.590Z","tokenStart":"Bearer"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:02.598Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:12:02 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:02.607Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:07.957Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:07.962Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:12:07 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:07.966Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:08.657Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:08.660Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:12:08 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:12:08.665Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:49.007Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:49.010Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:13:49 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:49.012Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.223Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.225Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:13:50 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.229Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.461Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.463Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:13:50 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.465Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.656Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.660Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:13:50 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.662Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.896Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.902Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:13:50 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:50.907Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:51.097Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:51.118Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:13:51 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:13:51.127Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:02.936Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:02.940Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:14:02 +0000] \"POST /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:02.945Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:03.666Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:03.670Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:14:03 +0000] \"POST /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:03.672Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:03.858Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:03.865Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:14:03 +0000] \"POST /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:03.867Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:04.077Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:04.084Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:14:04 +0000] \"POST /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:04.087Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:18.087Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:18.093Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:14:18 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:14:18.094Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:15:34.758Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"level":"error","message":"Token verification failed:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:15:34.762Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:15:34 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:15:34.763Z"}
+{"hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:17:39.845Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"JWT_SECRET_LENGTH":15,"level":"error","message":"Token verification failed: invalid signature","name":"JsonWebTokenError","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:17:39.857Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:17:39 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:17:39.871Z"}
+{"JWT_SECRET_USED":"your-jwt-secret","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:19:27.995Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"JWT_SECRET_LENGTH":15,"level":"error","message":"Token verification failed: invalid signature","name":"JsonWebTokenError","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:19:28.004Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:19:28 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:19:28.017Z"}
+{"JWT_SECRET_USED":"your-jwt-secret","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:19:29.038Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"JWT_SECRET_LENGTH":15,"level":"error","message":"Token verification failed: invalid signature","name":"JsonWebTokenError","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:19:29.056Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:19:29 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:19:29.070Z"}
+{"JWT_SECRET_USED":"your-jwt-secret","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:20:00.561Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"JWT_SECRET_LENGTH":15,"level":"error","message":"Token verification failed: invalid signature","name":"JsonWebTokenError","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:20:00.565Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:20:00 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:20:00.571Z"}
+{"JWT_SECRET_USED":"your-jwt-secret","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:22:07.414Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"JWT_SECRET_LENGTH":15,"level":"error","message":"Token verification failed: invalid signature","name":"JsonWebTokenError","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:22:07.418Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:22:07 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:22:07.435Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:22:23.503Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:22:24 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 393 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:22:24.981Z"}
+{"JWT_SECRET_USED":"your-jwt-secret","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:22:52.056Z","tokenStart":"Bearer"}
+{"JWT_SECRET_LENGTH":15,"level":"error","message":"Token verification failed: jwt malformed","name":"JsonWebTokenError","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:22:52.057Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:22:52 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:22:52.060Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:26:48.453Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:27:45.789Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:27:46 +0000] \"POST /api/v1/auth/signin HTTP/1.1\" 200 393 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:27:46.449Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:28:16.518Z","tokenStart":"Bearer"}
+{"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt malformed","name":"JsonWebTokenError","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:28:16.523Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:28:16 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:28:16.529Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:28:17.415Z","tokenStart":"Bearer"}
+{"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt malformed","name":"JsonWebTokenError","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:28:17.417Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:28:17 +0000] \"GET /api/v1/projects HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:28:17.425Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:28:22.984Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:28:22.993Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:28:22.995Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:28:23 +0000] \"GET /api/v1/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:28:23.062Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/diagram/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:10.469Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:10.485Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:10.496Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:46:10 +0000] \"GET /api/v1/diagram/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:10.579Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/diagram/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:12.155Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:12.162Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:12.172Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:46:12 +0000] \"GET /api/v1/diagram/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:12.199Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/diagram/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:13.105Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:13.121Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:13.135Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:46:13 +0000] \"GET /api/v1/diagram/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:13.151Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/diagram/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:14.274Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:14.283Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:14.288Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:46:14 +0000] \"GET /api/v1/diagram/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:46:14.310Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:11.178Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:11.187Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:11.193Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:48:11 +0000] \"GET /api/v1/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:11.209Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:12.437Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:12.445Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:12.447Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:48:12 +0000] \"GET /api/v1/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:12.454Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:37.038Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:37.043Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:37.048Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:48:37 +0000] \"GET /api/v1/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:37.056Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:37.937Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:37.940Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:37.943Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:48:37 +0000] \"GET /api/v1/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:48:37.964Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:53.758Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:53.800Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:53.819Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:49:53 +0000] \"GET /api/v1/projects HTTP/1.1\" 500 280 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:53.877Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:55.116Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:55.121Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:55.125Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:49:55 +0000] \"GET /api/v1/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:55.229Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:56.332Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:56.354Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:56.380Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:49:56 +0000] \"GET /api/v1/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:56.395Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:57.708Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:57.751Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:57.845Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:49:57 +0000] \"GET /api/v1/projects HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:49:57.901Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:51:52.780Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:51:52.791Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:51:52.795Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:51:53 +0000] \"GET /api/v1/projects HTTP/1.1\" 200 15 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:51:53.862Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:51:57.335Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:51:57.358Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:51:57.364Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:51:57 +0000] \"GET /api/v1/projects HTTP/1.1\" 200 15 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:51:57.517Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:54:08.220Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:54:08.225Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:54:08.226Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:18:54:08 +0000] \"POST /api/v1/projects HTTP/1.1\" 201 176 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T18:54:08.637Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:11.690Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:11.699Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:11.701Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:04:12 +0000] \"POST /api/v1/projects HTTP/1.1\" 201 176 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:12.749Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:19.797Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:19.800Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:19.802Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:04:20 +0000] \"POST /api/v1/projects HTTP/1.1\" 201 176 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:20.229Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:27.742Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:27.747Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:27.749Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:04:28 +0000] \"GET /api/v1/projects HTTP/1.1\" 200 941 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:04:28.108Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/d0b7876e-49fe-4db1-bd55-f512db1dd7e9","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:05:39.382Z","tokenStart":"Bearer"}
+{"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt malformed","name":"JsonWebTokenError","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:05:39.383Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:05:39 +0000] \"GET /api/v1/projects/d0b7876e-49fe-4db1-bd55-f512db1dd7e9 HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:05:39.396Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/d0b7876e-49fe-4db1-bd55-f512db1dd7e9","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:05:45.563Z","tokenStart":"Bearer"}
+{"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt malformed","name":"JsonWebTokenError","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:05:45.563Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:05:45 +0000] \"GET /api/v1/projects/d0b7876e-49fe-4db1-bd55-f512db1dd7e9 HTTP/1.1\" 403 25 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:05:45.565Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/d0b7876e-49fe-4db1-bd55-f512db1dd7e9","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:05:54.600Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:05:54.604Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:05:54.606Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:05:54 +0000] \"GET /api/v1/projects/d0b7876e-49fe-4db1-bd55-f512db1dd7e9 HTTP/1.1\" 200 320 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:05:54.909Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/d0b7876e-49fe-4db1-bd55-f512db1dd7e9","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:06:23.243Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:06:23.251Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:06:23.254Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:06:23 +0000] \"GET /api/v1/projects/d0b7876e-49fe-4db1-bd55-f512db1dd7e9 HTTP/1.1\" 200 320 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:06:23.560Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/f75a3a41-7860-47cc-bf91-118c66516a32","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:07:21.606Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:07:21.615Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:07:21.617Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:07:21 +0000] \"DELETE /api/v1/projects/f75a3a41-7860-47cc-bf91-118c66516a32 HTTP/1.1\" 200 42 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:07:21.916Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:07:28.036Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:07:28.040Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:07:28.046Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:07:28 +0000] \"GET /api/v1/projects HTTP/1.1\" 200 632 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:07:28.393Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:10.119Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:10.121Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:10.122Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:09:10 +0000] \"PUT /api/v1/projects/ HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:10.131Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:11.898Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:11.900Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:11.901Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:09:11 +0000] \"PUT /api/v1/projects/ HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:11.906Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/e2060a04-8df2-41df-9688-7a9acb74a2f2","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:36.132Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:36.140Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:36.141Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:09:36 +0000] \"PUT /api/v1/projects/e2060a04-8df2-41df-9688-7a9acb74a2f2 HTTP/1.1\" 200 235 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:09:36.638Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/e2060a04-8df2-41df-9688-7a9acb74a2f2","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:44.918Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:44.926Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:44.930Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:12:45 +0000] \"PUT /api/v1/projects/e2060a04-8df2-41df-9688-7a9acb74a2f2 HTTP/1.1\" 200 235 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:45.419Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/f75a3a41-7860-47cc-bf91-118c66516a32","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:52.749Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:52.753Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:52.758Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:12:53 +0000] \"DELETE /api/v1/projects/f75a3a41-7860-47cc-bf91-118c66516a32 HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:53.075Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/f75a3a41-7860-47cc-bf91-118c66516a32","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:56.030Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:56.036Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:56.046Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:12:56 +0000] \"DELETE /api/v1/projects/f75a3a41-7860-47cc-bf91-118c66516a32 HTTP/1.1\" 404 29 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:12:56.179Z"}
+{"JWT_SECRET_USED":"66448334b1bf8b0cc5660ca2eaca1410","hasToken":true,"level":"info","message":"Auth middleware:","path":"/projects/e2060a04-8df2-41df-9688-7a9acb74a2f2","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:13:33.086Z","tokenStart":"eyJhbGciOiJIUzI1NiIs"}
+{"email":"gotunuwal@gmail.com","exp":1761935266,"iat":1761848866,"id":"497505de-d193-4eb6-8f4c-6fabbbdc69a0","level":"info","message":"Token verified successfully:","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:13:33.093Z"}
+{"level":"info","message":"Proxy request path resolver","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:13:33.095Z"}
+{"level":"info","message":"::1 - - [30/Oct/2025:19:13:33 +0000] \"DELETE /api/v1/projects/e2060a04-8df2-41df-9688-7a9acb74a2f2 HTTP/1.1\" 200 42 \"-\" \"HTTPie\"","service":"fluxo-api-gateway","timestamp":"2025-10-30T19:13:33.480Z"}

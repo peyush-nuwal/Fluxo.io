@@ -8,6 +8,7 @@ import logger from "./config/logger.js";
 // routes
 import projectRoutes from "./routes/index.js";
 import { connectRedis } from "./services/redis.service.js";
+import { extractUser } from "./middlewares/auth.middleware.js";
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: "15mb" }));
 app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 app.use(helmet());
+app.use(extractUser); // Extract user from JWT token
 
 connectRedis();
 // HTTP request logging with Winston + Morgan

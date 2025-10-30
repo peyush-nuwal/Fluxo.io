@@ -10,9 +10,8 @@ import { verifyToken } from "./middleware/auth.middleware.js";
 import securityMiddleware from "./middleware/security.middleware.js";
 
 import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
 import docsRoutes from "./routes/docsRoutes.js";
-
+import diagramRoutes from "./routes/diagramRoutes.js";
 // Load environment variables
 dotenv.config();
 
@@ -50,7 +49,7 @@ app.get("/health", (req, res) => {
 app.use("/api/v1", authRoutes);
 
 // API v1 routes (protected - auth required)
-app.use("/api/v1/users", verifyToken, userRoutes);
+app.use("/api/v1", verifyToken, diagramRoutes);
 app.use("/api/v1/docs", verifyToken, docsRoutes);
 
 export default app;

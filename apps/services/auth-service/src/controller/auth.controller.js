@@ -12,7 +12,7 @@ import {
   signInSchema,
   signUpSchema,
   changePasswordSchema,
-} from "../../../../packages/zod-schemas/index.js";
+} from "../../../../../packages/zod-schemas/index.js";
 
 /**
  * User signup with email verification
@@ -128,6 +128,7 @@ export const signIn = async (req, res) => {
 
     return res.status(200).json({
       message: "Sign in success",
+      token: token,
       user: {
         id: user.id,
         name: user.name,
