@@ -8,7 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 import projects from "./project.model.js";
 
-export const diagrams = pgTable("diagrams", {
+const diagrams = pgTable("diagrams", {
   id: uuid("id").primaryKey().defaultRandom(), // better than varchar for IDs
   project_id: uuid("project_id")
     .notNull()
@@ -20,3 +20,5 @@ export const diagrams = pgTable("diagrams", {
   updated_at: timestamp("updated_at").defaultNow(),
   deleted_at: timestamp("deleted_at"),
 });
+
+export default diagrams;
