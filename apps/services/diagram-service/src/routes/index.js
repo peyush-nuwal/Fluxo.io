@@ -6,7 +6,12 @@ import {
   updateProject,
   deleteProject,
 } from "../controllers/project.controller.js";
-// import * as diagramController from "../controllers/diagram.controller";
+import {
+  getDiagramsByProject,
+  createDiagram,
+  updateDiagram,
+  deleteDiagram,
+} from "../controllers/diagram.controller.js";
 
 const router = Router();
 
@@ -17,10 +22,10 @@ router.get("/api/v1/projects/:id", getProjectById);
 router.put("/api/v1/projects/:id", updateProject);
 router.delete("/api/v1/projects/:id", deleteProject);
 
-// // Diagram routes
-// router.get("/projects/:projectId/diagrams", diagramController.getDiagramsByProject);
-// router.post("/projects/:projectId/diagrams", diagramController.createDiagram);
-// router.put("/diagrams/:id", diagramController.updateDiagram);
-// router.delete("/diagrams/:id", diagramController.deleteDiagram);
+// Diagram routes
+router.get("/api/v1/projects/:projectId/diagrams", getDiagramsByProject);
+router.post("/api/v1/projects/:projectId/diagrams", createDiagram);
+router.put("/api/v1/projects/:projectId/diagrams/:id", updateDiagram);
+router.delete("/api/v1/projects/:projectId/diagrams/:id", deleteDiagram);
 
 export default router;
