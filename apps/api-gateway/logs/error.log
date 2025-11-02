@@ -43,3 +43,8 @@
 {"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt expired","name":"TokenExpiredError","service":"fluxo-api-gateway","timestamp":"2025-11-01T16:16:12.589Z"}
 {"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt expired","name":"TokenExpiredError","service":"fluxo-api-gateway","timestamp":"2025-11-01T16:16:12.805Z"}
 {"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt expired","name":"TokenExpiredError","service":"fluxo-api-gateway","timestamp":"2025-11-01T16:16:13.427Z"}
+{"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt expired","name":"TokenExpiredError","service":"fluxo-api-gateway","timestamp":"2025-11-01T16:41:59.152Z"}
+{"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt expired","name":"TokenExpiredError","service":"fluxo-api-gateway","timestamp":"2025-11-02T16:18:23.825Z"}
+{"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt expired","name":"TokenExpiredError","service":"fluxo-api-gateway","timestamp":"2025-11-02T16:18:51.635Z"}
+{"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt expired","name":"TokenExpiredError","service":"fluxo-api-gateway","timestamp":"2025-11-02T16:18:52.910Z"}
+{"JWT_SECRET_LENGTH":32,"level":"error","message":"Token verification failed: jwt expired","name":"TokenExpiredError","service":"fluxo-api-gateway","timestamp":"2025-11-02T16:40:34.032Z"}

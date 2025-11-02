@@ -2,11 +2,15 @@ import { db } from "../config/database.js";
 import { and, eq, isNull } from "drizzle-orm";
 import logger from "../config/logger.js";
 import diagramsTable from "../models/diagram.model.js";
-import projectsTable from "../models/project.model.js";
 import {
   createDiagramSchema,
   updateDiagramSchema,
+  ZodError,
 } from "../../../../../packages/zod-schemas/index.js";
+import {
+  verifyProjectOwnership,
+  verifyDiagramOwnership,
+} from "../services/diagram.service.js";
 
 export const getDiagramsByProject = async (req, res) => {
   try {
@@ -18,16 +22,7 @@ export const getDiagramsByProject = async (req, res) => {
       return res.status(400).json({ error: "Project ID is required" });
 
     // First verify the project belongs to the user
-    const [project] = await db
-      .select()
-      .from(projectsTable)
-      .where(
-        and(
-          eq(projectsTable.id, projectId),
-          eq(projectsTable.user_id, userId),
-          isNull(projectsTable.deleted_at),
-        ),
-      );
+    const project = await verifyProjectOwnership(projectId, userId);
 
     if (!project) {
       return res.status(404).json({ error: "Project not found" });
@@ -44,12 +39,7 @@ export const getDiagramsByProject = async (req, res) => {
         ),
       );
 
-    if (rows.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "No diagrams found for this project" });
-    }
-
+    // Return empty array if no diagrams found (not an error)
     return res.status(200).json({ diagrams: rows });
   } catch (error) {
     logger.error("Error getting diagrams by project:", error);
@@ -67,22 +57,30 @@ export const createDiagram = async (req, res) => {
       return res.status(400).json({ error: "Project ID is required" });
 
     // First verify the project belongs to the user
-    const [project] = await db
-      .select()
-      .from(projectsTable)
-      .where(
-        and(
-          eq(projectsTable.id, projectId),
-          eq(projectsTable.user_id, userId),
-          isNull(projectsTable.deleted_at),
-        ),
-      );
+    const project = await verifyProjectOwnership(projectId, userId);
 
     if (!project) {
       return res.status(404).json({ error: "Project not found" });
     }
 
-    const { name, data } = createDiagramSchema.parse(req.body);
+    // Validate request body with Zod
+    let validatedData;
+    try {
+      validatedData = createDiagramSchema.parse(req.body);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({
+          error: "Validation error",
+          details: error.errors.map((err) => ({
+            field: err.path.join("."),
+            message: err.message,
+          })),
+        });
+      }
+      throw error;
+    }
+
+    const { name, data } = validatedData;
 
     // Initialize empty React Flow diagram if no data provided
     const diagramData = data || {
@@ -108,6 +106,15 @@ export const createDiagram = async (req, res) => {
     return res.status(201).json({ diagram: newDiagram });
   } catch (error) {
     logger.error("Error creating diagram:", error);
+    if (error instanceof ZodError) {
+      return res.status(400).json({
+        error: "Validation error",
+        details: error.errors.map((err) => ({
+          field: err.path.join("."),
+          message: err.message,
+        })),
+      });
+    }
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -122,23 +129,31 @@ export const updateDiagram = async (req, res) => {
     if (!projectId)
       return res.status(400).json({ error: "Project ID is required" });
 
-    // First verify the project belongs to the user
-    const [project] = await db
-      .select()
-      .from(projectsTable)
-      .where(
-        and(
-          eq(projectsTable.id, projectId),
-          eq(projectsTable.user_id, userId),
-          isNull(projectsTable.deleted_at),
-        ),
-      );
+    // Verify diagram ownership (verifies project and diagram)
+    const diagram = await verifyDiagramOwnership(id, projectId, userId);
 
-    if (!project) {
-      return res.status(404).json({ error: "Project not found" });
+    if (!diagram) {
+      return res.status(404).json({ error: "Diagram not found" });
     }
 
-    const { name, data, is_active } = updateDiagramSchema.parse(req.body);
+    // Validate request body with Zod
+    let validatedData;
+    try {
+      validatedData = updateDiagramSchema.parse(req.body);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({
+          error: "Validation error",
+          details: error.errors.map((err) => ({
+            field: err.path.join("."),
+            message: err.message,
+          })),
+        });
+      }
+      throw error;
+    }
+
+    const { name, data, is_active } = validatedData;
 
     // Build update object with only provided fields
     const updateFields = {};
@@ -171,6 +186,15 @@ export const updateDiagram = async (req, res) => {
     return res.status(200).json({ diagram: updatedDiagram });
   } catch (error) {
     logger.error("Error updating diagram:", error);
+    if (error instanceof ZodError) {
+      return res.status(400).json({
+        error: "Validation error",
+        details: error.errors.map((err) => ({
+          field: err.path.join("."),
+          message: err.message,
+        })),
+      });
+    }
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -185,20 +209,11 @@ export const deleteDiagram = async (req, res) => {
     if (!projectId)
       return res.status(400).json({ error: "Project ID is required" });
 
-    // First verify the project belongs to the user
-    const [project] = await db
-      .select()
-      .from(projectsTable)
-      .where(
-        and(
-          eq(projectsTable.id, projectId),
-          eq(projectsTable.user_id, userId),
-          isNull(projectsTable.deleted_at),
-        ),
-      );
+    // Verify diagram ownership (verifies project and diagram)
+    const diagram = await verifyDiagramOwnership(id, projectId, userId);
 
-    if (!project) {
-      return res.status(404).json({ error: "Project not found" });
+    if (!diagram) {
+      return res.status(404).json({ error: "Diagram not found" });
     }
 
     const deletedDiagram = await db
