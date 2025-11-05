@@ -2,6 +2,7 @@ export const SERVICES = {
   AUTH: process.env.AUTH_SERVICE_URL || "http://localhost:4001",
   DIAGRAM: process.env.DIAGRAM_SERVICE_URL || "http://localhost:4002",
   DOCS: process.env.DOCS_SERVICE_URL || "http://localhost:4003",
+  AI: process.env.AI_SERVICE_URL || "http://localhost:4004",
 };
 
 export const PORT = process.env.PORT || 4000;
