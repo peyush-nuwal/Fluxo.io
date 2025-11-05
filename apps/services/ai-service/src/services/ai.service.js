@@ -1,80 +1,51 @@
 import logger from "../config/logger.js";
-import { openai } from "../config/openai.js";
+import { genai } from "../config/gemini.js";
 
 export const generateDiagramJSON = async (prompt) => {
   try {
     if (!prompt) throw new Error("Missing prompt");
 
-    const response = await openai.responses.create({
-      model: "gpt-4o-2024-08-06", // latest model that supports structured outputs
-      input: [
-        {
-          role: "system",
-          content: [
-            {
-              type: "input_text", // ✅ FIXED
-              text: "You are a diagram generator. Return only valid JSON with 'nodes' and 'edges' describing a system. Example: { nodes: [{id, label, type}], edges: [{from, to}] }",
-            },
-          ],
-        },
+    const fullPrompt = `
+You are a diagram generator. Respond ONLY with valid JSON following this structure:
+{
+  "nodes": [{ "id": string, "label": string, "type": string }],
+  "edges": [{ "from": string, "to": string }]
+}
+Do not include explanations, markdown, or extra text.
+Now, create a system design for: ${prompt}
+`;
+
+    const response = await genai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [
         {
           role: "user",
-          content: [
-            {
-              type: "input_text", // ✅ FIXED
-              text: prompt,
-            },
-          ],
+          parts: [{ text: fullPrompt }],
         },
       ],
-      text: {
-        format: {
-          name: "diagram_json",
-          type: "json_schema",
-          strict: true, // ✅ stays at this level now
-          schema: {
-            type: "object",
-            properties: {
-              nodes: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    id: { type: "string" },
-                    label: { type: "string" },
-                    type: { type: "string" },
-                  },
-                  required: ["id", "label", "type"],
-                  additionalProperties: false,
-                },
-              },
-              edges: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    from: { type: "string" },
-                    to: { type: "string" },
-                  },
-                  required: ["from", "to"],
-                  additionalProperties: false,
-                },
-              },
-            },
-            required: ["nodes", "edges"],
-            additionalProperties: false,
-          },
-        },
-      },
     });
 
-    const text = response.output[0].content[0].text;
-    const parsed = JSON.parse(text);
+    // ✅ Correct way to extract Gemini output
+    const text =
+      response?.response?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      response?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) throw new Error("Empty response from Gemini API");
+
+    // 🧼 Clean possible markdown
+    const cleanText = text.replace(/```json|```/g, "").trim();
+
+    // ✅ Parse JSON safely
+    const parsed = JSON.parse(cleanText);
+
+    if (!parsed.nodes || !parsed.edges) {
+      throw new Error("Invalid diagram format: missing nodes or edges");
+    }
 
     logger.info("✅ Diagram generated successfully");
     return parsed;
   } catch (error) {
-    logger.error("❌ Error while generating response with AI", {
+    logger.error("❌ Error while generating diagram JSON", {
       message: error.message,
       details: error.response?.data || error.response || error,
     });
