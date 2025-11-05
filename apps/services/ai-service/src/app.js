@@ -3,7 +3,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 import logger from "./config/logger.js";
-
+import aiResponseRoute from "./routes/ai.routes.js";
 const app = express();
 
 app.use(express.json({ limit: "15mb" }));
@@ -31,7 +31,7 @@ app.get("/api", (req, res) => {
 });
 
 // ai routes
-
+app.use("/", aiResponseRoute);
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
