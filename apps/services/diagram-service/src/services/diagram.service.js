@@ -1,5 +1,5 @@
 import { db } from "../config/database.js";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, count, eq, isNull } from "drizzle-orm";
 import logger from "../config/logger.js";
 import { verifyProjectOwnership } from "./project.service.js";
 import { diagrams, diagram_likes } from "../models/index.model.js";
@@ -48,8 +48,6 @@ export const hasUserLiked = async (diagramId, userId) => {
   return !!res;
 };
 
-console.log("🔥 SCHEMA KEYS IN DRIZZLE:", Object.keys(db.query));
-
 export const toggleLikes = async (diagramId, userId) => {
   const alreadyLiked = await hasUserLiked(diagramId, userId);
 
@@ -74,11 +72,11 @@ export const toggleLikes = async (diagramId, userId) => {
   return { liked: true };
 };
 
-// export const getLikeCount = async (diagramId) => {
-//   const res = await db
-//     .select({ count: count() })
-//     .from(diagram_likes)
-//     .where(eq(diagram_likes.diagram_id, diagramId));
+export const getLikeCount = async (diagramId) => {
+  const res = await db
+    .select({ count: count() })
+    .from(diagram_likes)
+    .where(eq(diagram_likes.diagram_id, diagramId));
 
-//   return Number(res[0].count);
-// };
+  return Number(res[0].count);
+};

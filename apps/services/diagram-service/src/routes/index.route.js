@@ -12,6 +12,7 @@ import {
   updateDiagram,
   deleteDiagram,
   handleDiagramLikes,
+  getDiagramLikesCount,
 } from "../controllers/diagram.controller.js";
 import {
   getCollaboratorsByProject,
@@ -19,7 +20,6 @@ import {
   removeCollaborator,
   acceptInvitation,
 } from "../controllers/collaborator.controller.js";
-
 const router = Router();
 
 // Project routes
@@ -49,6 +49,8 @@ router.delete("/diagrams/:id", deleteDiagram);
 
 // diagram likes
 router.post("/diagrams/:diagramId/like", handleDiagramLikes);
+// get all likes count for diagrams
+router.get("/diagrams/:diagramId/like", getDiagramLikesCount);
 
 // collaborators routes
 router.get("/projects/:projectId/collaborators", getCollaboratorsByProject);

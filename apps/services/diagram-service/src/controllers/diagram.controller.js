@@ -11,6 +11,7 @@ import {
   verifyProjectOwnership,
   verifyDiagramOwnership,
   toggleLikes,
+  getLikeCount,
 } from "../services/diagram.service.js";
 
 export const getDiagramsByProject = async (req, res) => {
@@ -241,6 +242,10 @@ export const handleDiagramLikes = async (req, res) => {
 
   try {
     const { diagramId } = req.params;
+
+    if (!diagramId) {
+      return res.status(400).json({ error: "Diagram ID is required" });
+    }
     const likeResult = await toggleLikes(diagramId, userId);
 
     const action = likeResult.liked ? "liked" : "unliked";
@@ -257,5 +262,33 @@ export const handleDiagramLikes = async (req, res) => {
     console.error(error);
 
     return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+export const getDiagramLikesCount = async (req, res) => {
+  const userId = req.user?.id;
+  if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+  try {
+    const { diagramId } = req.params;
+
+    if (!diagramId) {
+      return res.status(400).json({ error: "Diagram ID is required" });
+    }
+
+    const likesCount = await getLikeCount(diagramId);
+    logger.info(`diagram: ${diagramId} have ${likesCount} likes`);
+
+    return res.status(200).json({
+      diagramId,
+      likes: likesCount,
+    });
+  } catch (error) {
+    logger.error("Failed to retrive like count");
+    console.error(error);
+
+    return res
+      .status(500)
+      .json({ error: "Something went wrong  while getting likes count " });
   }
 };
