@@ -1,11 +1,15 @@
 import { db } from "../config/database.js";
-import projectInvitationsTable from "../models/project_invitation.model.js";
-import projectsTable from "../models/project.model.js";
+
 import { and, eq } from "drizzle-orm";
 import logger from "../config/logger.js";
 import { randomBytes } from "crypto";
 import { addCollaboratorToProject } from "./project.service.js";
-
+import {
+  diagrams,
+  diagram_likes,
+  projects,
+  project_invitations,
+} from "../models/index.model.js";
 /**
  * Generate a secure random token for invitation
  */
@@ -29,12 +33,12 @@ export const createInvitation = async (projectId, email) => {
     // Check if there's already a pending invitation for this email/project
     const existingInvitation = await db
       .select()
-      .from(projectInvitationsTable)
+      .from(project_invitations)
       .where(
         and(
-          eq(projectInvitationsTable.project_id, projectId),
-          eq(projectInvitationsTable.email, normalizedEmail),
-          eq(projectInvitationsTable.status, "pending"),
+          eq(project_invitations.project_id, projectId),
+          eq(project_invitations.email, normalizedEmail),
+          eq(project_invitations.status, "pending"),
         ),
       )
       .limit(1);
@@ -46,7 +50,7 @@ export const createInvitation = async (projectId, email) => {
 
     // Create new invitation
     const [invitation] = await db
-      .insert(projectInvitationsTable)
+      .insert(project_invitations)
       .values({
         project_id: projectId,
         email: normalizedEmail,
@@ -74,8 +78,8 @@ export const getInvitationByToken = async (token) => {
   try {
     const [invitation] = await db
       .select()
-      .from(projectInvitationsTable)
-      .where(eq(projectInvitationsTable.token, token))
+      .from(project_invitations)
+      .where(eq(project_invitations.token, token))
       .limit(1);
 
     if (!invitation) {
@@ -86,9 +90,9 @@ export const getInvitationByToken = async (token) => {
     if (new Date() > new Date(invitation.expires_at)) {
       // Update status to expired
       await db
-        .update(projectInvitationsTable)
+        .update(project_invitations)
         .set({ status: "expired" })
-        .where(eq(projectInvitationsTable.id, invitation.id));
+        .where(eq(project_invitations.id, invitation.id));
       return { ...invitation, status: "expired" };
     }
 
@@ -119,9 +123,9 @@ export const acceptInvitation = async (token, userEmail) => {
     // Check if invitation has expired
     if (new Date() > new Date(invitation.expires_at)) {
       await db
-        .update(projectInvitationsTable)
+        .update(project_invitations)
         .set({ status: "expired" })
-        .where(eq(projectInvitationsTable.id, invitation.id));
+        .where(eq(project_invitations.id, invitation.id));
       throw new Error("Invitation has expired");
     }
 
@@ -145,18 +149,18 @@ export const acceptInvitation = async (token, userEmail) => {
 
     // Update invitation status to accepted
     await db
-      .update(projectInvitationsTable)
+      .update(project_invitations)
       .set({
         status: "accepted",
         updated_at: new Date(),
       })
-      .where(eq(projectInvitationsTable.id, invitation.id));
+      .where(eq(project_invitations.id, invitation.id));
 
     // Get project details for return
     const [project] = await db
       .select()
-      .from(projectsTable)
-      .where(eq(projectsTable.id, invitation.project_id));
+      .from(projects)
+      .where(eq(projects.id, invitation.project_id));
 
     logger.info(
       `Invitation accepted: ${invitation.email} added to project ${invitation.project_id}`,
@@ -175,12 +179,12 @@ export const acceptInvitation = async (token, userEmail) => {
 export const cancelInvitation = async (invitationId) => {
   try {
     const [updatedInvitation] = await db
-      .update(projectInvitationsTable)
+      .update(project_invitations)
       .set({
         status: "rejected",
         updated_at: new Date(),
       })
-      .where(eq(projectInvitationsTable.id, invitationId))
+      .where(eq(project_invitations.id, invitationId))
       .returning();
 
     logger.info(`Invitation ${invitationId} cancelled`);

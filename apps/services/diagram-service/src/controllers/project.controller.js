@@ -1,7 +1,7 @@
 import { db } from "../config/database.js";
 import { and, eq, isNull, or, sql } from "drizzle-orm";
 import logger from "../config/logger.js";
-import projectsTable from "../models/project.model.js";
+import { projects } from "../models/index.model.js";
 import {
   createProjectSchema,
   updateProjectSchema,
@@ -17,8 +17,8 @@ export const getAllProjects = async (req, res) => {
 
     // Filter for projects owned by the user
     const ownerFilter = and(
-      eq(projectsTable.user_id, userId),
-      isNull(projectsTable.deleted_at),
+      eq(projects.user_id, userId),
+      isNull(projects.deleted_at),
     );
 
     // Filter for projects where user is a collaborator (by email)
@@ -26,8 +26,8 @@ export const getAllProjects = async (req, res) => {
     const normalizedUserEmail = userEmail?.trim().toLowerCase();
     const collabFilter = normalizedUserEmail
       ? and(
-          sql`${projectsTable.collaborators}::jsonb @> ${JSON.stringify([normalizedUserEmail])}::jsonb`,
-          isNull(projectsTable.deleted_at),
+          sql`${projects.collaborators}::jsonb @> ${JSON.stringify([normalizedUserEmail])}::jsonb`,
+          isNull(projects.deleted_at),
         )
       : null;
 
@@ -36,7 +36,7 @@ export const getAllProjects = async (req, res) => {
       ? or(ownerFilter, collabFilter)
       : ownerFilter;
 
-    const rows = await db.select().from(projectsTable).where(whereClause);
+    const rows = await db.select().from(projects).where(whereClause);
 
     return res.status(200).json({ projects: rows });
   } catch (error) {
@@ -70,7 +70,7 @@ export const createProject = async (req, res) => {
     const { title, description, thumbnail_url } = validatedData;
 
     const [newProject] = await db
-      .insert(projectsTable)
+      .insert(projects)
       .values({
         user_id: userId,
         title,
@@ -80,11 +80,11 @@ export const createProject = async (req, res) => {
         collaborators: [],
       })
       .returning({
-        id: projectsTable.id,
-        title: projectsTable.title,
-        description: projectsTable.description,
-        thumbnail_url: projectsTable.thumbnail_url,
-        created_at: projectsTable.created_at,
+        id: projects.id,
+        title: projects.title,
+        description: projects.description,
+        thumbnail_url: projects.thumbnail_url,
+        created_at: projects.created_at,
       });
     logger.info(`Project ${newProject.title} created successfully`);
 
@@ -173,23 +173,23 @@ export const updateProject = async (req, res) => {
     if (collaborators !== undefined) updateFields.collaborators = collaborators;
 
     const [updated_project] = await db
-      .update(projectsTable)
+      .update(projects)
       .set(updateFields)
       .where(
         and(
-          eq(projectsTable.id, projectId),
-          eq(projectsTable.user_id, userId),
-          isNull(projectsTable.deleted_at),
+          eq(projects.id, projectId),
+          eq(projects.user_id, userId),
+          isNull(projects.deleted_at),
         ),
       )
       .returning({
-        id: projectsTable.id,
-        title: projectsTable.title,
-        description: projectsTable.description,
-        thumbnail_url: projectsTable.thumbnail_url,
-        is_public: projectsTable.is_public,
-        collaborators: projectsTable.collaborators,
-        updated_at: projectsTable.updated_at,
+        id: projects.id,
+        title: projects.title,
+        description: projects.description,
+        thumbnail_url: projects.thumbnail_url,
+        is_public: projects.is_public,
+        collaborators: projects.collaborators,
+        updated_at: projects.updated_at,
       });
 
     if (!updated_project)
@@ -227,15 +227,15 @@ export const deleteProject = async (req, res) => {
     }
 
     const [deleted_project] = await db
-      .delete(projectsTable)
+      .delete(projects)
       .where(
         and(
-          eq(projectsTable.id, projectId),
-          eq(projectsTable.user_id, userId),
-          isNull(projectsTable.deleted_at),
+          eq(projects.id, projectId),
+          eq(projects.user_id, userId),
+          isNull(projects.deleted_at),
         ),
       )
-      .returning({ id: projectsTable.id });
+      .returning({ id: projects.id });
 
     if (!deleted_project)
       return res.status(404).json({ error: "Project not found" });

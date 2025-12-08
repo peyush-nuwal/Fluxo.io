@@ -1,7 +1,7 @@
 import { db } from "../config/database.js";
 import { and, eq, isNull } from "drizzle-orm";
 import logger from "../config/logger.js";
-import diagramsTable from "../models/diagram.model.js";
+import { diagrams } from "../models/index.model.js";
 import {
   createDiagramSchema,
   updateDiagramSchema,
@@ -10,6 +10,7 @@ import {
 import {
   verifyProjectOwnership,
   verifyDiagramOwnership,
+  toggleLikes,
 } from "../services/diagram.service.js";
 
 export const getDiagramsByProject = async (req, res) => {
@@ -31,12 +32,9 @@ export const getDiagramsByProject = async (req, res) => {
     // Then get diagrams for this project
     const rows = await db
       .select()
-      .from(diagramsTable)
+      .from(diagrams)
       .where(
-        and(
-          eq(diagramsTable.project_id, projectId),
-          isNull(diagramsTable.deleted_at),
-        ),
+        and(eq(diagrams.project_id, projectId), isNull(diagrams.deleted_at)),
       );
 
     // Return empty array if no diagrams found (not an error)
@@ -90,16 +88,16 @@ export const createDiagram = async (req, res) => {
     };
 
     const [newDiagram] = await db
-      .insert(diagramsTable)
+      .insert(diagrams)
       .values({
         project_id: projectId,
         name: name,
         data: diagramData,
       })
       .returning({
-        id: diagramsTable.id,
-        name: diagramsTable.name,
-        data: diagramsTable.data,
+        id: diagrams.id,
+        name: diagrams.name,
+        data: diagrams.data,
       });
 
     logger.info(`Diagram ${newDiagram.name} created successfully`);
@@ -163,21 +161,21 @@ export const updateDiagram = async (req, res) => {
     updateFields.updated_at = new Date(); // Update timestamp
 
     const [updatedDiagram] = await db
-      .update(diagramsTable)
+      .update(diagrams)
       .set(updateFields)
       .where(
         and(
-          eq(diagramsTable.id, id),
-          eq(diagramsTable.project_id, projectId),
-          isNull(diagramsTable.deleted_at),
+          eq(diagrams.id, id),
+          eq(diagrams.project_id, projectId),
+          isNull(diagrams.deleted_at),
         ),
       )
       .returning({
-        id: diagramsTable.id,
-        name: diagramsTable.name,
-        data: diagramsTable.data,
-        is_active: diagramsTable.is_active,
-        updated_at: diagramsTable.updated_at,
+        id: diagrams.id,
+        name: diagrams.name,
+        data: diagrams.data,
+        is_active: diagrams.is_active,
+        updated_at: diagrams.updated_at,
       });
 
     if (!updatedDiagram)
@@ -217,12 +215,12 @@ export const deleteDiagram = async (req, res) => {
     }
 
     const deletedDiagram = await db
-      .delete(diagramsTable)
+      .delete(diagrams)
       .where(
         and(
-          eq(diagramsTable.id, id),
-          eq(diagramsTable.project_id, projectId),
-          isNull(diagramsTable.deleted_at),
+          eq(diagrams.id, id),
+          eq(diagrams.project_id, projectId),
+          isNull(diagrams.deleted_at),
         ),
       )
       .returning();
@@ -234,5 +232,30 @@ export const deleteDiagram = async (req, res) => {
   } catch (error) {
     logger.error("Error deleting diagram:", error);
     return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const handleDiagramLikes = async (req, res) => {
+  const userId = req.user?.id;
+  if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+  try {
+    const { diagramId } = req.params;
+    const likeResult = await toggleLikes(diagramId, userId);
+
+    const action = likeResult.liked ? "liked" : "unliked";
+
+    logger.info(`User ${userId} ${action} diagram ${diagramId}`);
+
+    return res.status(200).json({
+      diagramId,
+      ...likeResult,
+      message: `Diagram ${action} successfully`,
+    });
+  } catch (error) {
+    logger.error("Failed to toggle diagram like");
+    console.error(error);
+
+    return res.status(500).json({ error: "Something went wrong" });
   }
 };

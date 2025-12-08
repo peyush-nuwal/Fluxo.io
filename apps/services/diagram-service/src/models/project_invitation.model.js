@@ -1,7 +1,7 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import projects from "./project.model.js";
+import { projects } from "../models/index.model.js";
 
-const projectInvitations = pgTable("project_invitations", {
+export const project_invitations = pgTable("project_invitations", {
   id: uuid("id").primaryKey().defaultRandom(),
   project_id: uuid("project_id")
     .notNull()
@@ -13,5 +13,3 @@ const projectInvitations = pgTable("project_invitations", {
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
 });
-
-export default projectInvitations;

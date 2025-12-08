@@ -6,7 +6,7 @@ import cors from "cors";
 import logger from "./config/logger.js";
 
 // routes
-import projectRoutes from "./routes/index.js";
+import projectRoutes from "./routes/index.route.js";
 import { connectRedis } from "./services/redis.service.js";
 import { extractUser } from "./middlewares/auth.middleware.js";
 
@@ -40,7 +40,7 @@ app.get("/api", (req, res) => {
 });
 
 // project routes
-app.use("/", projectRoutes);
+app.use("/api/v1", projectRoutes);
 
 // 404 handler
 app.use((req, res) => {

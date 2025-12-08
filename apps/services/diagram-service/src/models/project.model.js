@@ -1,7 +1,7 @@
 import { json } from "drizzle-orm/pg-core";
 import { pgTable, text, timestamp, uuid, boolean } from "drizzle-orm/pg-core";
 
-const projects = pgTable("projects", {
+export const projects = pgTable("projects", {
   id: uuid("id").primaryKey().defaultRandom(),
   user_id: uuid("user_id").notNull(),
   title: text("title").notNull(),
@@ -13,5 +13,3 @@ const projects = pgTable("projects", {
   updated_at: timestamp("updated_at").defaultNow(),
   deleted_at: timestamp("deleted_at").default(null),
 });
-
-export default projects;

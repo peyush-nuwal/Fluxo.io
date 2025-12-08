@@ -1,18 +1,19 @@
 import { db } from "../config/database.js";
-import projectsTable from "../models/project.model.js";
 import { and, eq, isNull } from "drizzle-orm";
 import logger from "../config/logger.js";
+
+import { projects } from "../models/index.model.js";
 
 export const verifyProjectOwnership = async (projectId, userId) => {
   try {
     const [project] = await db
       .select()
-      .from(projectsTable)
+      .from(projects)
       .where(
         and(
-          eq(projectsTable.id, projectId),
-          eq(projectsTable.user_id, userId),
-          isNull(projectsTable.deleted_at),
+          eq(projects.id, projectId),
+          eq(projects.user_id, userId),
+          isNull(projects.deleted_at),
         ),
       );
     if (!project) {
@@ -35,10 +36,8 @@ export const addCollaboratorToProject = async (
   try {
     const [project] = await db
       .select()
-      .from(projectsTable)
-      .where(
-        and(eq(projectsTable.id, projectId), isNull(projectsTable.deleted_at)),
-      );
+      .from(projects)
+      .where(and(eq(projects.id, projectId), isNull(projects.deleted_at)));
 
     if (!project) {
       return null;
@@ -62,12 +61,12 @@ export const addCollaboratorToProject = async (
     const updatedCollaborators = [...collaborators, normalizedEmail];
 
     const [updatedProject] = await db
-      .update(projectsTable)
+      .update(projects)
       .set({
         collaborators: updatedCollaborators,
         updated_at: new Date(),
       })
-      .where(eq(projectsTable.id, projectId))
+      .where(eq(projects.id, projectId))
       .returning();
 
     return updatedProject;
@@ -84,10 +83,8 @@ export const removeCollaboratorFromProject = async (
   try {
     const [project] = await db
       .select()
-      .from(projectsTable)
-      .where(
-        and(eq(projectsTable.id, projectId), isNull(projectsTable.deleted_at)),
-      );
+      .from(projects)
+      .where(and(eq(projects.id, projectId), isNull(projects.deleted_at)));
 
     if (!project) {
       return null;
@@ -105,12 +102,12 @@ export const removeCollaboratorFromProject = async (
     );
 
     const [updatedProject] = await db
-      .update(projectsTable)
+      .update(projects)
       .set({
         collaborators: updatedCollaborators,
         updated_at: new Date(),
       })
-      .where(eq(projectsTable.id, projectId))
+      .where(eq(projects.id, projectId))
       .returning();
 
     return updatedProject;

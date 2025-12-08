@@ -1,6 +1,6 @@
 {
-  "id": "7643b56a-42c6-43e6-8f87-dc46fe123e11",
-  "prevId": "8ec74a19-a0d5-4ff2-b787-19e319423601",
+  "id": "1fe1c2fb-07cd-4adb-80ed-0b6d26e42122",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -19,6 +19,13 @@
           "name": "project_id",
           "type": "uuid",
           "primaryKey": false,
+          "notNull": false,
+          "default": null
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
           "notNull": true
         },
         "name": {
@@ -29,9 +36,35 @@
         },
         "data": {
           "name": "data",
-          "type": "json",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_public": {
+          "name": "is_public",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "views": {
+          "name": "views",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "forked_from": {
+          "name": "forked_from",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
         },
         "is_active": {
           "name": "is_active",
@@ -69,12 +102,76 @@
           "tableTo": "projects",
           "columnsFrom": ["project_id"],
           "columnsTo": ["id"],
-          "onDelete": "cascade",
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "diagrams_forked_from_diagrams_id_fk": {
+          "name": "diagrams_forked_from_diagrams_id_fk",
+          "tableFrom": "diagrams",
+          "tableTo": "diagrams",
+          "columnsFrom": ["forked_from"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.diagram_likes": {
+      "name": "diagram_likes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "diagram_id": {
+          "name": "diagram_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "diagram_likes_diagram_id_diagrams_id_fk": {
+          "name": "diagram_likes_diagram_id_diagrams_id_fk",
+          "tableFrom": "diagram_likes",
+          "tableTo": "diagrams",
+          "columnsFrom": ["diagram_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "diagram_like_unique": {
+          "name": "diagram_like_unique",
+          "nullsNotDistinct": false,
+          "columns": ["diagram_id", "user_id"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
