@@ -1,8 +1,8 @@
-const { defineConfig } = require("drizzle-kit");
+import { defineConfig } from "drizzle-kit";
 
-module.exports = defineConfig({
+export default defineConfig({
   schema: ["./src/models/user.model.js", "./src/models/otp.model.js"],
-  out: "./drizzle",
+  out: "./drizzle/migrations",
   dialect: "postgresql",
   dbCredentials: {
     url: process.env.DATABASE_URL,

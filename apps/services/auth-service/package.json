@@ -8,9 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:generate": "dotenv -e .env -- drizzle-kit generate",
+    "db:migrate": "dotenv -e .env -- drizzle-kit migrate",
+    "db:studio": "dotenv -e .env -- drizzle-kit studio"
   },
   "keywords": [],
   "author": "",
@@ -31,8 +31,9 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
+    "dotenv-cli": "^11.0.0",
     "drizzle-kit": "^0.28.0",
-    "drizzle-orm": "^0.44.5",
+    "drizzle-orm": "^0.45.0",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -43,7 +44,9 @@
     "zod": "^4.1.11"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.87.1",
     "express-session": "^1.18.2",
+    "multer": "^2.0.2",
     "nodemailer": "^7.0.6",
     "passport": "^0.7.0",
     "passport-github": "^1.1.0",

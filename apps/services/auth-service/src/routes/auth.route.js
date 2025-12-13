@@ -21,50 +21,49 @@ import {
 import passport from "../config/passport.js";
 import { jwttoken } from "../utils/jwt.js";
 const router = express.Router();
+import multer from "multer";
+import { uploadAvatarController } from "../controller/avatar.controller.js";
 
 // ========================================
 // Authentication Routes
 // ========================================
-router.post("/api/v1/auth/signup", signUp);
-router.post("/api/v1/auth/signin", signIn);
-router.post("/api/v1/auth/signout", signOut);
+router.post("/signup", signUp);
+router.post("/signin", signIn);
+router.post("/signout", signOut);
 
 // ========================================
 // Password Management Routes
 // ========================================
-router.post("/api/v1/auth/update-password", updatePassword);
+router.post("/update-password", updatePassword);
 
 // ========================================
 // OTP Management Routes
 // ========================================
-router.post("/api/v1/auth/otp/generate", generateOTP);
-router.post("/api/v1/auth/otp/verify", verifyOTPCode);
-router.post("/api/v1/auth/otp/resend", resendOTPCode);
-router.get("/api/v1/auth/otp/status", getOTPStatusController);
-router.get("/api/v1/auth/otp/test-email", testEmailConfig); // Test email configuration
-router.delete("/api/v1/auth/otp/cleanup", cleanupOTPs); // Admin utility
+router.post("/otp/generate", generateOTP);
+router.post("/otp/verify", verifyOTPCode);
+router.post("/otp/resend", resendOTPCode);
+router.get("/otp/status", getOTPStatusController);
+router.get("/otp/test-email", testEmailConfig); // Test email configuration
+router.delete("/otp/cleanup", cleanupOTPs); // Admin utility
 
 // ========================================
 // Email Change Routes (OTP-based)
 // ========================================
-router.post("/api/v1/auth/email/change/request", requestEmailChange);
-router.post("/api/v1/auth/email/change/verify", verifyEmailChange);
+router.post("/email/change/request", requestEmailChange);
+router.post("/email/change/verify", verifyEmailChange);
 
 // ========================================
 // Password Reset Routes (OTP-based)
 // ========================================
-router.post("/api/v1/auth/password/forgot-password", forgotPassword);
-router.post(
-  "/api/v1/auth/password/verify-reset-password-otp",
-  verifyPasswordResetOTP,
-);
-router.post("/api/v1/auth/password/reset", resetPassword);
+router.post("/password/forgot-password", forgotPassword);
+router.post("/password/verify-reset-password-otp", verifyPasswordResetOTP);
+router.post("/password/reset", resetPassword);
 
 // o auth service
 // Google OAuth
 // Google OAuth
 router.get(
-  "/api/v1/auth/oauth/google",
+  "/oauth/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
     session: false,
@@ -72,7 +71,7 @@ router.get(
 );
 
 router.get(
-  "/api/v1/auth/oauth/google/callback",
+  "/oauth/google/callback",
   passport.authenticate("google", {
     failureRedirect: "/login",
     session: false,
@@ -85,12 +84,12 @@ router.get(
 
 // GitHub OAuth
 router.get(
-  "/api/v1/auth/oauth/github",
+  "/oauth/github",
   passport.authenticate("github", { scope: ["user:email"], session: false }),
 );
 
 router.get(
-  "/api/v1/auth/oauth/github/callback",
+  "/oauth/github/callback",
   passport.authenticate("github", {
     failureRedirect: "/login",
     session: false,
@@ -100,5 +99,13 @@ router.get(
     res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
   },
 );
+
+// -------------avatar upload ---------------
+
+const upload = multer({ storage: multer.memoryStorage() });
+
+console.log("upload file route file", upload);
+
+router.post("/upload-avatar", upload.single("avatar"), uploadAvatarController);
 
 export default router;

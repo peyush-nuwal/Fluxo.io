@@ -46,7 +46,7 @@ app.get("/api", (req, res) => {
 });
 
 // Auth routes
-app.use("/", authRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 // Health check
 app.get("/health", (req, res) => {

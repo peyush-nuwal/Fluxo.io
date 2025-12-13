@@ -3,6 +3,7 @@ import { SERVICES } from "../config.js";
 import logger from "../config/logger.js";
 import { Router } from "express";
 
+// diagram routes
 const router = Router();
 
 const proxyOptions = {
