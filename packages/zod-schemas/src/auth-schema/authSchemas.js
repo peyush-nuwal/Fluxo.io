@@ -7,68 +7,123 @@ import { z } from "zod";
 /**
  * Sign up validation schema
  */
+
 export const signUpSchema = z.object({
-  name: z.string().min(2).max(255).trim(),
-  email: z.string().email().toLowerCase().trim(),
-  password: z.string().min(6).max(128),
+  userName: z
+    .string({ error: "Username is required" })
+    .trim()
+    .min(2, { error: "Username must be at least 2 characters" })
+    .max(255, { error: "Username is too long" })
+    .regex(/^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+[a-zA-Z0-9]$/, {
+      error:
+        "Username may contain letters, numbers, dots and underscores, and cannot start or end with dot or underscore",
+    }),
+
+  name: z
+    .string({ error: "Name is required" })
+    .trim()
+    .min(2, { error: "Name must be at least 2 characters" })
+    .max(255, { error: "Name is too long" }),
+
+  email: z
+    .string({ error: "Email is required" })
+    .trim()
+    .toLowerCase()
+    .email({ error: "Invalid email address" }),
+
+  password: z
+    .string({ error: "Password is required" })
+    .min(6, { error: "Password must be at least 6 characters" }),
 });
 
+/* =====================================================
+   AUTH SCHEMAS
+===================================================== */
+
 /**
- * Sign in validation schema
+ * Sign In
  */
 export const signInSchema = z.object({
-  email: z.string().email().toLowerCase().trim(),
-  password: z.string().min(6).max(128),
+  email: z
+    .string({ error: "Email is required" })
+    .trim()
+    .toLowerCase()
+    .email({ error: "Invalid email address" }),
+
+  password: z
+    .string({ error: "Password is required" })
+    .min(6, { error: "Password must be at least 6 characters" }),
 });
 
 /**
- * Change password validation schema
+ * Change Password
  */
 export const changePasswordSchema = z.object({
-  oldPassword: z.string().min(6).max(128),
-  newPassword: z.string().min(6).max(128),
+  oldPassword: z
+    .string({ error: "Old password is required" })
+    .min(6, { error: "Old password must be at least 6 characters" }),
+
+  newPassword: z
+    .string({ error: "New password is required" })
+    .min(6, { error: "New password must be at least 6 characters" }),
 });
 
-// ========================================
-// OTP Schemas
-// ========================================
+/* =====================================================
+   OTP SCHEMAS
+===================================================== */
 
 /**
- * Generate OTP validation schema
+ * Generate OTP
  */
 export const generateOTPSchema = z.object({
-  email: z.string().email().toLowerCase().trim(),
+  email: z
+    .string({ error: "Email is required" })
+    .trim()
+    .toLowerCase()
+    .email({ error: "Invalid email address" }),
+
   purpose: z
     .enum(["email_verification", "password_reset", "login", "two_factor"])
     .default("email_verification"),
 });
 
 /**
- * Verify OTP validation schema
+ * Verify OTP
  */
 export const verifyOTPSchema = z.object({
-  email: z.string().email().toLowerCase().trim(),
+  email: z
+    .string({ error: "Email is required" })
+    .trim()
+    .toLowerCase()
+    .email({ error: "Invalid email address" }),
+
   otpCode: z
-    .string()
-    .length(6, "OTP must be exactly 6 digits")
-    .regex(/^\d{6}$/, "OTP must contain only numbers"),
+    .string({ error: "OTP is required" })
+    .length(6, { error: "OTP must be exactly 6 digits" })
+    .regex(/^\d{6}$/, { error: "OTP must contain only numbers" }),
+
   purpose: z
     .enum(["email_verification", "password_reset", "login", "two_factor"])
     .default("email_verification"),
 });
 
 /**
- * Resend OTP validation schema
+ * Resend OTP
  */
 export const resendOTPSchema = z.object({
-  email: z.string().email().toLowerCase().trim(),
+  email: z
+    .string({ error: "Email is required" })
+    .trim()
+    .toLowerCase()
+    .email({ error: "Invalid email address" }),
+
   purpose: z
     .enum(["email_verification", "password_reset", "login", "two_factor"])
     .default("email_verification"),
 });
 
 /**
- * Get OTP status validation schema
+ * Get OTP Status
  */
 export const getOTPStatusSchema = z.object({
   purpose: z
@@ -76,57 +131,78 @@ export const getOTPStatusSchema = z.object({
     .default("email_verification"),
 });
 
-// ========================================
-// Email Change Schemas
-// ========================================
+/* =====================================================
+   EMAIL CHANGE SCHEMAS
+===================================================== */
 
 /**
- * Request email change validation schema
+ * Request Email Change
  */
 export const requestEmailChangeSchema = z.object({
-  newEmail: z.string().email().toLowerCase().trim(),
+  newEmail: z
+    .string({ error: "New email is required" })
+    .trim()
+    .toLowerCase()
+    .email({ error: "Invalid email address" }),
 });
 
 /**
- * Verify email change validation schema
+ * Verify Email Change
  */
 export const verifyEmailChangeSchema = z.object({
-  newEmail: z.string().email().toLowerCase().trim(),
+  newEmail: z
+    .string({ error: "New email is required" })
+    .trim()
+    .toLowerCase()
+    .email({ error: "Invalid email address" }),
+
   otpCode: z
-    .string()
-    .length(6, "OTP must be exactly 6 digits")
-    .regex(/^\d{6}$/, "OTP must contain only numbers"),
+    .string({ error: "OTP is required" })
+    .length(6, { error: "OTP must be exactly 6 digits" })
+    .regex(/^\d{6}$/, { error: "OTP must contain only numbers" }),
 });
 
-// ========================================
-// Password Reset Schemas
-// ========================================
+/* =====================================================
+   PASSWORD RESET SCHEMAS
+===================================================== */
 
 /**
- * Forgot password validation schema
+ * Forgot Password
  */
 export const forgotPasswordSchema = z.object({
-  email: z.string().email().toLowerCase().trim(),
+  email: z
+    .string({ error: "Email is required" })
+    .trim()
+    .toLowerCase()
+    .email({ error: "Invalid email address" }),
 });
 
 /**
- * Verify password reset OTP validation schema
+ * Verify Password Reset OTP
  */
 export const verifyPasswordResetOTPSchema = z.object({
-  email: z.string().email().toLowerCase().trim(),
+  email: z
+    .string({ error: "Email is required" })
+    .trim()
+    .toLowerCase()
+    .email({ error: "Invalid email address" }),
+
   otpCode: z
-    .string()
-    .length(6, "OTP must be exactly 6 digits")
-    .regex(/^\d{6}$/, "OTP must contain only numbers"),
+    .string({ error: "OTP is required" })
+    .length(6, { error: "OTP must be exactly 6 digits" })
+    .regex(/^\d{6}$/, { error: "OTP must contain only numbers" }),
 });
 
 /**
- * Reset password validation schema
+ * Reset Password
  */
 export const resetPasswordSchema = z.object({
-  resetToken: z.string().min(1, "Reset token is required"),
+  resetToken: z
+    .string({ error: "Reset token is required" })
+    .min(1, { error: "Reset token is required" }),
+
   newPassword: z
-    .string()
-    .min(6, "Password must be at least 6 characters")
-    .max(128, "Password must be less than 128 characters"),
+    .string({ error: "New password is required" })
+    .min(6, { error: "Password must be at least 6 characters" })
+    .max(128, { error: "Password must be less than 128 characters" }),
 });

@@ -26,8 +26,8 @@ app.use(
   }),
 );
 
-app.use(verifyToken);
 app.use("/api/v1/auth", authRoutes);
+app.use(verifyToken);
 
 // ----------------------------------------------------
 // 3. JSON Body parsing ONLY for non-file routes

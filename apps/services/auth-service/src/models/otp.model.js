@@ -7,7 +7,7 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 
-const otps = pgTable("otps", {
+export const otps = pgTable("otps", {
   id: varchar("id").primaryKey(), // UUID
   user_id: varchar("user_id").notNull(), // Foreign key to users table
   email: text("email").notNull(),
@@ -19,5 +19,3 @@ const otps = pgTable("otps", {
   created_at: timestamp("created_at").defaultNow().notNull(),
   used_at: timestamp("used_at"), // When OTP was successfully used
 });
-
-export default otps;

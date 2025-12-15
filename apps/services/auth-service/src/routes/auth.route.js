@@ -22,7 +22,10 @@ import passport from "../config/passport.js";
 import { jwttoken } from "../utils/jwt.js";
 const router = express.Router();
 import multer from "multer";
-import { uploadAvatarController } from "../controller/avatar.controller.js";
+import {
+  uploadAvatarController,
+  changeProfileVisibilityController,
+} from "../controller/user.controller.js";
 
 // ========================================
 // Authentication Routes
@@ -106,6 +109,12 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 console.log("upload file route file", upload);
 
-router.post("/upload-avatar", upload.single("avatar"), uploadAvatarController);
+router.post(
+  "/users/me/upload-avatar",
+  upload.single("avatar"),
+  uploadAvatarController,
+);
+
+router.patch("/users/me/visibility", changeProfileVisibilityController);
 
 export default router;

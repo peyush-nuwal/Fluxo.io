@@ -3,6 +3,7 @@ import {
   authenticateUser,
   createUser,
   changeUserPassword,
+  isUsernameExist,
 } from "../service/auth.service.js";
 import { generateAndStoreOTP } from "../service/otp.service.js";
 import { cookies } from "../utils/cookie.js";
@@ -19,20 +20,31 @@ import {
  */
 export const signUp = async (req, res) => {
   try {
-    const validationResult = signUpSchema.safeParse(req.body);
+    const validationResult = signUpSchema.safeParse(req.body ?? {});
 
     if (!validationResult.success) {
-      return res.status(400).json({
-        error: "validation failed",
-        details: formatValidationsError(validationResult.error),
+      return res.status(422).json({
+        message: "Validation failed",
+        errors: formatValidationsError(validationResult.error),
       });
     }
 
-    const { name, email, password } = validationResult.data;
+    const { userName, name, email, password } = validationResult.data;
     const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUsername = userName.trim().toLowerCase();
 
+    if (await isUsernameExist(normalizedUsername)) {
+      return res.status(409).json({
+        message: "Username already exists",
+      });
+    }
     // Auth service
-    const user = await createUser({ name, email: normalizedEmail, password });
+    const user = await createUser({
+      user_name: normalizedUsername,
+      name,
+      email: normalizedEmail,
+      password,
+    });
 
     // Generate and send email verification OTP
     const result = await generateAndStoreOTP(
@@ -53,6 +65,7 @@ export const signUp = async (req, res) => {
       message:
         "User registered successfully. A verification OTP has been sent to your email. Please verify to continue.",
       user: {
+        userName: user.user_name,
         id: user.id,
         name: user.name,
         email: user.email,

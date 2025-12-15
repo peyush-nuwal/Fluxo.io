@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import logger from "../config/logger.js";
 import { db } from "../config/database.js";
 import { eq, and, lt } from "drizzle-orm";
-import otps from "../models/otp.model.js";
+import { otps } from "../models/index.model.js";
 
 // ========================================
 // OTP Configuration

@@ -6,7 +6,7 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 
-const users = pgTable("users", {
+export const users = pgTable("users", {
   id: varchar("id").primaryKey(), // you can generate UUID in service
   name: text("name").notNull(),
 
@@ -25,5 +25,3 @@ const users = pgTable("users", {
   email_verified: boolean("email_verified").default(false).notNull(), // Email verification status
   created_at: timestamp("created_at").defaultNow(),
 });
-
-export default users;

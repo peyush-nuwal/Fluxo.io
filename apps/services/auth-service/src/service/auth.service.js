@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import logger from "../config/logger.js";
 import { db } from "../config/database.js";
 import { eq } from "drizzle-orm";
-import users from "../models/user.model.js";
+import { users } from "../models/index.model.js";
 import { v4 as uuidv4 } from "uuid";
 import { getOTPStatus, verifyOTP } from "./otp.service.js";
 
@@ -66,6 +66,7 @@ export const isUserExist = async (email) => {
  * Create User in database
  */
 export const createUser = async ({
+  user_name,
   name,
   email,
   password,
@@ -91,6 +92,7 @@ export const createUser = async ({
       .values({
         id: uuidv4(),
         name,
+        user_name,
         email,
         password: hashed_password,
         auth_provider,
@@ -100,6 +102,7 @@ export const createUser = async ({
       })
       .returning({
         id: users.id,
+        user_name: users.user_name,
         name: users.name,
         email: users.email,
         auth_provider: users.auth_provider,
@@ -406,4 +409,13 @@ export const authenticateOAuthUser = async (profile, provider) => {
   }
 
   return user; // Controller or route generates JWT
+};
+
+export const isUsernameExist = async (username) => {
+  const user = await db.query.users.findFirst({
+    where: eq(users.user_name, username),
+    columns: { id: true }, // fetch minimal data
+  });
+
+  return Boolean(user);
 };
