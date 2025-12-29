@@ -14,7 +14,7 @@ import subscriptionRoutes from "./routes/subscription.route.js";
 const app = express();
 
 // ----------------------------------------------------
-// 1. Global middleware (gateway level)
+// 1. Global middleware
 // ----------------------------------------------------
 app.use(helmet());
 app.use(cors());
@@ -26,24 +26,33 @@ app.use(
   }),
 );
 
-app.use("/api/v1/auth", authRoutes);
+// ----------------------------------------------------
+// 2. AUTH MIDDLEWARE (GATEWAY LEVEL)
+//    - decides public vs protected
+//    - verifies JWT
+//    - sets req.authContext
+// ----------------------------------------------------
 app.use(verifyToken);
 
 // ----------------------------------------------------
-// 3. JSON Body parsing ONLY for non-file routes
+// 3. ROUTES (proxy will inject x-user-id)
 // ----------------------------------------------------
+app.use("/api/v1/auth", authRoutes);
+
 app.use(
   "/api/v1/diagram",
   express.json(),
   express.urlencoded({ extended: true }),
   diagramRoutes,
 );
+
 app.use(
   "/api/v1/ai",
   express.json(),
   express.urlencoded({ extended: true }),
   aiRoutes,
 );
+
 app.use(
   "/api/v1/subscription",
   express.json(),
@@ -52,15 +61,9 @@ app.use(
 );
 
 // ----------------------------------------------------
-// 4. AUTH SERVICE
-//    - signup/signin → public
-//    - upload-avatar → file upload, NO JSON
+// 4. Health
 // ----------------------------------------------------
-
-// ----------------------------------------------------
-// 5. Health Check
-// ----------------------------------------------------
-app.get("/health", (req, res) => {
+app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
 

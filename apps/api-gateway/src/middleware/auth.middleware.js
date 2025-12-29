@@ -2,46 +2,67 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config.js";
 import logger from "../config/logger.js";
 
+// Routes that NEVER require auth
+const PUBLIC_PATHS = [
+  "/api/v1/auth/signup",
+  "/api/v1/auth/signin",
+  "/api/v1/auth/signout",
+  "/api/v1/auth/verify-email",
+  "/api/v1/auth/forgot-password",
+  "/api/v1/auth/reset-password",
+  "/health",
+];
+
+// Helper: check if request is public
+const isPublicRoute = (req) => {
+  return PUBLIC_PATHS.some(
+    (path) => req.path === path || req.path.startsWith(`${path}/`),
+  );
+};
+
 export const verifyToken = (req, res, next) => {
-  console.log("🔍 verifyToken PATH:", req.path);
-
-  const publicPaths = [
-    "/signup",
-    "/signin",
-    "/signout",
-    "/verify-email",
-    "/forgot-password",
-    "/reset-password",
-    "/health",
-  ];
-
-  // Skip public routes cleanly
-  if (publicPaths.some((p) => req.path.startsWith(p))) {
+  // 1️⃣ Allow public routes immediately
+  console.log("requested path", req.path);
+  if (isPublicRoute(req)) {
     return next();
   }
 
-  // Extract token ONLY from headers or cookies
+  // 2️⃣ Extract token (cookie preferred, header fallback)
   const authHeader = req.headers.authorization;
   const token =
     req.cookies?.token ||
-    (authHeader?.startsWith("Bearer ") ? authHeader.substring(7) : null);
+    (authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null);
 
   if (!token) {
-    return res.status(401).json({ error: "No token provided" });
+    return res.status(401).json({
+      message: "Authentication required",
+    });
   }
 
   try {
+    // 3️⃣ Verify token
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // ***DO NOT TOUCH req.body or request stream***
-    req.user = decoded;
+    // 4️⃣ Normalize identity (THIS IS CRITICAL)
+    const userId = decoded.userId || decoded.id || decoded.sub;
 
-    // Attach identity to headers for proxy
-    req.headers["x-user-id"] = decoded.id;
-    req.headers["x-user-email"] = decoded.email;
+    if (!userId) {
+      return res.status(401).json({
+        message: "Invalid token payload",
+      });
+    }
 
-    next();
+    // 5️⃣ Attach auth context (single source of truth)
+    req.authContext = {
+      userId: decoded.userId || decoded.id || decoded.sub,
+    };
+
+    console.log("VERIFY TOKEN authContext:", req.authContext);
+
+    return next();
   } catch (error) {
-    return res.status(403).json({ error: "Invalid token" });
+    return res.status(403).json({
+      message: "Invalid or expired token",
+    });
   }
 };

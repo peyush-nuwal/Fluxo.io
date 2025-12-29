@@ -2,31 +2,28 @@ import express from "express";
 import httpProxy from "express-http-proxy";
 import multer from "multer";
 import { SERVICES } from "../config.js";
-import logger from "../config/logger.js";
 
 const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() });
-
-console.log("upload file api gate file file", upload);
 
 // ------------------------------------------------------
-// PUBLIC AUTH ROUTES (NO TOKEN REQUIRED)
-// (verifyToken skips these automatically)
+// PUBLIC AUTH ROUTES (NO AUTH REQUIRED)
 // ------------------------------------------------------
 router.use(
   [
-    "/signup",
-    "/signin",
-    "/signout",
-    "/verify-email",
-    "/forgot-password",
-    "/reset-password",
+    "/api/v1/auth/signup",
+    "/api/v1/auth/signin",
+    "/api/v1/auth/signout",
+    "/api/v1/auth/verify-email",
+    "/api/v1/auth/forgot-password",
+    "/api/v1/auth/reset-password",
   ],
-  httpProxy(SERVICES.AUTH, { proxyReqPathResolver: (req) => req.originalUrl }),
+  httpProxy(SERVICES.AUTH, {
+    proxyReqPathResolver: (req) => req.originalUrl,
+  }),
 );
 
 // ------------------------------------------------------
-// FILE UPLOAD ROUTE (multipart/form-data)
+// FILE UPLOAD (AUTH REQUIRED)
 // ------------------------------------------------------
 router.post(
   "/upload-avatar",
@@ -34,27 +31,25 @@ router.post(
     parseReqBody: false,
     proxyReqPathResolver: (req) => req.originalUrl,
     proxyReqOptDecorator: (opts, srcReq) => {
-      if (srcReq.headers["x-user-id"])
-        opts.headers["x-user-id"] = String(srcReq.headers["x-user-id"]);
+      if (srcReq.authContext?.userId) {
+        opts.headers["x-user-id"] = srcReq.authContext.userId;
+      }
       return opts;
     },
   }),
 );
 
 // ------------------------------------------------------
-// PROTECTED ROUTES (DEFAULT HANDLER)
+// ALL OTHER AUTH ROUTES (AUTH REQUIRED)
 // ------------------------------------------------------
 router.use(
   "/",
   httpProxy(SERVICES.AUTH, {
     proxyReqPathResolver: (req) => req.originalUrl,
     proxyReqOptDecorator: (opts, srcReq) => {
-      if (srcReq.headers["x-user-id"])
-        opts.headers["x-user-id"] = String(srcReq.headers["x-user-id"]);
-
-      if (srcReq.headers["x-user-email"])
-        opts.headers["x-user-email"] = String(srcReq.headers["x-user-email"]);
-
+      if (srcReq.authContext?.userId) {
+        opts.headers["x-user-id"] = srcReq.authContext.userId;
+      }
       return opts;
     },
   }),

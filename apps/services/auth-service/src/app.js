@@ -45,6 +45,30 @@ app.get("/api", (req, res) => {
   });
 });
 
+app.use((req, res, next) => {
+  const publicPaths = [
+    "/api/v1/auth/signup",
+    "/api/v1/auth/signin",
+    "/api/v1/auth/signout",
+    "/api/v1/auth/verify-email",
+    "/api/v1/auth/forgot-password",
+    "/api/v1/auth/reset-password",
+    "/health",
+  ];
+
+  if (publicPaths.some((p) => req.path.startsWith(p))) {
+    return next();
+  }
+
+  const userId = req.headers["x-user-id"];
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  req.user = { id: userId };
+  next();
+});
+
 // Auth routes
 app.use("/api/v1/auth", authRoutes);
 

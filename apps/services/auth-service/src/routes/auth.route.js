@@ -25,6 +25,9 @@ import multer from "multer";
 import {
   uploadAvatarController,
   changeProfileVisibilityController,
+  getUserProfile,
+  getUserPublicProfile,
+  updateUserProfileController,
 } from "../controller/user.controller.js";
 
 // ========================================
@@ -108,6 +111,10 @@ router.get(
 const upload = multer({ storage: multer.memoryStorage() });
 
 console.log("upload file route file", upload);
+
+router.get("/users/me", getUserProfile);
+router.patch("/users/me", upload.single("avatar"), updateUserProfileController);
+router.get("/users/:id/profile", getUserPublicProfile);
 
 router.post(
   "/users/me/upload-avatar",

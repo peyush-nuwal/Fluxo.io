@@ -166,7 +166,7 @@ export const changeUserPassword = async (email, oldPassword, newPassword) => {
     const hashed_password = await hashPassword(newPassword);
     await db
       .update(users)
-      .set({ password: hashed_password })
+      .set({ password: hashed_password, updated_at: new Date() })
       .where(eq(users.email, email));
 
     logger.info(`Password changed for user ${email}`);
@@ -199,7 +199,7 @@ export const markEmailAsVerified = async (userId) => {
   try {
     await db
       .update(users)
-      .set({ email_verified: true })
+      .set({ email_verified: true, updated_at: new Date() })
       .where(eq(users.id, userId));
 
     logger.info(`Email verified for user ${userId}`);
@@ -238,7 +238,7 @@ export const changeUserEmail = async (email, newEmail) => {
 
     await db
       .update(users)
-      .set({ email: normalizedNew })
+      .set({ email: normalizedNew, updated_at: new Date() })
       .where(eq(users.email, normalizedCurrent));
 
     logger.info(
@@ -275,7 +275,7 @@ export const resetUserPassword = async (email, newPassword) => {
     const hashedPassword = await hashPassword(newPassword);
     await db
       .update(users)
-      .set({ password: hashedPassword })
+      .set({ password: hashedPassword, updated_at: new Date() })
       .where(eq(users.email, normalizedEmail));
 
     logger.info(`Password reset for user ${normalizedEmail}`);

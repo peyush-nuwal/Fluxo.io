@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "metadata" jsonb DEFAULT '{"bio":"","location":"","website":"","work":""}'::jsonb NOT NULL;

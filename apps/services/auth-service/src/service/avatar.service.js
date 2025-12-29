@@ -9,7 +9,7 @@ export const uploadAvatar = async (userId, file) => {
 
   // 2. Upload file to Supabase
   const { error: uploadError } = await supabase.storage
-    .from("avatar_bucket")
+    .from("fluxo-pfp")
     .upload(filePath, file.buffer, {
       contentType: file.mimetype,
       upsert: true,
@@ -19,7 +19,7 @@ export const uploadAvatar = async (userId, file) => {
 
   // 3. Get public URL
   const { data: publicData } = supabase.storage
-    .from("avatar_bucket")
+    .from("fluxo-pfp")
     .getPublicUrl(filePath);
 
   return {
