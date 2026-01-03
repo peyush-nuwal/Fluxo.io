@@ -35,12 +35,9 @@ export const diagrams = pgTable("diagrams", {
   // Engagement metrics
   views: integer("views").default(0),
 
-  // Forking support (like GitHub)
-  forked_from: uuid("forked_from").references(() => diagrams.id, {
-    onDelete: "set null",
-  }),
-
   is_active: boolean("is_active").default(true),
+
+  last_opened_at: timestamp("last_opened_at"),
 
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
