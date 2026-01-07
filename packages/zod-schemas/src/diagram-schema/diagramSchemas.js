@@ -7,6 +7,7 @@ export const createDiagramSchema = z.object({
 
 export const updateDiagramSchema = z.object({
   name: z.string().min(1, "Name must be at least 1 character").optional(),
+  description: z.string.optional(),
   data: z.any().optional().nullable(),
   is_active: z.boolean().optional(),
 });
