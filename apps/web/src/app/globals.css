@@ -123,3 +123,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+
+.scrollbar-thin {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 120, 120, 0.6) transparent;
+}
+
+/* Chrome / Edge / Safari */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;          /* DO NOT go lower */
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(120, 120, 120, 0.6);
+  border-radius: 9999px;
+
+  /* 👇 visual shrink trick */
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+

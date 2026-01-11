@@ -23,16 +23,26 @@ import {
   Star,
   Globe,
   ChevronRight,
+  Frame,
   Trash2,
   Send,
   Settings,
   BookText,
+  PieChart,
+  Map,
+  Sparkles,
+  type LucideIcon,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { JSX, useEffect, useState } from "react";
+import { JSX, useEffect, useMemo, useState } from "react";
+import { NavProjects } from "./nav-projects";
+import { NavFavorites } from "./nav-favorites";
+import { NavMain } from "./nav-main";
+import { NavSecondary } from "./nav-secondary";
+import { NavUser } from "./nav-user";
 
 // interface navOption{
 //        title: string,
@@ -40,39 +50,41 @@ import { JSX, useEffect, useState } from "react";
 //       icon: JSX.Element,
 // }
 
+type NavItem = {
+  title: string;
+  url: string;
+  icon: LucideIcon;
+};
+
+interface favorites {
+  name: string;
+  url: string;
+  emoji: string;
+}
+
 export function AppSidebar() {
   const pathname = usePathname();
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  const user = {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/assets/avatar.png",
+  };
   // Menu items.
-  const NavOptionPrimary = [
+  const NavOptionPrimary: NavItem[] = [
     {
       title: "Home",
       url: "/dashboard",
       icon: Home,
     },
     {
-      title: "Trash",
-      url: "/Trash",
-      icon: Trash2,
-    },
-    {
-      title: "Favorites",
-      url: "/",
-      icon: Star,
-    },
-    {
-      title: "Community",
-      url: "/",
-      icon: Globe,
+      title: "Ask AI",
+      url: "/ask-ai",
+      icon: Sparkles,
     },
   ];
 
-  const NavOptionSecondary = [
+  const NavOptionSecondary: NavItem[] = [
     {
       title: "Settings",
       url: "/settings",
@@ -80,12 +92,12 @@ export function AppSidebar() {
     },
     {
       title: "Feedback",
-      url: "/Trash",
+      url: "/trash",
       icon: Send,
     },
     {
       title: "Documention",
-      url: "/Docs",
+      url: "/docs",
       icon: BookText,
     },
     {
@@ -93,33 +105,95 @@ export function AppSidebar() {
       url: "/",
       icon: Globe,
     },
+    {
+      title: "Trash",
+      url: "/Trash",
+      icon: Trash2,
+    },
   ];
 
   const Projects = [
     {
-      title: "🚀 Fluxo",
-      url: "/project/12",
+      name: "Design Engineering",
+      url: "#",
+      icon: Frame,
     },
     {
-      title: "📥 Inbox Manager",
-      url: "/project/34",
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
     },
     {
-      title: "📅 Team Calendar",
-      url: "/project/56",
-    },
-    {
-      title: "📊 Analytics Dashboard",
-      url: "/project/78",
-    },
-    {
-      title: "👥 CRM System",
-      url: "/project/90",
+      name: "Travel",
+      url: "#",
+      icon: Map,
     },
   ];
 
+  const navFavoritesOptions: favorites[] = [
+    {
+      name: "Project Management & Task Tracking",
+      url: "#",
+      emoji: "📊",
+    },
+    {
+      name: "Family Recipe Collection & Meal Planning",
+      url: "#",
+      emoji: "🍳",
+    },
+    {
+      name: "Fitness Tracker & Workout Routines",
+      url: "#",
+      emoji: "💪",
+    },
+    {
+      name: "Book Notes & Reading List",
+      url: "#",
+      emoji: "📚",
+    },
+    {
+      name: "Sustainable Gardening Tips & Plant Care",
+      url: "#",
+      emoji: "🌱",
+    },
+    {
+      name: "Language Learning Progress & Resources",
+      url: "#",
+      emoji: "🗣️",
+    },
+    {
+      name: "Home Renovation Ideas & Budget Tracker",
+      url: "#",
+      emoji: "🏠",
+    },
+    {
+      name: "Personal Finance & Investment Portfolio",
+      url: "#",
+      emoji: "💰",
+    },
+    {
+      name: "Movie & TV Show Watchlist with Reviews",
+      url: "#",
+      emoji: "🎬",
+    },
+    {
+      name: "Daily Habit Tracker & Goal Setting",
+      url: "#",
+      emoji: "✅",
+    },
+  ];
+
+  const items = useMemo(
+    () =>
+      NavOptionPrimary.map((item) => ({
+        ...item,
+        isActive: pathname === item.url,
+      })),
+    [pathname],
+  );
+
   return (
-    <Sidebar collapsible="icon" className="[--sidebar-width-icon:4.5rem]">
+    <Sidebar collapsible="icon" className="[--sidebar-width-icon:4.5rem] ">
       {/* -----Header ----- */}
       <SidebarHeader className="px-3 py-2">
         <div className="flex items-center gap-2">
@@ -139,140 +213,19 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden text-sm">
-            Application
-          </SidebarGroupLabel>
-
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {NavOptionPrimary.map((item) => {
-                const isActive = mounted && pathname === item.url;
-
-                return (
-                  <SidebarMenuItem
-                    key={item.title}
-                    className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center "
-                  >
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive}
-                      className="
-          py-5
-          data-[active=true]:bg-foreground
-          data-[active=true]:text-background
-
-          group-data-[collapsible=icon]:w-full
-          group-data-[collapsible=icon]:size-12!
-          group-data-[collapsible=icon]:justify-center
-        "
-                    >
-                      <Link
-                        href={item.url}
-                        className="
-            flex w-full items-center gap-3
-            group-data-[collapsible=icon]:justify-center
-          "
-                      >
-                        <div className="flex size-10 items-center justify-center">
-                          <item.icon className="size-6 stroke-[1.5]" />
-                        </div>
-
-                        <span className="group-data-[collapsible=icon]:hidden text-lg">
-                          {item.title}
-                        </span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
+      <SidebarContent className="scrollbar-minimal">
+        {/* ---------- main navigation options -----------        */}
+        <NavMain items={items} />
         {/* ---------- Projects -----------        */}
-        <Collapsible
-          defaultOpen
-          className="group/collapsible group-data-[collapsible=icon]:hidden"
-        >
-          <SidebarGroup>
-            {/* Label becomes the trigger */}
-            <SidebarGroupLabel asChild>
-              <CollapsibleTrigger className="flex w-full items-center justify-between ">
-                <span className="text-sm!">Projects</span>
-                <ChevronRight className="size-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
-              </CollapsibleTrigger>
-            </SidebarGroupLabel>
-
-            {/* Collapsible content */}
-            <CollapsibleContent>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {Projects.map((item) => (
-                    <SidebarMenuItem key={item.title}>
-                      <SidebarMenuButton asChild>
-                        <Link href={item.title}>
-                          <span className="text-base ">{item.title}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </CollapsibleContent>
-          </SidebarGroup>
-        </Collapsible>
-
-        {/* ---------- utiles -----------        */}
-        <SidebarGroup className="mt-auto">
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {NavOptionSecondary.map((item) => {
-                const isActive = mounted && pathname === item.url;
-
-                return (
-                  <SidebarMenuItem
-                    key={item.title}
-                    className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center "
-                  >
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActive}
-                      className="
-          py-5
-          data-[active=true]:bg-foreground
-          data-[active=true]:text-background
-
-          group-data-[collapsible=icon]:w-full
-          group-data-[collapsible=icon]:size-12!
-          group-data-[collapsible=icon]:justify-center
-        "
-                    >
-                      <Link
-                        href={item.url}
-                        className="
-            flex w-full items-center gap-3
-            group-data-[collapsible=icon]:justify-center
-          "
-                      >
-                        <div className="flex size-10 items-center justify-center">
-                          <item.icon className="size-6 stroke-[1.5]" />
-                        </div>
-
-                        <span className="group-data-[collapsible=icon]:hidden text-lg">
-                          {item.title}
-                        </span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <NavProjects projects={Projects} />
+        {/* ---------- Favorites  -----------        */}
+        <NavFavorites favorites={navFavoritesOptions} />
+        {/* ---------- utilities -----------        */}
+        <NavSecondary items={NavOptionSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <NavUser user={user} />
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
