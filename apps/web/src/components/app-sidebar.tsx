@@ -198,22 +198,36 @@ export function AppSidebar() {
       <SidebarHeader className="px-3 py-2">
         <div className="flex items-center gap-2">
           {/* Logo */}
-          <Image
+          {/* <Image
             src="/assets/logo.svg"
             alt="Fluxo logo"
             width={50}
             height={50}
             className="shrink-0"
-          />
+          /> */}
+          <span className="text-sidebar-primary w-10 inline-flex items-center justify-center">
+            <svg
+              width="47"
+              height="36"
+              viewBox="0 0 437 376"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M437 129H298V266H139V376H0V110H139V0H437V129ZM19 247H139V129H19V247ZM159 129V247H278V129H159Z"
+                fill="currentColor"
+              />
+            </svg>
+          </span>
 
           {/* App name (hide on collapse) */}
-          <span className="font-bold text-2xl truncate group-data-[collapsible=icon]:hidden">
-            Fluxo
+          <span className="font-bold text-2xl truncate group-data-[collapsible=icon]:hidden ">
+            Flu<span className="text-sidebar-primary">xo</span>
           </span>
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="scrollbar-minimal">
+      <SidebarContent className="scrollbar-thin mt-5">
         {/* ---------- main navigation options -----------        */}
         <NavMain items={items} />
         {/* ---------- Projects -----------        */}
@@ -223,7 +237,10 @@ export function AppSidebar() {
         {/* ---------- utilities -----------        */}
         <NavSecondary items={NavOptionSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter
+        className="border-t border-t-border border-t-solid   group-data-[collapsible=icon]:items-center!
+    group-data-[collapsible=icon]:justify-center!"
+      >
         <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />

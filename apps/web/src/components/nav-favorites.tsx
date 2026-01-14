@@ -56,7 +56,11 @@ export function NavFavorites({
           <SidebarMenu>
             {favorites.map((item) => (
               <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton
+                  asChild
+                  className="hover:bg-sidebar-accent
+  hover:text-sidebar-primary"
+                >
                   <NextLink href={item.url}>
                     <span>{item.emoji}</span>
                     <span className="text-sm">{item.name}</span>
@@ -97,7 +101,10 @@ export function NavFavorites({
               </SidebarMenuItem>
             ))}
             <SidebarMenuItem>
-              <SidebarMenuButton className="text-sidebar-foreground/70">
+              <SidebarMenuButton
+                className="text-sidebar-foreground/70    hover:bg-sidebar-accent
+  hover:text-sidebar-primary"
+              >
                 <MoreHorizontal />
                 <NextLink href={"#"}>
                   <span>More</span>

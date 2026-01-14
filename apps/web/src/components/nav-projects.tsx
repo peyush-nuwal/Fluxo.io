@@ -57,7 +57,11 @@ export function NavProjects({
           <SidebarMenu>
             {projects.map((item) => (
               <SidebarMenuItem key={item.name}>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton
+                  asChild
+                  className="hover:bg-sidebar-accent
+  hover:text-sidebar-primary"
+                >
                   <Link href={item.url}>
                     <item.icon />
                     <span className="text-sm">{item.name}</span>
@@ -94,7 +98,10 @@ export function NavProjects({
             ))}
 
             <SidebarMenuItem>
-              <SidebarMenuButton>
+              <SidebarMenuButton
+                className="text-sidebar-foreground/70  hover:bg-sidebar-accent
+  hover:text-sidebar-primary"
+              >
                 <MoreHorizontal />
                 <Link href={"#"}>
                   {" "}

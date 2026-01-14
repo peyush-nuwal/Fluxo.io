@@ -9,17 +9,43 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        /* ───────── Default / Primary ───────── */
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+        primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border bg-background hover:bg-accent hover:text-accent-foreground",
+
+        "outline-primary":
+          "border border-primary text-primary bg-transparent hover:bg-primary/10 active:bg-primary/20",
+
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+
+        "ghost-primary": "text-primary bg-transparent hover:bg-primary/10",
+
+        link: "text-primary underline-offset-4 hover:underline",
+
+        /* ───────── Secondary ───────── */
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+
+        "outline-secondary":
+          "border border-secondary text-secondary-foreground bg-transparent hover:bg-secondary/20",
+
+        /* ───────── Destructive ───────── */
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40",
+
+        "outline-destructive":
+          "border border-destructive text-destructive bg-transparent hover:bg-destructive/10",
+
+        /* ───────── Success ───────── */
+        success: "bg-success text-success-foreground hover:bg-success/90",
+
+        "outline-success":
+          "border border-success text-success bg-transparent hover:bg-success/10",
       },
+
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
         sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
@@ -29,6 +55,7 @@ const buttonVariants = cva(
         "icon-lg": "size-10",
       },
     },
+
     defaultVariants: {
       variant: "default",
       size: "default",

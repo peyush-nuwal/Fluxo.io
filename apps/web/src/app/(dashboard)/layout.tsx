@@ -15,7 +15,7 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      <div className="flex min-h-screen w-full ">
         <AppSidebar />
         <main className="flex-1 overflow-auto">{children}</main>
       </div>
