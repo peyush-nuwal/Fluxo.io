@@ -40,6 +40,7 @@ export function NavMain({ items, ...props }: { items: NavItem[] }) {
   group-data-[collapsible=icon]:size-10!
   group-data-[collapsible=icon]:justify-center
 "
+                tooltip={item.title}
               >
                 <Link
                   href={item.url}

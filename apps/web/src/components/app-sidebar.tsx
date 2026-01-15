@@ -193,9 +193,9 @@ export function AppSidebar() {
   );
 
   return (
-    <Sidebar collapsible="icon" className="[--sidebar-width-icon:4.5rem] ">
+    <Sidebar collapsible="icon" className="">
       {/* -----Header ----- */}
-      <SidebarHeader className="px-3 py-2">
+      <SidebarHeader className="px-3 py-2 mt-2">
         <div className="flex items-center gap-2">
           {/* Logo */}
           {/* <Image
