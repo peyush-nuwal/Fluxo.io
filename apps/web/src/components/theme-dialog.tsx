@@ -9,6 +9,7 @@ import {
 import { Button } from "./ui/button";
 import { useTheme } from "@/hooks/use-theme";
 import { RotateCcw } from "lucide-react";
+import { SegmentRadioGroup } from "./ui/segment-radio";
 
 export const THEME_PALETTE = [
   { theme: "theme-blue", name: "Blue", color: "oklch(0.62 0.19 255)" },
@@ -34,45 +35,88 @@ export function ThemeDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const { theme: activeTheme, setTheme, resetTheme } = useTheme();
+  const {
+    theme: activeTheme,
+    setTheme,
+    resetTheme,
+    mode,
+    setMode,
+  } = useTheme();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[40vw] max-w-none">
         <DialogHeader>
-          <DialogTitle>Choose theme</DialogTitle>
+          <DialogTitle>Appearance</DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-7 gap-2 px-4">
-          {THEME_PALETTE.map(({ theme, name, color }) => {
-            const isActive = activeTheme === theme;
+        <div className="space-y-2">
+          <h3 className="text-sm font-medium">Theme color</h3>
+          <p className="text-xs text-muted-foreground">
+            Choose an accent color for the interface.
+          </p>
+          <div className="grid grid-cols-7 gap-2 px-4">
+            {THEME_PALETTE.map(({ theme, name, color }) => {
+              const isActive = activeTheme === theme;
 
-            return (
-              <Button
-                key={theme}
-                onClick={() => setTheme(theme)}
-                style={{
-                  background: color,
-                  borderColor: color,
-                }}
-                className={`size-12  rounded-md border-2 p-0 transition
+              return (
+                <Button
+                  key={theme}
+                  onClick={() => setTheme(theme)}
+                  style={{
+                    background: color,
+                    borderColor: color,
+                  }}
+                  className={`size-12  rounded-md border-2 p-0 transition
                   ${isActive ? "ring-2 ring-offset-2 ring-primary" : ""}
                `}
-                title={name}
-              />
-            );
-          })}
+                  title={name}
+                />
+              );
+            })}
+          </div>
         </div>
-        onC
+
         <Button
           onClick={resetTheme}
-          variant={"outline"}
-          size={"sm"}
-          className="w-fit ml-auto cursor-pointer"
+          variant="ghost"
+          size="sm"
+          className="
+    ml-auto w-fit gap-1.5
+    text-muted-foreground
+    hover:text-foreground
+    transition-colors
+    group
+  "
         >
-          <RotateCcw /> Reset
+          <RotateCcw
+            className="
+      size-4
+      transition-transform duration-300 ease-out
+      group-hover:-rotate-180
+    "
+          />
+          <span className="transition-colors">Reset</span>
         </Button>
-        {/* put your theme buttons here */}
-        <div className="grid grid-cols-3 gap-2"></div>
+
+        {/*  theme buttons  */}
+        <div className="space-y-4 pt-4">
+          <div className="space-y-1">
+            <h3 className="text-sm font-medium">Appearance mode</h3>
+            <p className="text-xs text-muted-foreground">
+              Choose how Fluxo looks on this device.
+            </p>
+          </div>
+
+          <SegmentRadioGroup
+            value={mode}
+            onChange={setMode}
+            options={[
+              { value: "light", label: "Light" },
+              { value: "dark", label: "Dark" },
+              { value: "system", label: "System" },
+            ]}
+          />
+        </div>
       </DialogContent>
     </Dialog>
   );

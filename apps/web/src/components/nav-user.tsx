@@ -100,7 +100,7 @@ export function NavUser({
     data-[highlighted]:text-sidebar-primary dp-group"
               >
                 <Palette className="dp-group:text-sidebar-primary" />
-                Theme
+                Appearance
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
