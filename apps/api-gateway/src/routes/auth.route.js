@@ -1,58 +1,48 @@
 import express from "express";
 import httpProxy from "express-http-proxy";
-import multer from "multer";
 import { SERVICES } from "../config.js";
 
 const router = express.Router();
 
-// ------------------------------------------------------
-// PUBLIC AUTH ROUTES (NO AUTH REQUIRED)
-// ------------------------------------------------------
-router.use(
-  [
-    "/api/v1/auth/signup",
-    "/api/v1/auth/signin",
-    "/api/v1/auth/signout",
-    "/api/v1/auth/verify-email",
-    "/api/v1/auth/forgot-password",
-    "/api/v1/auth/reset-password",
-  ],
-  httpProxy(SERVICES.AUTH, {
-    proxyReqPathResolver: (req) => req.originalUrl,
-  }),
-);
+// Public auth routes (NO JWT REQUIRED)
+const PUBLIC_ROUTES = [
+  "/signup",
+  "/signin",
+  "/signout",
+  "/otp/verify",
+  "/forgot-password",
+  "/reset-password",
+];
 
-// ------------------------------------------------------
-// FILE UPLOAD (AUTH REQUIRED)
-// ------------------------------------------------------
-router.post(
-  "/upload-avatar",
-  httpProxy(SERVICES.AUTH, {
-    parseReqBody: false,
-    proxyReqPathResolver: (req) => req.originalUrl,
-    proxyReqOptDecorator: (opts, srcReq) => {
-      if (srcReq.authContext?.userId) {
-        opts.headers["x-user-id"] = srcReq.authContext.userId;
-      }
-      return opts;
-    },
-  }),
-);
+// Shared proxy for auth service
+const authProxy = httpProxy(SERVICES.AUTH, {
+  proxyReqPathResolver: (req) => req.originalUrl,
 
-// ------------------------------------------------------
-// ALL OTHER AUTH ROUTES (AUTH REQUIRED)
-// ------------------------------------------------------
-router.use(
-  "/",
-  httpProxy(SERVICES.AUTH, {
-    proxyReqPathResolver: (req) => req.originalUrl,
-    proxyReqOptDecorator: (opts, srcReq) => {
-      if (srcReq.authContext?.userId) {
-        opts.headers["x-user-id"] = srcReq.authContext.userId;
-      }
-      return opts;
-    },
-  }),
-);
+  proxyReqOptDecorator: (opts, srcReq) => {
+    if (srcReq.headers.cookie) {
+      opts.headers.cookie = srcReq.headers.cookie;
+    }
+    return opts;
+  },
+
+  userResDecorator: (proxyRes, proxyResData, _userReq, userRes) => {
+    if (proxyRes.headers["set-cookie"]) {
+      userRes.setHeader("Set-Cookie", proxyRes.headers["set-cookie"]);
+    }
+    return proxyResData;
+  },
+});
+
+// -----------------------------
+// PUBLIC AUTH ROUTES
+// -----------------------------
+PUBLIC_ROUTES.forEach((route) => {
+  router.use(route, authProxy);
+});
+
+// -----------------------------
+// PROTECTED AUTH ROUTES
+// -----------------------------
+router.use("/", authProxy);
 
 export default router;

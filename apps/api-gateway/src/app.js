@@ -13,11 +13,18 @@ import subscriptionRoutes from "./routes/subscription.route.js";
 
 const app = express();
 
-// ----------------------------------------------------
-// 1. Global middleware
-// ----------------------------------------------------
+// -----------------------------
+// Global middleware
+// -----------------------------
 app.use(helmet());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  }),
+);
+
 app.use(cookieParser());
 
 app.use(
@@ -26,18 +33,25 @@ app.use(
   }),
 );
 
-// ----------------------------------------------------
-// 2. AUTH MIDDLEWARE (GATEWAY LEVEL)
-//    - decides public vs protected
-//    - verifies JWT
-//    - sets req.authContext
-// ----------------------------------------------------
-app.use(verifyToken);
+// -----------------------------
+// AUTH GATE (CRITICAL FIX)
+// -----------------------------
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api/v1/auth")) {
+    return next(); // auth service owns auth
+  }
+  return verifyToken(req, res, next);
+});
 
-// ----------------------------------------------------
-// 3. ROUTES (proxy will inject x-user-id)
-// ----------------------------------------------------
-app.use("/api/v1/auth", authRoutes);
+// -----------------------------
+// ROUTES
+// -----------------------------
+app.use(
+  "/api/v1/auth",
+  express.json(),
+  express.urlencoded({ extended: true }),
+  authRoutes,
+);
 
 app.use(
   "/api/v1/diagram",
@@ -60,9 +74,9 @@ app.use(
   subscriptionRoutes,
 );
 
-// ----------------------------------------------------
-// 4. Health
-// ----------------------------------------------------
+// -----------------------------
+// Health
+// -----------------------------
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });

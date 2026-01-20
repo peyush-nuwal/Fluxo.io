@@ -13,4 +13,8 @@ export const PORT = process.env.PORT || 4000;
 
 // Fallback secret for dev environments.
 // (Production should ALWAYS define JWT_SECRET.)
-export const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+// Use ACCESS_TOKEN_SECRET to match auth service token signing
+export const JWT_SECRET =
+  process.env.ACCESS_TOKEN_SECRET ||
+  process.env.JWT_SECRET ||
+  "access-secret-dev";

@@ -50,13 +50,19 @@ app.use((req, res, next) => {
     "/api/v1/auth/signup",
     "/api/v1/auth/signin",
     "/api/v1/auth/signout",
-    "/api/v1/auth/verify-email",
+    "/api/v1/auth/otp/verify",
+    "/api/v1/auth/otp/generate",
     "/api/v1/auth/forgot-password",
     "/api/v1/auth/reset-password",
     "/health",
   ];
 
-  if (publicPaths.some((p) => req.path.startsWith(p))) {
+  // Allow /me endpoint to work with cookies (it will verify token itself)
+  // Other protected routes require x-user-id header
+  if (
+    publicPaths.some((p) => req.path.startsWith(p)) ||
+    req.path === "/api/v1/auth/me"
+  ) {
     return next();
   }
 

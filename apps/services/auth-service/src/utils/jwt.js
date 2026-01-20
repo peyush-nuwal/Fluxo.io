@@ -1,28 +1,57 @@
 import logger from "../config/logger.js";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-jwt-secret";
-const JWT_EXPIRES_IN = "1d";
+const ACCESS_TOKEN_SECRET =
+  process.env.ACCESS_TOKEN_SECRET || "access-secret-dev";
+
+const REFRESH_TOKEN_SECRET =
+  process.env.REFRESH_TOKEN_SECRET || "refresh-secret-dev";
+
+const ACCESS_TOKEN_EXPIRES_IN = "15m";
+const REFRESH_TOKEN_EXPIRES_IN = "7d";
 
 export const jwttoken = {
-  sign: (payload) => {
+  /* =========================
+     ACCESS TOKEN
+  ========================= */
+  signAccessToken(payload) {
     try {
-      logger.info("Signing JWT with secret:", {
-        secretLength: JWT_SECRET?.length,
-        secretStart: JWT_SECRET?.substring(0, 10),
+      return jwt.sign(payload, ACCESS_TOKEN_SECRET, {
+        expiresIn: ACCESS_TOKEN_EXPIRES_IN,
       });
-      return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
     } catch (error) {
-      logger.error("Failed to authenticate token", error);
-      throw new Error("Failed to authenticate token");
+      logger.error("Failed to sign access token", error);
+      throw new Error("Failed to sign access token");
     }
   },
-  verify: (token) => {
+
+  verifyAccessToken(token) {
     try {
-      return jwt.verify(token, JWT_SECRET);
+      return jwt.verify(token, ACCESS_TOKEN_SECRET);
     } catch (error) {
-      logger.error("Failed to authenticate token", error);
-      throw new Error("Failed to authenticate token");
+      throw new Error("Invalid or expired access token");
+    }
+  },
+
+  /* =========================
+     REFRESH TOKEN
+  ========================= */
+  signRefreshToken(payload) {
+    try {
+      return jwt.sign(payload, REFRESH_TOKEN_SECRET, {
+        expiresIn: REFRESH_TOKEN_EXPIRES_IN,
+      });
+    } catch (error) {
+      logger.error("Failed to sign refresh token", error);
+      throw new Error("Failed to sign refresh token");
+    }
+  },
+
+  verifyRefreshToken(token) {
+    try {
+      return jwt.verify(token, REFRESH_TOKEN_SECRET);
+    } catch (error) {
+      throw new Error("Invalid or expired refresh token");
     }
   },
 };

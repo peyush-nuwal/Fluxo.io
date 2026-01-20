@@ -30,6 +30,7 @@ export const verifyToken = (req, res, next) => {
   // 2️⃣ Extract token (cookie preferred, header fallback)
   const authHeader = req.headers.authorization;
   const token =
+    req.cookies?.access_token ||
     req.cookies?.token ||
     (authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null);
 
@@ -42,11 +43,16 @@ export const verifyToken = (req, res, next) => {
   try {
     // 3️⃣ Verify token
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log("Token decoded successfully:", {
+      id: decoded.id,
+      email: decoded.email,
+    });
 
     // 4️⃣ Normalize identity (THIS IS CRITICAL)
     const userId = decoded.userId || decoded.id || decoded.sub;
 
     if (!userId) {
+      console.error("Token missing userId/id/sub:", decoded);
       return res.status(401).json({
         message: "Invalid token payload",
       });
@@ -55,12 +61,14 @@ export const verifyToken = (req, res, next) => {
     // 5️⃣ Attach auth context (single source of truth)
     req.authContext = {
       userId: decoded.userId || decoded.id || decoded.sub,
+      email: decoded.email,
     };
 
     console.log("VERIFY TOKEN authContext:", req.authContext);
 
     return next();
   } catch (error) {
+    console.error("Token verification failed:", error.message);
     return res.status(403).json({
       message: "Invalid or expired token",
     });

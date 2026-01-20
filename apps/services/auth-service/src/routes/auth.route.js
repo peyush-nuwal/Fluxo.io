@@ -4,6 +4,8 @@ import {
   signIn,
   signOut,
   updatePassword,
+  refresh,
+  me,
 } from "../controller/auth.controller.js";
 import {
   generateOTP,
@@ -36,6 +38,9 @@ import {
 router.post("/signup", signUp);
 router.post("/signin", signIn);
 router.post("/signout", signOut);
+
+router.get("/me", me);
+router.get("/refresh", refresh);
 
 // ========================================
 // Password Management Routes

@@ -12,6 +12,7 @@ import { markEmailAsVerified } from "../service/auth.service.js";
 import { changeUserEmail, resetUserPassword } from "../service/auth.service.js";
 import { jwttoken } from "../utils/jwt.js";
 import { formatValidationsError } from "../utils/format.js";
+import { cookies } from "../utils/cookies.js"; // Add this line
 import {
   generateOTPSchema,
   verifyOTPSchema,
@@ -113,6 +114,30 @@ export const verifyOTPCode = async (req, res) => {
     // If this is email verification, mark email as verified
     if (purpose === "email_verification") {
       await markEmailAsVerified(user.id);
+
+      const accessToken = jwttoken.signAccessToken({
+        id: user.id,
+        email: user.email,
+      });
+
+      const refreshToken = jwttoken.signRefreshToken({
+        id: user.id,
+      });
+
+      cookies.set(res, "access_token", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+
+      cookies.set(res, "refresh_token", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+
       logger.info(`Email verified successfully for user: ${email}`);
     }
 

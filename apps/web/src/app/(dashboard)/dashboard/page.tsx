@@ -1,14 +1,12 @@
 import Topbar from "@/components/topbar";
+import DashboardShell from "../DashboardShell";
 
-const page = () => {
+export default function DashboardPage() {
   return (
-    <div className="">
+    <DashboardShell>
       <Topbar />
-      asdfa
-      <div className="bg-red-500 px-4">ad</div>
-      <div className="bg-card px-4 py-2 rounded">adf</div>
-    </div>
+      <h1>Dashboard</h1>
+      <p>Welcome to the dashboard!</p>
+    </DashboardShell>
   );
-};
-
-export default page;
+}
