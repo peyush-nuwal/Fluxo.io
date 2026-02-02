@@ -96,9 +96,26 @@ export async function signup(
   return { ok: true, data };
 }
 
+export async function onLogout() {
+  const res = await fetch("/api/v1/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  const data = await res.json();
+
+  clearUserCache(); // client-side state cleanup
+
+  if (!res.ok) {
+    throw data;
+  }
+
+  return data.message;
+}
+
 // otp function
 
-export async function verifyEmailOtp(body: VerifyEmailOtpPayload) {
+export async function verifyOtp(body: VerifyEmailOtpPayload) {
   const res = await fetch("/api/v1/auth/otp/verify", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -191,9 +208,5 @@ export async function getCurrentUser(): Promise<User | null> {
  * Optional explicit hooks (still useful)
  */
 export function onAuthSuccess() {
-  clearUserCache();
-}
-
-export function onLogout() {
   clearUserCache();
 }

@@ -8,7 +8,7 @@ const router = express.Router();
 const PUBLIC_ROUTES = [
   "/signup",
   "/signin",
-  "/signout",
+  "/logout",
   "/otp/verify",
   "/forgot-password",
   "/reset-password",

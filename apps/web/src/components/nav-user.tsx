@@ -28,6 +28,9 @@ import {
 
 import { useState } from "react";
 import { ThemeDialog } from "@/components/theme-dialog";
+import { onLogout } from "@/lib/auth/client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function NavUser({
   user,
@@ -38,6 +41,7 @@ export function NavUser({
     avatar: string;
   };
 }) {
+  const router = useRouter();
   const { isMobile } = useSidebar();
   const [themeOpen, setThemeOpen] = useState(false);
 
@@ -45,6 +49,17 @@ export function NavUser({
   const handleOpenThemeDialog = (e: Event) => {
     e.preventDefault();
     setThemeOpen(true);
+  };
+
+  const logoutHandler = async () => {
+    try {
+      const message = await onLogout();
+
+      toast.success(message);
+      router.replace("/dashboard");
+    } catch (err: any) {
+      toast.error(err?.message ?? "Logout failed");
+    }
   };
 
   return (
@@ -96,8 +111,8 @@ export function NavUser({
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onSelect={handleOpenThemeDialog}
-                className="data-[highlighted]:bg-sidebar-accent
-    data-[highlighted]:text-sidebar-primary dp-group"
+                className="data-highlighted:bg-sidebar-accent
+    data-highlighted:text-sidebar-primary dp-group"
               >
                 <Palette className="dp-group:text-sidebar-primary" />
                 Appearance
@@ -106,22 +121,22 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem
-                className="data-[highlighted]:bg-sidebar-accent
-    data-[highlighted]:text-sidebar-primary dp-group"
+                className="data-highlighted:bg-sidebar-accent
+    data-highlighted:text-sidebar-primary dp-group"
               >
                 <BadgeCheck className="dp-group:text-sidebar-primary" />
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="data-[highlighted]:bg-sidebar-accent
-    data-[highlighted]:text-sidebar-primary dp-group"
+                className="data-highlighted:bg-sidebar-accent
+    data-highlighted:text-sidebar-primary dp-group"
               >
                 <CreditCard className="dp-group:text-sidebar-primary" />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="data-[highlighted]:bg-sidebar-accent
-    data-[highlighted]:text-sidebar-primary dp-group"
+                className="data-highlighted:bg-sidebar-accent
+    data-highlighted:text-sidebar-primary dp-group"
               >
                 <Bell className="dp-group:text-sidebar-primary" />
                 Notifications
@@ -129,8 +144,9 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="data-[highlighted]:bg-red-200/40
-    data-[highlighted]:text-red-500 dp-group"
+              className="data-highlighted:bg-red-200/40
+    data-highlighted:text-red-500 dp-group"
+              onClick={logoutHandler}
             >
               <LogOut className="dp-group:text-red-500 " />
               Log out

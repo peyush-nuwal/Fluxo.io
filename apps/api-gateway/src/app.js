@@ -9,6 +9,7 @@ import { verifyToken } from "./middleware/auth.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import diagramRoutes from "./routes/diagram.route.js";
 import aiRoutes from "./routes/ai.route.js";
+
 import subscriptionRoutes from "./routes/subscription.route.js";
 
 const app = express();

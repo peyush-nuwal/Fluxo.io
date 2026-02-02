@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
@@ -15,7 +15,7 @@ import { toast } from "sonner";
 import {
   resendEmailOtp,
   ResendOtpToEmailPayload,
-  verifyEmailOtp,
+  verifyOtp,
   VerifyEmailOtpPayload,
 } from "@/lib/auth/client";
 
@@ -48,7 +48,7 @@ export default function VerifyEmailPage() {
     };
 
     try {
-      const result = await verifyEmailOtp(body);
+      const result = await verifyOtp(body);
 
       if (!result.ok) {
         toast.error(result.message);

@@ -12,7 +12,7 @@ import { markEmailAsVerified } from "../service/auth.service.js";
 import { changeUserEmail, resetUserPassword } from "../service/auth.service.js";
 import { jwttoken } from "../utils/jwt.js";
 import { formatValidationsError } from "../utils/format.js";
-import { cookies } from "../utils/cookies.js"; // Add this line
+import { cookies } from "../utils/cookie.js"; // Add this line
 import {
   generateOTPSchema,
   verifyOTPSchema,

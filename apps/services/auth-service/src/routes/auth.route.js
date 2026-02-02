@@ -37,7 +37,7 @@ import {
 // ========================================
 router.post("/signup", signUp);
 router.post("/signin", signIn);
-router.post("/signout", signOut);
+router.post("/logout", signOut);
 
 router.get("/me", me);
 router.get("/refresh", refresh);

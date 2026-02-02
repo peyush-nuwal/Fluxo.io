@@ -43,6 +43,10 @@ export default function LoginPage() {
     }
   };
 
+  const goToForgotPassword = () => {
+    router.replace("/forgot-password");
+  };
+
   return (
     <div className="px-6 py-4 flex items-center justify-center md:justify-between">
       {/* LEFT ART */}
@@ -85,33 +89,43 @@ export default function LoginPage() {
             </div>
 
             {/* Password */}
-            <div className="relative">
-              <Input
-                name="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                required
-                className="h-10 pr-10"
-              />
+            <div className="flex flex-col">
+              <div className="relative">
+                <Input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  required
+                  className="h-10 pr-10"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-muted-foreground hover:text-foreground focus:outline-none"
+                >
+                  {showPassword ? (
+                    <Eye className="h-4 w-4" />
+                  ) : (
+                    <EyeClosed className="h-4 w-4" />
+                  )}
+                </button>
+
+                {errors?.password && (
+                  <p className="mt-1 text-sm text-destructive">
+                    {errors.password[0]}
+                  </p>
+                )}
+              </div>
 
               <button
+                onClick={goToForgotPassword}
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-muted-foreground hover:text-foreground focus:outline-none"
+                className="ml-auto w-fit inline-block my-2 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
-                {showPassword ? (
-                  <Eye className="h-4 w-4" />
-                ) : (
-                  <EyeClosed className="h-4 w-4" />
-                )}
+                Forgot password?
               </button>
-
-              {errors?.password && (
-                <p className="mt-1 text-sm text-destructive">
-                  {errors.password[0]}
-                </p>
-              )}
             </div>
 
             {errors?._form && (

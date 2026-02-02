@@ -49,7 +49,7 @@ app.use((req, res, next) => {
   const publicPaths = [
     "/api/v1/auth/signup",
     "/api/v1/auth/signin",
-    "/api/v1/auth/signout",
+    "/api/v1/auth/logout",
     "/api/v1/auth/otp/verify",
     "/api/v1/auth/otp/generate",
     "/api/v1/auth/forgot-password",

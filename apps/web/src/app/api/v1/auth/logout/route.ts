@@ -3,34 +3,25 @@ import { API_BASE_URL } from "@/config/server-env";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-
-    const res = await fetch(`${API_BASE_URL}/api/v1/auth/signup`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         cookie: req.headers.get("cookie") ?? "",
       },
-      body: JSON.stringify(body),
+      credentials: "include",
     });
 
-    const text = await res.text();
-    let data: any = {};
-
-    try {
-      data = text ? JSON.parse(text) : {};
-    } catch {
-      data = { message: text };
-    }
+    const data = await res.json().catch(() => ({}));
 
     const response = NextResponse.json(data, { status: res.status });
 
+    // 🔑 forward Set-Cookie so browser deletes auth cookie
     const setCookies = res.headers.getSetCookie?.() ?? [];
     setCookies.forEach((c) => response.headers.append("Set-Cookie", c));
 
     return response;
-  } catch (err) {
-    console.error("Signup route error:", err);
+  } catch (error) {
+    console.error("logout route error:", error);
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },
