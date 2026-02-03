@@ -31,19 +31,13 @@ import { ThemeDialog } from "@/components/theme-dialog";
 import { onLogout } from "@/lib/auth/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/hooks/use-user";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export function NavUser() {
   const router = useRouter();
   const { isMobile } = useSidebar();
   const [themeOpen, setThemeOpen] = useState(false);
+  const { user, loading } = useUser();
 
   // handle theme opening state
   const handleOpenThemeDialog = (e: Event) => {
@@ -78,12 +72,14 @@ export function NavUser({
   "
             >
               <Avatar className="h-8 w-8 rounded-lg bg-red-500  items-center">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={user?.avatar_url} alt={user?.user_name} />
+                <AvatarFallback className="rounded-lg">
+                  {user?.user_name[0]}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-medium">{user?.user_name}</span>
+                <span className="truncate text-xs">{user?.email}</span>
               </div>
 
               <ChevronsUpDown className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
@@ -98,12 +94,17 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center  gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={user?.avatar_url} alt={user?.name} />
+                  <AvatarFallback className="rounded-lg">
+                    {" "}
+                    {user?.user_name[0]}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-medium">
+                    {user?.user_name}
+                  </span>
+                  <span className="truncate text-xs">{user?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

@@ -38,9 +38,31 @@ app.use(
 // AUTH GATE (CRITICAL FIX)
 // -----------------------------
 app.use((req, res, next) => {
+  // Public auth routes that do NOT require token
+  const PUBLIC_AUTH_PATHS = [
+    "/api/v1/auth/signup",
+    "/api/v1/auth/signin",
+    "/api/v1/auth/logout",
+    "/api/v1/auth/otp/verify",
+    "/api/v1/auth/otp/generate",
+    "/api/v1/auth/password/forgot-password",
+    "/api/v1/auth/password/verify-reset-password-otp",
+    "/api/v1/auth/password/reset",
+    "/api/v1/auth/oauth/google",
+    "/api/v1/auth/oauth/google/callback",
+    "/api/v1/auth/oauth/github",
+    "/api/v1/auth/oauth/github/callback",
+    "/health",
+  ];
+
+  const isPublicAuth = PUBLIC_AUTH_PATHS.some(
+    (p) => req.path === p || req.path.startsWith(`${p}/`),
+  );
+
   if (req.path.startsWith("/api/v1/auth")) {
-    return next(); // auth service owns auth
+    return isPublicAuth ? next() : verifyToken(req, res, next);
   }
+
   return verifyToken(req, res, next);
 });
 

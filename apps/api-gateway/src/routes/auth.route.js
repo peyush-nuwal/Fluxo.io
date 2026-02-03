@@ -22,6 +22,12 @@ const authProxy = httpProxy(SERVICES.AUTH, {
     if (srcReq.headers.cookie) {
       opts.headers.cookie = srcReq.headers.cookie;
     }
+    if (srcReq.authContext?.userId) {
+      opts.headers["x-user-id"] = srcReq.authContext.userId;
+    }
+    if (srcReq.authContext?.email) {
+      opts.headers["x-user-email"] = srcReq.authContext.email;
+    }
     return opts;
   },
 
