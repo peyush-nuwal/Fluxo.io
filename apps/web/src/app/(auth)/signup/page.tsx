@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { onAuthSuccess, signup } from "@/lib/auth/client";
+import { onAuthSuccess, signup, startOAuth } from "@/lib/auth/client";
 import { toast } from "sonner";
 import PasswordInput from "@/components/password-input";
 import PasswordStrengthChecker from "@/components/password-strength-checker";
@@ -153,17 +153,27 @@ export default function SignupPage() {
           {/* O-auth btns */}{" "}
           <div className="flex items-center gap-3">
             {" "}
-            <Button variant={"outline"} size={"lg"} className="h-10 flex-1">
+            <Button
+              onClick={() => startOAuth("google")}
+              variant={"outline"}
+              size={"lg"}
+              className="h-10 flex-1"
+            >
               {" "}
               <Image
                 src={"./assets/google.svg"}
                 width={22}
                 height={22}
                 alt="google"
-              />{" "}
-              Google{" "}
-            </Button>{" "}
-            <Button variant={"outline"} size={"lg"} className="h-10 flex-1">
+              />
+              Google
+            </Button>
+            <Button
+              onClick={() => startOAuth("github")}
+              variant={"outline"}
+              size={"lg"}
+              className="h-10 flex-1"
+            >
               {" "}
               <Image
                 src={"./assets/github.svg"}

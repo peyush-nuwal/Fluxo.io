@@ -70,6 +70,7 @@ export const createUser = async ({
   name,
   email,
   password,
+  avatar_url = null,
   google_id = null,
   github_id = null,
   auth_provider = "local",
@@ -94,6 +95,7 @@ export const createUser = async ({
         name,
         user_name,
         email,
+        avatar_url,
         password: hashed_password,
         auth_provider,
         google_id,
@@ -388,17 +390,29 @@ export const verifyUserEmail = async (email) => {
   }
 };
 
+function getDisplayName(profile) {
+  return (
+    profile.displayName ||
+    profile.username ||
+    profile.emails?.[0]?.value?.split("@")[0] ||
+    "user"
+  );
+}
+
 // Authenticate or create OAuth user
 export const authenticateOAuthUser = async (profile, provider) => {
   const email = profile.emails[0].value;
   let user = await isUserExist(email);
+  console.log("profile----------", profile);
 
   if (!user) {
     // Create OAuth user
     user = await createUser({
-      name: profile.displayName || profile.username,
+      name: getDisplayName(profile),
+      user_name: getDisplayName(profile).split(" ").join("_"),
       email,
       password: null,
+      avatar_url: profile.photos?.[0]?.value ?? null,
       auth_provider: provider,
       google_id: provider === "google" ? profile.id : null,
       github_id: provider === "github" ? profile.id : null,

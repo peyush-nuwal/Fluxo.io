@@ -2,6 +2,7 @@
 
 import { apiFetch } from "../api";
 
+export type OAuthProvider = "google" | "github";
 export interface User {
   id: string;
   name: string;
@@ -28,6 +29,7 @@ export interface ResendOtpToEmailPayload {
   purpose: "email_verification";
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 /* ------------------ Utils ------------------ */
 
 function isBrowser() {
@@ -111,6 +113,13 @@ export async function onLogout() {
   }
 
   return data.message;
+}
+
+export function startOAuth(provider: OAuthProvider) {
+  if (!API_BASE_URL) {
+    throw new Error("Missing env variable: NEXT_PUBLIC_API_BASE_URL");
+  }
+  window.location.href = `${API_BASE_URL}/api/v1/auth/oauth/${provider}`;
 }
 
 // otp function

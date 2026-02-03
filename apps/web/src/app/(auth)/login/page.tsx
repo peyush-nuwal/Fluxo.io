@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { login, onAuthSuccess } from "@/lib/auth/client";
+import { login, onAuthSuccess, startOAuth } from "@/lib/auth/client";
 import PasswordInput from "@/components/password-input";
 
 export default function LoginPage() {
@@ -126,7 +126,12 @@ export default function LoginPage() {
 
           {/* OAuth buttons */}
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="lg" className="h-10 flex-1">
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-10 flex-1"
+              onClick={() => startOAuth("google")}
+            >
               <Image
                 src="./assets/google.svg"
                 width={22}
@@ -135,7 +140,12 @@ export default function LoginPage() {
               />
               Google
             </Button>
-            <Button variant="outline" size="lg" className="h-10 flex-1">
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-10 flex-1"
+              onClick={() => startOAuth("github")}
+            >
               <Image
                 src="./assets/github.svg"
                 width={22}
