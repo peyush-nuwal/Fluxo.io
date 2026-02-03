@@ -32,12 +32,14 @@ import { onLogout } from "@/lib/auth/client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/use-user";
+import { useTheme } from "@/hooks/use-theme";
 
 export function NavUser() {
   const router = useRouter();
   const { isMobile } = useSidebar();
   const [themeOpen, setThemeOpen] = useState(false);
   const { user, loading } = useUser();
+  const { resetTheme, setMode } = useTheme();
 
   // handle theme opening state
   const handleOpenThemeDialog = (e: Event) => {
@@ -48,6 +50,8 @@ export function NavUser() {
   const logoutHandler = async () => {
     try {
       const message = await onLogout();
+      resetTheme();
+      setMode("light");
 
       toast.success(message);
       router.replace("/dashboard");

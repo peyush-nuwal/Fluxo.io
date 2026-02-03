@@ -105,7 +105,9 @@ export async function onLogout() {
   });
 
   const data = await res.json();
-
+  // 🔥 clear client state
+  localStorage.clear();
+  sessionStorage.clear();
   clearUserCache(); // client-side state cleanup
 
   if (!res.ok) {

@@ -45,7 +45,7 @@ export function ThemeDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[40vw] max-w-none">
+      <DialogContent className="w-[70vw] lg:w-[40vw] max-w-none">
         <DialogHeader>
           <DialogTitle>Appearance</DialogTitle>
         </DialogHeader>
@@ -54,7 +54,7 @@ export function ThemeDialog({
           <p className="text-xs text-muted-foreground">
             Choose an accent color for the interface.
           </p>
-          <div className="grid grid-cols-7 gap-2 px-4">
+          <div className="grid grid-cols-7  gap-2  px-4">
             {THEME_PALETTE.map(({ theme, name, color }) => {
               const isActive = activeTheme === theme;
 

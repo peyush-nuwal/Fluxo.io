@@ -4,6 +4,7 @@ import {
   Calculator,
   Calendar,
   CreditCard,
+  Palette,
   Settings,
   Smile,
   User,
@@ -23,9 +24,11 @@ import {
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 import { useEffect, useState } from "react";
+import { ThemeDialog } from "./theme-dialog";
 
 const CommandMenu = () => {
   const [open, setOpen] = useState(false);
+  const [themeOpen, setThemeOpen] = useState(false);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -39,6 +42,10 @@ const CommandMenu = () => {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
+  // handle theme opening state
+  const handleOpenThemeDialog = () => {
+    setThemeOpen(true);
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="p-0 overflow-hidden [&>button]:top-3 [&>button]:right-3">
@@ -66,29 +73,31 @@ const CommandMenu = () => {
                 <span>Calculator</span>
               </CommandItem>
             </CommandGroup>
-
             <CommandSeparator />
 
             <CommandGroup heading="Settings">
               <CommandItem>
                 <User />
                 <span>Profile</span>
-                <CommandShortcut>⌘P</CommandShortcut>
+              </CommandItem>
+              <CommandItem onSelect={handleOpenThemeDialog}>
+                <Palette />
+                <span>Appearance</span>
               </CommandItem>
               <CommandItem>
                 <CreditCard />
                 <span>Billing</span>
-                <CommandShortcut>⌘B</CommandShortcut>
               </CommandItem>
               <CommandItem>
                 <Settings />
                 <span>Settings</span>
-                <CommandShortcut>⌘S</CommandShortcut>
               </CommandItem>
             </CommandGroup>
           </CommandList>
         </Command>
       </DialogContent>
+
+      <ThemeDialog open={themeOpen} onOpenChange={setThemeOpen} />
     </Dialog>
   );
 };
