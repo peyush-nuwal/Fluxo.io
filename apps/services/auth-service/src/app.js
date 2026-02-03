@@ -52,7 +52,9 @@ app.use((req, res, next) => {
     "/api/v1/auth/logout",
     "/api/v1/auth/otp/verify",
     "/api/v1/auth/otp/generate",
-    "/api/v1/auth/forgot-password",
+    "/api/v1/auth/password/forgot-password",
+    "/api/v1/auth/password/verify-reset-password-otp",
+    "/api/v1/auth/password/reset",
     "/api/v1/auth/reset-password",
     "/health",
   ];

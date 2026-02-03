@@ -12,6 +12,26 @@ const REFRESH_TOKEN_EXPIRES_IN = "7d";
 
 export const jwttoken = {
   /* =========================
+     GENERIC TOKEN (legacy)
+  ========================= */
+  sign(payload, options = {}) {
+    try {
+      return jwt.sign(payload, ACCESS_TOKEN_SECRET, options);
+    } catch (error) {
+      logger.error("Failed to sign token", error);
+      throw new Error("Failed to sign token");
+    }
+  },
+
+  verify(token) {
+    try {
+      return jwt.verify(token, ACCESS_TOKEN_SECRET);
+    } catch (error) {
+      throw new Error("Invalid or expired token");
+    }
+  },
+
+  /* =========================
      ACCESS TOKEN
   ========================= */
   signAccessToken(payload) {

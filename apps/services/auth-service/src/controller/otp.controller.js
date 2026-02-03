@@ -519,7 +519,7 @@ export const forgotPassword = async (req, res) => {
     const validationResult = forgotPasswordSchema.safeParse(req.body);
     if (!validationResult.success) {
       return res.status(400).json({
-        error: "validation failed",
+        error: "Enter a Valid Email",
         details: formatValidationsError(validationResult.error),
       });
     }
@@ -593,7 +593,9 @@ export const verifyPasswordResetOTP = async (req, res) => {
 
     // Verify OTP only
     await verifyOTP(user.id, normalizedEmail, otpCode, "password_reset");
+    console.log("otp verifed successfull");
 
+    console.log("reset token generated 1");
     // Generate a short-lived reset token (5 minutes)
     const resetToken = await jwttoken.sign(
       {
@@ -604,6 +606,7 @@ export const verifyPasswordResetOTP = async (req, res) => {
       { expiresIn: "5m" },
     );
 
+    console.log("reset token generated 2");
     logger.info(
       `Password reset OTP verified successfully for user: ${normalizedEmail}`,
     );

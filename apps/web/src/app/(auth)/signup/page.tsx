@@ -3,38 +3,22 @@
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useActionState, useState } from "react";
-import { useFormStatus } from "react-dom";
-import { Eye, EyeClosed } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { onAuthSuccess, signup } from "@/lib/auth/client";
 import { toast } from "sonner";
-
-const initialState = { errors: {} };
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      type="submit"
-      size="lg"
-      disabled={pending}
-      className="w-full h-10 disabled:opacity-50"
-    >
-      {pending ? "Creating account..." : "Sign up"}
-    </Button>
-  );
-}
+import PasswordInput from "@/components/password-input";
+import PasswordStrengthChecker from "@/components/password-strength-checker";
 
 export default function SignupPage() {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
+  const [password, setPassword] = useState("");
+  const [isStrongPassword, setIsStrongPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,7 +52,7 @@ export default function SignupPage() {
   return (
     <div className="px-6 py-4 flex items-center justify-center md:justify-between">
       {/* LEFT ART */}
-      <div className="hidden lg:block relative h-[calc(100vh-40px)] w-[60%] overflow-hidden rounded-4xl border border-border shadow-lg shadow-muted">
+      <div className="hidden lg:block relative h-[calc(100vh-40px)] w-[60%] overflow-hidden rounded-2xl border border-border shadow-lg shadow-muted">
         <Image
           src="/assets/art_2.png"
           alt="Signup artwork"
@@ -131,32 +115,20 @@ export default function SignupPage() {
             </div>
 
             {/* Password */}
-            <div className="relative">
-              <Input
+            <div>
+              <PasswordInput
                 name="password"
-                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 required
-                className="h-10 pr-10"
+                error={errors?.password?.[0]}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-muted-foreground hover:text-foreground focus:outline-none"
-              >
-                {showPassword ? (
-                  <Eye className="h-4 w-4" />
-                ) : (
-                  <EyeClosed className="h-4 w-4" />
-                )}
-              </button>
-
-              {errors?.password && (
-                <p className="mt-1 text-sm text-destructive">
-                  {errors.password[0]}
-                </p>
+              {password.length > 0 && (
+                <PasswordStrengthChecker
+                  password={password}
+                  onStrengthChange={setIsStrongPassword}
+                />
               )}
             </div>
 
@@ -168,7 +140,7 @@ export default function SignupPage() {
 
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isStrongPassword}
               className="w-full h-10 disabled:opacity-50"
             >
               {isSubmitting ? "Setting things up..." : "Create account"}
