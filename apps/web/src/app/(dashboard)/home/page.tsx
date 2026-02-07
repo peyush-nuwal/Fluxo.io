@@ -150,23 +150,47 @@ export default function DashboardPage() {
 
   return (
     <DashboardShell>
-      <div className="mt-20 px-10 flex items-center gap-3">
-        <div className="bg-card w-fit px-6 h-32 border-border border border-solid flex flex-col justify-center items-center gap-3 group">
-          <Plus className="size-12 text-muted-foreground group-hover:text-foreground transition-colors ease-in duration-150" />
-          <h4 className="text-muted-foreground font-medium group-hover:text-foreground transition-colors ease-in duration-150 ">
-            Create a New File
-          </h4>
+      <div className="flex-1 min-h-[calc(100vh-100px)] overflow-auto">
+        <div className="mt-20 px-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl">
+            <button
+              type="button"
+              className="bg-card/90 w-full rounded-2xl border border-border px-6 py-5 text-left flex items-center gap-4 group transition-all ease-out duration-200 hover:-translate-y-0.5 hover:border-foreground/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+            >
+              <div className="size-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                <Plus className="size-5 text-primary" />
+              </div>
+              <div className="flex flex-col">
+                <h4 className="text-foreground font-semibold tracking-tight">
+                  Create a New File
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  Start from scratch with a blank canvas
+                </p>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              className="bg-card/90 w-full rounded-2xl border border-border px-6 py-5 text-left flex items-center gap-4 group transition-all ease-out duration-200 hover:-translate-y-0.5 hover:border-foreground/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+            >
+              <div className="size-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                <File className="size-5 text-primary" />
+              </div>
+              <div className="flex flex-col">
+                <h4 className="text-foreground font-semibold tracking-tight">
+                  Generate an outline
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  Build structure from a prompt or topic
+                </p>
+              </div>
+            </button>
+          </div>
         </div>
 
-        <div className="bg-card w-fit  px-6 h-32 border-border border border-solid flex flex-col justify-center items-center gap-3 group">
-          <File className="size-12 text-muted-foreground group-hover:text-foreground transition-colors ease-in duration-150" />
-          <h4 className="text-muted-foreground font-medium group-hover:text-foreground transition-colors ease-in duration-150 ">
-            Generate an outline
-          </h4>
-        </div>
+        <ResourceView resources={resources} />
       </div>
-
-      <ResourceView resources={resources} />
     </DashboardShell>
   );
 }

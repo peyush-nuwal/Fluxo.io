@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { toast } from "sonner";
 import { onAuthSuccess } from "@/lib/auth/client";
 import Image from "next/image";
 import { motion } from "motion/react";
@@ -15,15 +14,10 @@ export default function OAuthSuccessPage() {
 
   useEffect(() => {
     const token = searchParams.get("token");
-
-    if (!token) {
-      toast.error("OAuth failed. Please try again.");
-      router.replace("/login");
-      return;
+    if (token) {
+      // Legacy fallback only: server should set httpOnly cookies on callback.
+      document.cookie = `access_token=${token}; Path=/; SameSite=Lax`;
     }
-
-    document.cookie = `access_token=${token}; Path=/; SameSite=Lax`;
-    document.cookie = `refresh_token=${token}; Path=/; SameSite=Lax`;
 
     onAuthSuccess();
 

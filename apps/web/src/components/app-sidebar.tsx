@@ -2,47 +2,16 @@
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
-  SidebarTrigger,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  Home,
-  Star,
-  Globe,
-  ChevronRight,
-  Frame,
-  Trash2,
-  Send,
-  Settings,
-  BookText,
-  PieChart,
-  Map,
-  Sparkles,
-  type LucideIcon,
-} from "lucide-react";
-
 import { usePathname } from "next/navigation";
-
 import { useMemo } from "react";
 import { NavProjects } from "./nav-projects";
-import { NavFavorites } from "./nav-favorites";
 import { NavPrimary } from "./nav-main";
 import { NavUtilities } from "./nav-utility";
 import { NavUser } from "./nav-user";
-import { SidebarItem, UtilityNavItem } from "@/types/sidebar";
 import { PRIMARY_NAV, PROJECT_NAV, UTILITY_NAV } from "@/config/sidebar";
 
 export function AppSidebar() {

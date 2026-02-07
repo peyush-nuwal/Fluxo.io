@@ -98,14 +98,14 @@ const ResourceView = ({ resources }: ResourceViewInterface) => {
           onChange={setLayoutMode}
           options={[
             {
-              value: "list",
-              icon: <List className="size-4" />,
-              label: <span className="sr-only">List</span>,
-            },
-            {
               value: "card",
               icon: <LayoutGrid className="size-4" />,
               label: <span className="sr-only">Card</span>,
+            },
+            {
+              value: "list",
+              icon: <List className="size-4" />,
+              label: <span className="sr-only">List</span>,
             },
           ]}
         />

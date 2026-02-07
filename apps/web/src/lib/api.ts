@@ -11,10 +11,7 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiFetch(
-  path: string,
-  options: Record<string, any> = {},
-) {
+async function rawFetch(path: string, options: Record<string, any> = {}) {
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
     credentials: "include",
@@ -25,10 +22,33 @@ export async function apiFetch(
   });
 
   const data = await res.json().catch(() => ({}));
+  return { res, data };
+}
 
-  if (!res.ok) {
-    throw new ApiError(data.message || "API request failed", res.status, data);
+export async function apiFetch(
+  path: string,
+  options: Record<string, any> = {},
+) {
+  const { res, data } = await rawFetch(path, options);
+
+  if (res.ok) return data;
+
+  // Attempt one refresh on 401, then retry once.
+  if (res.status === 401 && !path.includes("/auth/refresh")) {
+    const refresh = await rawFetch("/api/v1/auth/refresh", {
+      method: "GET",
+    });
+
+    if (refresh.res.ok) {
+      const retry = await rawFetch(path, options);
+      if (retry.res.ok) return retry.data;
+      throw new ApiError(
+        retry.data.message || "API request failed",
+        retry.res.status,
+        retry.data,
+      );
+    }
   }
 
-  return data;
+  throw new ApiError(data.message || "API request failed", res.status, data);
 }

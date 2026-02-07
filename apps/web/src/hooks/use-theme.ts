@@ -30,7 +30,7 @@ const ALL_THEMES: Theme[] = [
 
 export function useTheme() {
   const [theme, setTheme] = useState<Theme | null>(null);
-  const [mode, setMode] = useState<Mode>("light");
+  const [mode, setMode] = useState<Mode>("system");
 
   // ---- helpers ----
   const applyResolvedMode = (resolved: "light" | "dark") => {
@@ -42,17 +42,40 @@ export function useTheme() {
       ? "dark"
       : "light";
 
+  const dispatchThemeEvent = () => {
+    window.dispatchEvent(new Event("fluxo-theme-change"));
+  };
+
+  const readStoredTheme = () => {
+    const storedTheme = ThemeSchema.safeParse(localStorage.getItem(THEME_KEY));
+    return storedTheme.success ? storedTheme.data : null;
+  };
+
+  const readStoredMode = () => {
+    const storedMode = ModeSchema.safeParse(localStorage.getItem(MODE_KEY));
+    return storedMode.success ? storedMode.data : "system";
+  };
+
+  const applyThemeInternal = (next: Theme | null) => {
+    const root = document.documentElement;
+    root.classList.remove(...ALL_THEMES);
+    if (next) root.classList.add(next);
+    setTheme(next);
+  };
+
+  const applyModeInternal = (next: Mode) => {
+    setMode(next);
+    if (next === "system") {
+      applyResolvedMode(getSystemMode());
+    } else {
+      applyResolvedMode(next);
+    }
+  };
+
   // ---- mount (BEFORE PAINT) ----
   useLayoutEffect(() => {
-    const storedTheme = ThemeSchema.safeParse(localStorage.getItem(THEME_KEY));
-    const storedMode = ModeSchema.safeParse(localStorage.getItem(MODE_KEY));
-
-    if (storedTheme.success) {
-      applyTheme(storedTheme.data);
-    }
-
-    const initialMode = storedMode.success ? storedMode.data : "system";
-    applyMode(initialMode);
+    applyThemeInternal(readStoredTheme());
+    applyModeInternal(readStoredMode());
   }, []);
 
   // ---- system listener (AFTER PAINT) ----
@@ -69,35 +92,45 @@ export function useTheme() {
     return () => media.removeEventListener("change", handler);
   }, [mode]);
 
+  useEffect(() => {
+    const syncFromStorage = () => {
+      applyThemeInternal(readStoredTheme());
+      applyModeInternal(readStoredMode());
+    };
+
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === THEME_KEY || e.key === MODE_KEY) {
+        syncFromStorage();
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("fluxo-theme-change", syncFromStorage);
+
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("fluxo-theme-change", syncFromStorage);
+    };
+  }, []);
+
   // ---- theme ----
   const applyTheme = (next: Theme) => {
-    const root = document.documentElement;
-
-    root.classList.remove(...ALL_THEMES);
-    root.classList.add(next);
-
     localStorage.setItem(THEME_KEY, next);
-    setTheme(next);
+    applyThemeInternal(next);
+    dispatchThemeEvent();
   };
 
   const resetTheme = () => {
-    const root = document.documentElement;
-
-    root.classList.remove(...ALL_THEMES);
     localStorage.removeItem(THEME_KEY);
-    setTheme(null);
+    applyThemeInternal(null);
+    dispatchThemeEvent();
   };
 
   // ---- mode ----
   const applyMode = (next: Mode) => {
     localStorage.setItem(MODE_KEY, next);
-    setMode(next);
-
-    if (next === "system") {
-      applyResolvedMode(getSystemMode());
-    } else {
-      applyResolvedMode(next);
-    }
+    applyModeInternal(next);
+    dispatchThemeEvent();
   };
 
   const toggleMode = () => {

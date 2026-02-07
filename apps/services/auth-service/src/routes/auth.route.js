@@ -88,8 +88,31 @@ router.get(
     session: false,
   }),
   (req, res) => {
-    const token = jwttoken.sign(req.user); // make sure your user object has this
-    res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
+    const accessToken = jwttoken.signAccessToken({
+      id: req.user.id,
+      email: req.user.email,
+    });
+    const refreshToken = jwttoken.signRefreshToken({
+      id: req.user.id,
+      email: req.user.email,
+    });
+
+    res.cookie("access_token", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.redirect(`${process.env.FRONTEND_URL}/oauth-success`);
   },
 );
 
@@ -106,8 +129,31 @@ router.get(
     session: false,
   }),
   (req, res) => {
-    const token = jwttoken.sign(req.user);
-    res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
+    const accessToken = jwttoken.signAccessToken({
+      id: req.user.id,
+      email: req.user.email,
+    });
+    const refreshToken = jwttoken.signRefreshToken({
+      id: req.user.id,
+      email: req.user.email,
+    });
+
+    res.cookie("access_token", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+
+    res.cookie("refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.redirect(`${process.env.FRONTEND_URL}/oauth-success`);
   },
 );
 

@@ -138,6 +138,7 @@ export const signIn = async (req, res) => {
 
     const refreshToken = jwttoken.signRefreshToken({
       id: user.id,
+      email: user.email,
     });
 
     cookies.set(res, "access_token", accessToken, {
@@ -152,6 +153,7 @@ export const signIn = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     return res.status(200).json({
@@ -393,6 +395,10 @@ export const refresh = async (req, res) => {
     }
 
     const decoded = jwttoken.verifyRefreshToken(refreshToken);
+
+    if (!decoded?.email) {
+      return res.status(401).json({ message: "Session expired" });
+    }
 
     const newAccessToken = jwttoken.signAccessToken({
       id: decoded.id,

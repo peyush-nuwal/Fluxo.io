@@ -122,6 +122,7 @@ export const verifyOTPCode = async (req, res) => {
 
       const refreshToken = jwttoken.signRefreshToken({
         id: user.id,
+        email: user.email,
       });
 
       cookies.set(res, "access_token", accessToken, {
@@ -136,6 +137,7 @@ export const verifyOTPCode = async (req, res) => {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
       logger.info(`Email verified successfully for user: ${email}`);
