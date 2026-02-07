@@ -5,6 +5,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/toaster";
 import CommandMenu from "@/components/command-menu";
 import { ThemeProvider } from "@/components/theme-provider";
+import Topbar from "@/components/topbar";
 
 const AppSidebar = dynamic(
   () => import("@/components/app-sidebar").then((m) => m.AppSidebar),
@@ -28,6 +29,7 @@ export default function DashboardShell({
         <div className="flex min-h-screen w-full">
           <AppSidebar />
           <SidebarInset className="flex-1 overflow-auto">
+            <Topbar />
             {children}
           </SidebarInset>
           <CommandMenu />

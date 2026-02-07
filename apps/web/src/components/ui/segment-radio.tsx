@@ -4,10 +4,13 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
+import { useId } from "react";
+import type { ReactNode } from "react";
 
 type Option<T extends string> = {
   value: T;
-  label: string;
+  label?: ReactNode;
+  icon?: ReactNode;
 };
 
 type SegmentRadioGroupProps<T extends string> = {
@@ -25,6 +28,8 @@ export function SegmentRadioGroup<T extends string>({
   onChange,
   className,
 }: SegmentRadioGroupProps<T>) {
+  const layoutId = useId();
+
   return (
     <RadioGroup
       value={value}
@@ -37,6 +42,8 @@ export function SegmentRadioGroup<T extends string>({
     >
       {options.map((opt) => {
         const checked = value === opt.value;
+        const hasLabel = opt.label !== undefined && opt.label !== null;
+        const hasIcon = opt.icon !== undefined && opt.icon !== null;
 
         return (
           <Label
@@ -52,7 +59,7 @@ export function SegmentRadioGroup<T extends string>({
           >
             {checked && (
               <motion.span
-                layoutId="segment-indicator"
+                layoutId={`segment-indicator-${layoutId}`}
                 className={cn(
                   "absolute inset-0 z-[-1] rounded-sm transition-colors",
                   checked ? "bg-primary" : "bg-transparent ",
@@ -71,7 +78,12 @@ export function SegmentRadioGroup<T extends string>({
               className="sr-only"
             />
 
-            {opt.label}
+            {(hasIcon || hasLabel) && (
+              <span className="flex items-center gap-2">
+                {hasIcon ? opt.icon : null}
+                {hasLabel ? opt.label : null}
+              </span>
+            )}
           </Label>
         );
       })}

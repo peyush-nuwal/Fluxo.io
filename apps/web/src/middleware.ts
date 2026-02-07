@@ -9,7 +9,7 @@ export function middleware(req: NextRequest) {
   if (accessToken) {
     // Redirect from login/signup to dashboard
     if (pathname === "/login" || pathname === "/signup" || pathname === "/") {
-      return NextResponse.redirect(new URL("/dashboard", req.url));
+      return NextResponse.redirect(new URL("/home", req.url));
     }
     // Allow access to dashboard
     return NextResponse.next();
@@ -18,7 +18,7 @@ export function middleware(req: NextRequest) {
   // If user is NOT authenticated
   if (!accessToken) {
     // Redirect from dashboard to login
-    if (pathname.startsWith("/dashboard")) {
+    if (pathname.startsWith("/home")) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
     // Allow access to login/signup
@@ -29,5 +29,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/signup", "/"],
+  matcher: ["/home/:path*", "/login", "/signup", "/"],
 };

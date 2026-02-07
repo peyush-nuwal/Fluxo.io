@@ -121,7 +121,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Protect dashboard routes
-  if (pathname.startsWith("/dashboard")) {
+  if (pathname.startsWith("/home")) {
     return authMiddleware(request);
   }
 

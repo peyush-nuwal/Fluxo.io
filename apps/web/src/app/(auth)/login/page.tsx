@@ -28,7 +28,7 @@ export default function LoginPage() {
       await login(email, password);
       onAuthSuccess();
       toast.success("Logged in successfully!");
-      router.replace("/dashboard");
+      router.replace("/home");
     } catch (error: any) {
       console.error("Login error:", error);
 

@@ -31,16 +31,13 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import Link from "next/link";
+import { ProjectNavItem } from "@/types/sidebar";
 
-export function NavProjects({
-  projects,
-}: {
-  projects: {
-    name: string;
-    url: string;
-    icon: LucideIcon;
-  }[];
-}) {
+type NavProjectsProps = {
+  projects: ProjectNavItem[];
+};
+
+export function NavProjects({ projects }: NavProjectsProps) {
   const { isMobile } = useSidebar();
 
   return (
@@ -56,15 +53,15 @@ export function NavProjects({
         <CollapsibleContent>
           <SidebarMenu>
             {projects.map((item) => (
-              <SidebarMenuItem key={item.name}>
+              <SidebarMenuItem key={item.label}>
                 <SidebarMenuButton
                   asChild
                   className="hover:bg-sidebar-accent
   hover:text-sidebar-primary"
                 >
-                  <Link href={item.url}>
+                  <Link href={item.href}>
                     <item.icon />
-                    <span className="text-sm">{item.name}</span>
+                    <span className="text-sm">{item.label}</span>
                   </Link>
                 </SidebarMenuButton>
                 <DropdownMenu>

@@ -26,28 +26,36 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { ThemeDialog } from "./theme-dialog";
 
-const CommandMenu = () => {
-  const [open, setOpen] = useState(false);
+type CommandMenuProps = {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+};
+
+const CommandMenu = ({ open, onOpenChange }: CommandMenuProps) => {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = open !== undefined;
+  const menuOpen = isControlled ? open : internalOpen;
+  const setMenuOpen = onOpenChange ?? setInternalOpen;
   const [themeOpen, setThemeOpen] = useState(false);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        setOpen((prev) => !prev);
+        setMenuOpen(!menuOpen);
       }
     };
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, []);
+  }, [menuOpen, setMenuOpen]);
 
   // handle theme opening state
   const handleOpenThemeDialog = () => {
     setThemeOpen(true);
   };
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
       <DialogContent className="p-0 overflow-hidden [&>button]:top-3 [&>button]:right-3">
         <DialogTitle className="sr-only">Command Menu</DialogTitle>
 

@@ -56,7 +56,7 @@ export default function VerifyEmailPage() {
       }
 
       toast.success("Email verified successfully!");
-      router.replace("/dashboard");
+      router.replace("/home");
     } catch {
       toast.error("Invalid or expired code");
     } finally {

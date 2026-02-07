@@ -12,25 +12,19 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { UtilityNavItem } from "@/types/sidebar";
 
-export function NavSecondary({
-  items,
-  ...props
-}: {
-  items: {
-    title: string;
-    url: string;
-    icon: LucideIcon;
-    badge?: React.ReactNode;
-  }[];
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+type NavUtilityProps = React.ComponentPropsWithoutRef<typeof SidebarGroup> & {
+  items: UtilityNavItem[];
+};
+export function NavUtilities({ items, ...props }: NavUtilityProps) {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem
-              key={item.title}
+              key={item.label}
               className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center px-2"
             >
               <SidebarMenuButton
@@ -45,10 +39,10 @@ export function NavSecondary({
   group-data-[collapsible=icon]:size-10!
   group-data-[collapsible=icon]:justify-center
 "
-                tooltip={item.title}
+                tooltip={item.label}
               >
                 <Link
-                  href={item.url}
+                  href={item.href}
                   className="
                 flex w-full items-center gap-3
                 group-data-[collapsible=icon]:justify-center
@@ -59,7 +53,7 @@ export function NavSecondary({
                   </div>
 
                   <span className="text-base group-data-[collapsible=icon]:hidden">
-                    {item.title}
+                    {item.label}
                   </span>
                 </Link>
               </SidebarMenuButton>

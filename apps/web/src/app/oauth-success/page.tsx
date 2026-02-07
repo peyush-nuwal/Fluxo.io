@@ -28,7 +28,7 @@ export default function OAuthSuccessPage() {
     onAuthSuccess();
 
     const t = setTimeout(() => {
-      router.replace("/dashboard");
+      router.replace("/home");
     }, 1200);
 
     return () => clearTimeout(t);

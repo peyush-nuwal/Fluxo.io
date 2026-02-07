@@ -1,7 +1,5 @@
-"use client";
-
 import Link from "next/link";
-import { type LucideIcon } from "lucide-react";
+
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -10,21 +8,16 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-type NavItem = {
-  title: string;
-  url: string;
-  icon: LucideIcon;
-  isActive?: boolean;
-};
+import type { PrimaryNavItem } from "@/types/sidebar";
 
-export function NavMain({ items, ...props }: { items: NavItem[] }) {
+export function NavPrimary({ items, ...props }: { items: PrimaryNavItem[] }) {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem
-              key={item.title}
+              key={item.label}
               className="group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center px-2"
             >
               <SidebarMenuButton
@@ -40,10 +33,10 @@ export function NavMain({ items, ...props }: { items: NavItem[] }) {
   group-data-[collapsible=icon]:size-10!
   group-data-[collapsible=icon]:justify-center
 "
-                tooltip={item.title}
+                tooltip={item.label}
               >
                 <Link
-                  href={item.url}
+                  href={item.href}
                   className="
                 flex w-full items-center gap-3
                 group-data-[collapsible=icon]:justify-center
@@ -54,7 +47,7 @@ export function NavMain({ items, ...props }: { items: NavItem[] }) {
                   </div>
 
                   <span className="text-base group-data-[collapsible=icon]:hidden">
-                    {item.title}
+                    {item.label}
                   </span>
                 </Link>
               </SidebarMenuButton>

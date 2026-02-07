@@ -54,7 +54,7 @@ export function NavUser() {
       setMode("light");
 
       toast.success(message);
-      router.replace("/dashboard");
+      router.replace("/home");
     } catch (err: any) {
       toast.error(err?.message ?? "Logout failed");
     }
@@ -75,7 +75,7 @@ export function NavUser() {
 
   "
             >
-              <Avatar className="h-8 w-8 rounded-lg bg-red-500  items-center">
+              <Avatar className="h-8 w-8 rounded-lg  items-center">
                 <AvatarImage src={user?.avatar_url} alt={user?.user_name} />
                 <AvatarFallback className="rounded-lg">
                   {user?.user_name[0]}

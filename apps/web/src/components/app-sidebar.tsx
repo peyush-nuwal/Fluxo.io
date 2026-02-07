@@ -33,161 +33,26 @@ import {
   Sparkles,
   type LucideIcon,
 } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+
 import { usePathname } from "next/navigation";
 
-import { JSX, useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { NavProjects } from "./nav-projects";
 import { NavFavorites } from "./nav-favorites";
-import { NavMain } from "./nav-main";
-import { NavSecondary } from "./nav-secondary";
+import { NavPrimary } from "./nav-main";
+import { NavUtilities } from "./nav-utility";
 import { NavUser } from "./nav-user";
-
-// interface navOption{
-//        title: string,
-//       url: string,
-//       icon: JSX.Element,
-// }
-
-type NavItem = {
-  title: string;
-  url: string;
-  icon: LucideIcon;
-};
-
-interface favorites {
-  name: string;
-  url: string;
-  emoji: string;
-}
+import { SidebarItem, UtilityNavItem } from "@/types/sidebar";
+import { PRIMARY_NAV, PROJECT_NAV, UTILITY_NAV } from "@/config/sidebar";
 
 export function AppSidebar() {
   const pathname = usePathname();
 
-  const user = {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/assets/avatar.png",
-  };
-  // Menu items.
-  const NavOptionPrimary: NavItem[] = [
-    {
-      title: "Home",
-      url: "/dashboard",
-      icon: Home,
-    },
-    {
-      title: "Ask AI",
-      url: "/ask-ai",
-      icon: Sparkles,
-    },
-  ];
-
-  const NavOptionSecondary: NavItem[] = [
-    {
-      title: "Settings",
-      url: "/settings",
-      icon: Settings,
-    },
-    {
-      title: "Feedback",
-      url: "/trash",
-      icon: Send,
-    },
-    {
-      title: "Documention",
-      url: "/docs",
-      icon: BookText,
-    },
-    {
-      title: "Community",
-      url: "/",
-      icon: Globe,
-    },
-    {
-      title: "Trash",
-      url: "/Trash",
-      icon: Trash2,
-    },
-  ];
-
-  const Projects = [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ];
-
-  const navFavoritesOptions: favorites[] = [
-    {
-      name: "Project Management & Task Tracking",
-      url: "#",
-      emoji: "📊",
-    },
-    {
-      name: "Family Recipe Collection & Meal Planning",
-      url: "#",
-      emoji: "🍳",
-    },
-    {
-      name: "Fitness Tracker & Workout Routines",
-      url: "#",
-      emoji: "💪",
-    },
-    {
-      name: "Book Notes & Reading List",
-      url: "#",
-      emoji: "📚",
-    },
-    {
-      name: "Sustainable Gardening Tips & Plant Care",
-      url: "#",
-      emoji: "🌱",
-    },
-    {
-      name: "Language Learning Progress & Resources",
-      url: "#",
-      emoji: "🗣️",
-    },
-    {
-      name: "Home Renovation Ideas & Budget Tracker",
-      url: "#",
-      emoji: "🏠",
-    },
-    {
-      name: "Personal Finance & Investment Portfolio",
-      url: "#",
-      emoji: "💰",
-    },
-    {
-      name: "Movie & TV Show Watchlist with Reviews",
-      url: "#",
-      emoji: "🎬",
-    },
-    {
-      name: "Daily Habit Tracker & Goal Setting",
-      url: "#",
-      emoji: "✅",
-    },
-  ];
-
   const items = useMemo(
     () =>
-      NavOptionPrimary.map((item) => ({
+      PRIMARY_NAV.map((item) => ({
         ...item,
-        isActive: pathname === item.url,
+        isActive: pathname === item.href,
       })),
     [pathname],
   );
@@ -229,19 +94,18 @@ export function AppSidebar() {
 
       <SidebarContent className="scrollbar-thin mt-5">
         {/* ---------- main navigation options -----------        */}
-        <NavMain items={items} />
+        <NavPrimary items={items} />
         {/* ---------- Projects -----------        */}
-        <NavProjects projects={Projects} />
-        {/* ---------- Favorites  -----------        */}
-        <NavFavorites favorites={navFavoritesOptions} />
+        <NavProjects projects={PROJECT_NAV} />
+
         {/* ---------- utilities -----------        */}
-        <NavSecondary items={NavOptionSecondary} className="mt-auto" />
+        <NavUtilities items={UTILITY_NAV} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter
         className="border-t border-t-border border-t-solid   group-data-[collapsible=icon]:items-center!
     group-data-[collapsible=icon]:justify-center!"
       >
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
