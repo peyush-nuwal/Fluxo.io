@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export class ApiError extends Error {
@@ -11,44 +13,59 @@ export class ApiError extends Error {
   }
 }
 
-async function rawFetch(path: string, options: Record<string, any> = {}) {
-  const res = await fetch(`${API_URL}${path}`, {
-    ...options,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-  });
+const api = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-  const data = await res.json().catch(() => ({}));
-  return { res, data };
+async function rawRequest(path: string, options: Record<string, any> = {}) {
+  try {
+    const res = await api.request({
+      url: path,
+      method: options.method || "GET",
+      headers: options.headers,
+      data: options.body ? JSON.parse(options.body) : options.data,
+      params: options.params,
+    });
+    return { status: res.status, data: res.data };
+  } catch (error: any) {
+    const status = error?.response?.status ?? 500;
+    const data = error?.response?.data ?? {};
+    return { status, data };
+  }
 }
 
 export async function apiFetch(
   path: string,
   options: Record<string, any> = {},
 ) {
-  const { res, data } = await rawFetch(path, options);
+  const first = await rawRequest(path, options);
 
-  if (res.ok) return data;
+  if (first.status >= 200 && first.status < 300) return first.data;
 
   // Attempt one refresh on 401, then retry once.
-  if (res.status === 401 && !path.includes("/auth/refresh")) {
-    const refresh = await rawFetch("/api/v1/auth/refresh", {
+  if (first.status === 401 && !path.includes("/auth/refresh")) {
+    const refresh = await rawRequest("/api/v1/auth/refresh", {
       method: "GET",
     });
 
-    if (refresh.res.ok) {
-      const retry = await rawFetch(path, options);
-      if (retry.res.ok) return retry.data;
+    if (refresh.status >= 200 && refresh.status < 300) {
+      const retry = await rawRequest(path, options);
+      if (retry.status >= 200 && retry.status < 300) return retry.data;
       throw new ApiError(
-        retry.data.message || "API request failed",
-        retry.res.status,
+        retry.data?.message || "API request failed",
+        retry.status,
         retry.data,
       );
     }
   }
 
-  throw new ApiError(data.message || "API request failed", res.status, data);
+  throw new ApiError(
+    first.data?.message || "API request failed",
+    first.status,
+    first.data,
+  );
 }

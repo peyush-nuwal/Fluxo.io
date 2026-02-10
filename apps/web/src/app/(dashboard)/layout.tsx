@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import DashboardShell from "./DashboardShell";
 
 export default async function DashboardLayout({
   children,
@@ -19,5 +20,5 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  return <div>{children}</div>;
+  return <DashboardShell>{children}</DashboardShell>;
 }

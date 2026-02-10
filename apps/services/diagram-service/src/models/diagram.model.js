@@ -28,6 +28,11 @@ export const diagrams = pgTable("diagrams", {
   data: jsonb("data").notNull(),
 
   description: text("description"),
+  thumbnail_url: text("thumbnail_url"),
+
+  owner_name: text("owner_name"),
+  owner_username: text("owner_username"),
+  owner_avatar_url: text("owner_avatar_url"),
 
   // Public visibility toggle
   is_public: boolean("is_public").default(false),

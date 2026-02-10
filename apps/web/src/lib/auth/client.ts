@@ -206,7 +206,7 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 
   try {
-    const user = await apiFetch("/api/v1/auth/me");
+    const user = await apiFetch("/api/v1/auth/users/me");
     writeCache(user);
     return user;
   } catch {

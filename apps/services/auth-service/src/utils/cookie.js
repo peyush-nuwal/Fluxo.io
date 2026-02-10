@@ -3,7 +3,7 @@ export const cookies = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 15 * 60 * 1000, // 15 minutes (access token default)
+    maxAge: 60 * 60 * 1000, // 1 hour (access token default)
   }),
 
   set: (res, name, value, options = {}) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { getUserInfo } from "@/lib/api/client";
+import { getCurrentUser } from "@/lib/auth/client";
 import { useEffect, useState } from "react";
 
 export function useUser() {
@@ -10,8 +10,8 @@ export function useUser() {
   useEffect(() => {
     let mounted = true;
 
-    getUserInfo()
-      .then((data: any) => {
+    getCurrentUser()
+      .then((data) => {
         if (mounted) setUser(data);
       })
       .catch(() => {

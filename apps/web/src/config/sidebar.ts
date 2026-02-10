@@ -64,11 +64,7 @@ export const UTILITY_NAV: UtilityNavItem[] = [
     href: "/feedback",
     icon: Send,
   },
-  {
-    label: "Documentation",
-    href: "/docs",
-    icon: BookText,
-  },
+
   {
     label: "Community",
     href: "/community",

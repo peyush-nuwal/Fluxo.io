@@ -115,7 +115,16 @@ export const createDiagramController = async (req, res) => {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const { name, data, projectId } = createDiagramSchema.parse(req.body);
+    const {
+      name,
+      data,
+      projectId,
+      description,
+      thumbnail_url,
+      owner_name,
+      owner_username,
+      owner_avatar_url,
+    } = createDiagramSchema.parse(req.body);
 
     const diagram = await createDiagram({
       userId,
@@ -126,6 +135,11 @@ export const createDiagramController = async (req, res) => {
         edges: [],
         viewport: { x: 0, y: 0, zoom: 1 },
       },
+      description,
+      thumbnail_url,
+      owner_name,
+      owner_username,
+      owner_avatar_url,
     });
 
     return res.status(201).json({ diagram });

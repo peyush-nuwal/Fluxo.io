@@ -36,7 +36,23 @@ export const getAllProjects = async (req, res) => {
       ? or(ownerFilter, collabFilter)
       : ownerFilter;
 
-    const rows = await db.select().from(projects).where(whereClause);
+    let rows = await db.select().from(projects).where(whereClause);
+
+    if (rows.length === 0) {
+      await db.insert(projects).values({
+        user_id: userId,
+        title: "My First Project",
+        description: null,
+        thumbnail_url: null,
+        is_public: false,
+        collaborators: [],
+        owner_name: null,
+        owner_username: null,
+        owner_avatar_url: null,
+      });
+
+      rows = await db.select().from(projects).where(whereClause);
+    }
 
     return res.status(200).json({ projects: rows });
   } catch (error) {
@@ -67,7 +83,14 @@ export const createProject = async (req, res) => {
       throw error;
     }
 
-    const { title, description, thumbnail_url } = validatedData;
+    const {
+      title,
+      description,
+      thumbnail_url,
+      owner_name,
+      owner_username,
+      owner_avatar_url,
+    } = validatedData;
 
     const [newProject] = await db
       .insert(projects)
@@ -78,12 +101,18 @@ export const createProject = async (req, res) => {
         thumbnail_url,
         is_public: false,
         collaborators: [],
+        owner_name,
+        owner_username,
+        owner_avatar_url,
       })
       .returning({
         id: projects.id,
         title: projects.title,
         description: projects.description,
         thumbnail_url: projects.thumbnail_url,
+        owner_name: projects.owner_name,
+        owner_username: projects.owner_username,
+        owner_avatar_url: projects.owner_avatar_url,
         created_at: projects.created_at,
       });
     logger.info(`Project ${newProject.title} created successfully`);
@@ -152,8 +181,16 @@ export const updateProject = async (req, res) => {
       throw error;
     }
 
-    const { title, description, thumbnail_url, is_public, collaborators } =
-      validatedData;
+    const {
+      title,
+      description,
+      thumbnail_url,
+      is_public,
+      collaborators,
+      owner_name,
+      owner_username,
+      owner_avatar_url,
+    } = validatedData;
 
     // Verify project ownership
     const project = await verifyProjectOwnership(projectId, userId);
@@ -171,6 +208,11 @@ export const updateProject = async (req, res) => {
     if (thumbnail_url !== undefined) updateFields.thumbnail_url = thumbnail_url;
     if (is_public !== undefined) updateFields.is_public = is_public;
     if (collaborators !== undefined) updateFields.collaborators = collaborators;
+    if (owner_name !== undefined) updateFields.owner_name = owner_name;
+    if (owner_username !== undefined)
+      updateFields.owner_username = owner_username;
+    if (owner_avatar_url !== undefined)
+      updateFields.owner_avatar_url = owner_avatar_url;
 
     const [updated_project] = await db
       .update(projects)
@@ -189,6 +231,9 @@ export const updateProject = async (req, res) => {
         thumbnail_url: projects.thumbnail_url,
         is_public: projects.is_public,
         collaborators: projects.collaborators,
+        owner_name: projects.owner_name,
+        owner_username: projects.owner_username,
+        owner_avatar_url: projects.owner_avatar_url,
         updated_at: projects.updated_at,
       });
 

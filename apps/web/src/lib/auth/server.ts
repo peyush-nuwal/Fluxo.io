@@ -2,10 +2,10 @@ import { cookies } from "next/headers";
 
 const API_URL = process.env.API_URL!;
 
-export async function getCurrentUser() {
+export async function getCurrentUserServer() {
   const cookieStore = cookies();
 
-  const res = await fetch(`${API_URL}/api/v1/auth/me`, {
+  const res = await fetch(`${API_URL}/api/v1/auth/user/me`, {
     headers: {
       cookie: cookieStore.toString(),
     },

@@ -7,6 +7,10 @@ export type ProjectResource = {
   description?: string;
 
   thumbnail?: string;
+  thumbnail_url?: string | null;
+  owner_name?: string | null;
+  owner_username?: string | null;
+  owner_avatar_url?: string | null;
   data: Record<string, any>; // JSON
   is_active: boolean;
   is_public: boolean;

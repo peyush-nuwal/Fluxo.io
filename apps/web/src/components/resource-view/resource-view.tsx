@@ -8,7 +8,7 @@ import type {
   filterOption_array,
   ProjectResource,
 } from "@/types/diagrams";
-import { LayoutGrid, List } from "lucide-react";
+import { Layers, LayoutGrid, List } from "lucide-react";
 import type { FilterOption } from "@/types/diagrams";
 import {
   Select,
@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Input } from "../ui/input";
+import EmptyState from "../empty-state";
 
 interface ResourceViewInterface {
   resources: ProjectResource[];
@@ -83,6 +84,9 @@ const ResourceView = ({ resources }: ResourceViewInterface) => {
     }
   }, [filter, searchFilteredResources]);
 
+  const hasAnyResources = resources.length > 0;
+  const hasFilteredResults = filteredResources.length > 0;
+  const isSearching = query.trim().length > 0;
   return (
     <div className="flex flex-col gap-5 py-5 ">
       <div className="flex gap-3 items-center justify-end px-6 md:px-8  ">
@@ -110,11 +114,31 @@ const ResourceView = ({ resources }: ResourceViewInterface) => {
           ]}
         />
       </div>
-      {layoutMode === "list" ? (
-        <ResourceListView resources={filteredResources} />
-      ) : (
-        <ResourceCardView resources={filteredResources} />
+      {/* 1️⃣ Real empty (should be rare) */}
+      {!hasAnyResources && (
+        <EmptyState
+          title="No resources yet"
+          description="Your project is ready. Start by creating your first resource."
+          icon={<Layers className="h-8 w-8 text-muted-foreground" />}
+        />
       )}
+
+      {/* 2️⃣ Search / filter empty */}
+      {hasAnyResources && !hasFilteredResults && (
+        <EmptyState
+          title="No results found"
+          description="Try adjusting your search or filters."
+          icon={<LayoutGrid className="h-8 w-8 text-muted-foreground" />}
+        />
+      )}
+
+      {/* 3️⃣ Normal render */}
+      {hasFilteredResults &&
+        (layoutMode === "list" ? (
+          <ResourceListView resources={filteredResources} loading={true} />
+        ) : (
+          <ResourceCardView resources={filteredResources} loading={true} />
+        ))}
     </div>
   );
 };

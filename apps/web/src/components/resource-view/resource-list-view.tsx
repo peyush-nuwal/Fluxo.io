@@ -7,14 +7,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableCell,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import RowSkeleton from "./resource-row-skeleton";
 type Props = {
   resources: ProjectResource[];
+  loading?: boolean;
 };
 
-const ResourceListView = ({ resources }: Props) => {
+const ResourceListView = ({ resources, loading = false }: Props) => {
   const tableHeading = ["Name", "Description", "Visibility", "Views", ""];
   return (
     <div className="px-6">
@@ -35,15 +36,13 @@ const ResourceListView = ({ resources }: Props) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {resources?.length ? (
-            resources.map((r) => <ResourceRow key={r.id} resource={r} />)
-          ) : (
-            <TableRow>
-              <TableCell colSpan={5} className="text-center text-sm">
-                No data found
-              </TableCell>
-            </TableRow>
-          )}
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <RowSkeleton key={`skeleton-${i}`} />
+              ))
+            : resources?.length
+              ? resources.map((r) => <ResourceRow key={r.id} resource={r} />)
+              : null}
         </TableBody>
       </Table>
     </div>

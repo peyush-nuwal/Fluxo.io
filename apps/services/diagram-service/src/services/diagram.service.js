@@ -87,7 +87,17 @@ export const getPublicDiagramById = async (diagramId) => {
     );
 };
 
-export const createDiagram = async ({ userId, projectId, name, data }) => {
+export const createDiagram = async ({
+  userId,
+  projectId,
+  name,
+  data,
+  description,
+  thumbnail_url,
+  owner_name,
+  owner_username,
+  owner_avatar_url,
+}) => {
   const [diagram] = await db
     .insert(diagrams)
     .values({
@@ -95,11 +105,21 @@ export const createDiagram = async ({ userId, projectId, name, data }) => {
       project_id: projectId,
       name,
       data,
+      description,
+      thumbnail_url,
+      owner_name,
+      owner_username,
+      owner_avatar_url,
     })
     .returning({
       id: diagrams.id,
       name: diagrams.name,
       data: diagrams.data,
+      description: diagrams.description,
+      thumbnail_url: diagrams.thumbnail_url,
+      owner_name: diagrams.owner_name,
+      owner_username: diagrams.owner_username,
+      owner_avatar_url: diagrams.owner_avatar_url,
     });
 
   return diagram;

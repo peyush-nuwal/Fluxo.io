@@ -5,6 +5,8 @@ import {
   SidebarHeader,
   SidebarFooter,
   SidebarRail,
+  SidebarMenuItem,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
