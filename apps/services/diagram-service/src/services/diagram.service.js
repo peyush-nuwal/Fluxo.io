@@ -52,11 +52,19 @@ export const getDiagramByProject = async (userId, projectId) => {
   return diagramList;
 };
 
-export const getDiagramsByUser = async (userId) => {
-  const diagramList = await db
+export const getDiagramsByUser = async (userId, defaultOwner = {}) => {
+  let diagramList = await db
     .select()
     .from(diagrams)
     .where(and(eq(diagrams.user_id, userId), isNull(diagrams.deleted_at)));
+
+  if (diagramList.length === 0) {
+    await createDefaultDiagramForUser(userId, null, defaultOwner);
+    diagramList = await db
+      .select()
+      .from(diagrams)
+      .where(and(eq(diagrams.user_id, userId), isNull(diagrams.deleted_at)));
+  }
 
   return diagramList;
 };
@@ -98,18 +106,25 @@ export const createDiagram = async ({
   owner_username,
   owner_avatar_url,
 }) => {
+  const resolvedName = name ?? (await getNextUntitledName(userId));
+  const resolvedData = data ?? {
+    nodes: [],
+    edges: [],
+    viewport: { x: 0, y: 0, zoom: 1 },
+  };
+
   const [diagram] = await db
     .insert(diagrams)
     .values({
       user_id: userId,
       project_id: projectId,
-      name,
-      data,
-      description,
-      thumbnail_url,
-      owner_name,
-      owner_username,
-      owner_avatar_url,
+      name: resolvedName,
+      data: resolvedData,
+      description: description ?? null,
+      thumbnail_url: thumbnail_url ?? null,
+      owner_name: owner_name ?? null,
+      owner_username: owner_username ?? null,
+      owner_avatar_url: owner_avatar_url ?? null,
     })
     .returning({
       id: diagrams.id,
@@ -123,6 +138,25 @@ export const createDiagram = async ({
     });
 
   return diagram;
+};
+
+const UNTITLED_PREFIX = "Untitled-";
+
+const getNextUntitledName = async (userId) => {
+  const existing = await db
+    .select({ name: diagrams.name })
+    .from(diagrams)
+    .where(eq(diagrams.user_id, userId));
+
+  let maxNumber = 0;
+  for (const row of existing) {
+    const match = row.name?.match(/^Untitled-(\d+)$/i);
+    if (!match) continue;
+    const n = Number.parseInt(match[1], 10);
+    if (Number.isFinite(n) && n > maxNumber) maxNumber = n;
+  }
+
+  return `${UNTITLED_PREFIX}${maxNumber + 1}`;
 };
 
 export const updateDiagram = async (diagramId, updateFields) => {
@@ -256,4 +290,22 @@ export const updateDiagramLastOpened = async (diagramId) => {
     .update(diagrams)
     .set({ last_opened_at: new Date() })
     .where(eq(diagrams.id, diagramId));
+};
+
+export const createDefaultDiagramForUser = async (
+  userId,
+  projectId = null,
+  defaults = {},
+) => {
+  return createDiagram({
+    userId,
+    projectId,
+    name: null,
+    data: null,
+    description: null,
+    thumbnail_url: null,
+    owner_name: defaults.owner_name ?? null,
+    owner_username: defaults.owner_username ?? null,
+    owner_avatar_url: defaults.owner_avatar_url ?? null,
+  });
 };

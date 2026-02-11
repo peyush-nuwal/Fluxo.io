@@ -1,6 +1,6 @@
 import React from "react";
 import ResourceRow from "./resource-row";
-import type { ProjectResource } from "@/types/diagrams";
+import type { DiagramResource } from "@/types/diagrams";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import RowSkeleton from "./resource-row-skeleton";
 type Props = {
-  resources: ProjectResource[];
+  resources: DiagramResource[];
   loading?: boolean;
 };
 

@@ -1,12 +1,12 @@
 import React from "react";
 import ResourceCard from "./resource-card";
-import type { ProjectResource } from "@/types/diagrams";
+import type { DiagramResource } from "@/types/diagrams";
 import EmptyState from "../empty-state";
 import { Layers } from "lucide-react";
 import CardSkeleton from "./resource-card-skeleton";
 
 type Props = {
-  resources: ProjectResource[];
+  resources: DiagramResource[];
   loading: boolean;
 };
 

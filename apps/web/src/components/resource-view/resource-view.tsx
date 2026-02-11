@@ -1,13 +1,9 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ResourceListView from "./resource-list-view";
 import ResourceCardView from "./resource-card-view";
 import { SegmentRadioGroup } from "../ui/segment-radio";
-import type {
-  DropDownFilterProps,
-  filterOption_array,
-  ProjectResource,
-} from "@/types/diagrams";
+import type { DropDownFilterProps, filterOption_array } from "@/types/diagrams";
 import { Layers, LayoutGrid, List } from "lucide-react";
 import type { FilterOption } from "@/types/diagrams";
 import {
@@ -20,10 +16,7 @@ import {
 } from "../ui/select";
 import { Input } from "../ui/input";
 import EmptyState from "../empty-state";
-
-interface ResourceViewInterface {
-  resources: ProjectResource[];
-}
+import { useDiagramStore } from "@/store/diagramsStore";
 
 const FILTER_OPTIONS: filterOption_array[] = [
   { value: "last_viewed", label: "Last Viewed" },
@@ -37,10 +30,15 @@ const FILTER_OPTIONS: filterOption_array[] = [
   { value: "active_only", label: "Active Only" },
 ];
 
-const ResourceView = ({ resources }: ResourceViewInterface) => {
+const ResourceView = () => {
+  const { diagrams: resources, loading, fetchDiagrams } = useDiagramStore();
   const [layoutMode, setLayoutMode] = useState<"list" | "card">("card");
   const [filter, setFilter] = useState<FilterOption>("last_viewed");
   const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    fetchDiagrams();
+  }, [fetchDiagrams]);
 
   const searchFilteredResources = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -86,7 +84,7 @@ const ResourceView = ({ resources }: ResourceViewInterface) => {
 
   const hasAnyResources = resources.length > 0;
   const hasFilteredResults = filteredResources.length > 0;
-  const isSearching = query.trim().length > 0;
+
   return (
     <div className="flex flex-col gap-5 py-5 ">
       <div className="flex gap-3 items-center justify-end px-6 md:px-8  ">
@@ -115,7 +113,7 @@ const ResourceView = ({ resources }: ResourceViewInterface) => {
         />
       </div>
       {/* 1️⃣ Real empty (should be rare) */}
-      {!hasAnyResources && (
+      {!loading && !hasAnyResources && (
         <EmptyState
           title="No resources yet"
           description="Your project is ready. Start by creating your first resource."
@@ -124,7 +122,7 @@ const ResourceView = ({ resources }: ResourceViewInterface) => {
       )}
 
       {/* 2️⃣ Search / filter empty */}
-      {hasAnyResources && !hasFilteredResults && (
+      {!loading && hasAnyResources && !hasFilteredResults && (
         <EmptyState
           title="No results found"
           description="Try adjusting your search or filters."
@@ -133,11 +131,11 @@ const ResourceView = ({ resources }: ResourceViewInterface) => {
       )}
 
       {/* 3️⃣ Normal render */}
-      {hasFilteredResults &&
+      {(loading || hasFilteredResults) &&
         (layoutMode === "list" ? (
-          <ResourceListView resources={filteredResources} loading={true} />
+          <ResourceListView resources={filteredResources} loading={loading} />
         ) : (
-          <ResourceCardView resources={filteredResources} loading={true} />
+          <ResourceCardView resources={filteredResources} loading={loading} />
         ))}
     </div>
   );

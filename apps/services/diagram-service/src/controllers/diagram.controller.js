@@ -18,7 +18,7 @@ import {
   getDiagramsByUser,
   getUserDiagramById,
   setDiagramVisibility,
-  hardDeleteDiagram,
+  hardDeleteUserDiagram,
   updateDiagramLastOpened,
   getDiagramByProject,
 } from "../services/diagram.service.js";
@@ -53,9 +53,18 @@ export const getDiagramsByProjectController = async (req, res) => {
 export const getAllDiagramsByUserController = async (req, res) => {
   try {
     const userId = req.user?.id;
+    const userEmail = req.user?.email;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    const diagrams = await getDiagramsByUser(userId);
+    const defaultOwnerUsername = userEmail
+      ? userEmail.split("@")[0]
+      : "unknown-user";
+
+    const diagrams = await getDiagramsByUser(userId, {
+      owner_name: null,
+      owner_username: defaultOwnerUsername,
+      owner_avatar_url: null,
+    });
     return res.status(200).json({ diagrams });
   } catch (error) {
     logger.error("Error getting diagrams by user:", error);
@@ -126,10 +135,13 @@ export const createDiagramController = async (req, res) => {
       owner_avatar_url,
     } = createDiagramSchema.parse(req.body);
 
+    const normalizedName =
+      typeof name === "string" && name.trim().length > 0 ? name.trim() : null;
+
     const diagram = await createDiagram({
       userId,
       projectId: projectId ?? null,
-      name,
+      name: normalizedName,
       data: data ?? {
         nodes: [],
         edges: [],
@@ -205,7 +217,7 @@ export const hardDeleteUserDiagramController = async (req, res) => {
       return res.status(404).json({ error: "Diagram not found" });
     }
 
-    await hardDeleteDiagram(userId, diagramId);
+    await hardDeleteUserDiagram(userId, diagramId);
     return res.status(204).send();
   } catch (error) {
     logger.error("Error hard deleting diagram:", error);

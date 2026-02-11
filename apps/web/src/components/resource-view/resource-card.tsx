@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import ResourceItem from "./resource-item";
 import CardUI from "./cardUi";
-import type { ProjectResource } from "@/types/diagrams";
+import type { DiagramResource } from "@/types/diagrams";
 
 type Props = {
-  resource: ProjectResource;
+  resource: DiagramResource;
 };
 
 const ResourceCard = ({ resource }: Props) => {

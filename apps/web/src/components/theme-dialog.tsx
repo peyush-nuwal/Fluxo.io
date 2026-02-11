@@ -10,6 +10,7 @@ import { Button } from "./ui/button";
 import { useTheme } from "@/hooks/use-theme";
 import { RotateCcw } from "lucide-react";
 import { SegmentRadioGroup } from "./ui/segment-radio";
+import { useModalStore } from "@/store/useModalStore";
 
 export const THEME_PALETTE = [
   { theme: "theme-blue", name: "Blue", color: "oklch(0.62 0.19 255)" },
@@ -28,13 +29,9 @@ export const THEME_PALETTE = [
   { theme: "theme-rose", name: "Rose", color: "oklch(0.64 0.24 15)" },
 ] as const;
 
-export function ThemeDialog({
-  open,
-  onOpenChange,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
+export function ThemeDialog() {
+  const { modelType, close } = useModalStore();
+  const isOpen = modelType === "themeDialog";
   const {
     theme: activeTheme,
     setTheme,
@@ -44,7 +41,7 @@ export function ThemeDialog({
   } = useTheme();
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
       <DialogContent className="w-[70vw] lg:w-[40vw] max-w-none">
         <DialogHeader>
           <DialogTitle>Appearance</DialogTitle>

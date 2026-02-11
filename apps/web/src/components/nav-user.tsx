@@ -26,7 +26,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-import { useState } from "react";
 import { ThemeDialog } from "@/components/theme-dialog";
 import { onLogout } from "@/lib/auth/client";
 import { toast } from "sonner";
@@ -35,18 +34,19 @@ import { useUser } from "@/hooks/use-user";
 import { useTheme } from "@/hooks/use-theme";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
+import { useModalStore } from "@/store/useModalStore";
 
 export function NavUser() {
   const router = useRouter();
   const { isMobile } = useSidebar();
-  const [themeOpen, setThemeOpen] = useState(false);
   const { user, loading } = useUser();
   const { resetTheme, setMode } = useTheme();
+  const { open } = useModalStore();
 
   // handle theme opening state
   const handleOpenThemeDialog = (e: Event) => {
     e.preventDefault();
-    setThemeOpen(true);
+    open("themeDialog");
   };
 
   const logoutHandler = async () => {
@@ -198,7 +198,7 @@ export function NavUser() {
         </DropdownMenu>
       </SidebarMenuItem>
 
-      <ThemeDialog open={themeOpen} onOpenChange={setThemeOpen} />
+      <ThemeDialog />
     </SidebarMenu>
   );
 }

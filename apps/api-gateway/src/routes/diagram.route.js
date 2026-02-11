@@ -8,13 +8,25 @@ const router = Router();
 
 const proxyOptions = {
   proxyReqPathResolver: (req) => {
-    logger.info("Proxy request path resolver", req.originalUrl);
-    return req.originalUrl; // forward full path
+    const upstreamPath = req.originalUrl.replace(
+      /^\/api\/v1\/diagram/,
+      "/api/v1",
+    );
+    logger.info("Proxy request path resolver", {
+      originalUrl: req.originalUrl,
+      upstreamPath,
+    });
+    return upstreamPath;
   },
   proxyReqOptDecorator: (proxyReqOpts, srcReq) => {
-    if (srcReq.user) {
-      proxyReqOpts.headers["X-User-Id"] = srcReq.user.id;
-      proxyReqOpts.headers["X-User-Email"] = srcReq.user.email;
+    const userId = srcReq.authContext?.userId || srcReq.user?.id;
+    const userEmail = srcReq.authContext?.email || srcReq.user?.email;
+
+    if (userId) {
+      proxyReqOpts.headers["X-User-Id"] = userId;
+    }
+    if (userEmail) {
+      proxyReqOpts.headers["X-User-Email"] = userEmail;
     }
     return proxyReqOpts;
   },

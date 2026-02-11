@@ -18,42 +18,44 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { ThemeDialog } from "./theme-dialog";
+import { useModalStore } from "@/store/useModalStore";
 
-type CommandMenuProps = {
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-};
+const CommandMenu = () => {
+  const modelType = useModalStore((s) => s.modelType);
+  const openModal = useModalStore((s) => s.open);
+  const closeModal = useModalStore((s) => s.close);
+  const menuOpen = modelType === "commandMenuDialog";
 
-const CommandMenu = ({ open, onOpenChange }: CommandMenuProps) => {
-  const [internalOpen, setInternalOpen] = useState(false);
-  const isControlled = open !== undefined;
-  const menuOpen = isControlled ? open : internalOpen;
-  const setMenuOpen = onOpenChange ?? setInternalOpen;
-  const [themeOpen, setThemeOpen] = useState(false);
+  const setMenuOpen = (open: boolean) => {
+    if (open) {
+      openModal("commandMenuDialog");
+    } else if (menuOpen) {
+      closeModal();
+    }
+  };
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        setMenuOpen(!menuOpen);
+        if (menuOpen) {
+          closeModal();
+        } else {
+          openModal("commandMenuDialog");
+        }
       }
     };
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, [menuOpen, setMenuOpen]);
+  }, [closeModal, menuOpen, openModal]);
 
-  // handle theme opening state
-  const handleOpenThemeDialog = () => {
-    setThemeOpen(true);
-  };
   return (
     <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
       <DialogContent className="p-0 overflow-hidden [&>button]:top-3 [&>button]:right-3">
@@ -88,7 +90,12 @@ const CommandMenu = ({ open, onOpenChange }: CommandMenuProps) => {
                 <User />
                 <span>Profile</span>
               </CommandItem>
-              <CommandItem onSelect={handleOpenThemeDialog}>
+              <CommandItem
+                onSelect={() => {
+                  openModal("themeDialog");
+                  closeModal();
+                }}
+              >
                 <Palette />
                 <span>Appearance</span>
               </CommandItem>
@@ -105,7 +112,7 @@ const CommandMenu = ({ open, onOpenChange }: CommandMenuProps) => {
         </Command>
       </DialogContent>
 
-      <ThemeDialog open={themeOpen} onOpenChange={setThemeOpen} />
+      <ThemeDialog />
     </Dialog>
   );
 };

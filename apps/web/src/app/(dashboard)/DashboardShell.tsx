@@ -32,7 +32,7 @@ export default function DashboardShell({
             <Topbar />
             {children}
           </SidebarInset>
-          <CommandMenu />
+
           <Toaster />
         </div>
       </SidebarProvider>

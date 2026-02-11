@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import DashboardShell from "./DashboardShell";
+import ModalProvider from "@/components/model-provider";
 
 export default async function DashboardLayout({
   children,
@@ -20,5 +21,10 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
-  return <DashboardShell>{children}</DashboardShell>;
+  return (
+    <DashboardShell>
+      {children}
+      <ModalProvider />
+    </DashboardShell>
+  );
 }

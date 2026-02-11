@@ -1,10 +1,11 @@
-import type { ProjectResource } from "@/types/diagrams";
+import type { DiagramResource } from "@/types/diagrams";
 import {
   Edit,
   EllipsisVertical,
   MountainSnow,
   Star,
   Trash,
+  User2,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -25,12 +26,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 type Props = {
-  resource: ProjectResource;
+  resource: DiagramResource;
   menuOpen: boolean;
   onMenuOpenChange: (open: boolean) => void;
 };
 
 const CardUI = ({ resource, menuOpen, onMenuOpenChange }: Props) => {
+  const ownerName = resource.owner_username?.trim() || "Unknown";
+  const ownerAvatar = resource.owner_avatar_url?.trim();
+
   return (
     <div className="rounded-lg p-4 w-full max-w-[320px] shadow bg-card border border-solid border-border">
       <div className="rounded-md bg-background w-full h-36 flex items-center justify-center overflow-hidden">
@@ -52,21 +56,28 @@ const CardUI = ({ resource, menuOpen, onMenuOpenChange }: Props) => {
       {/* // data  */}
       <div className="flex  mt-5 gap-3">
         {/* user pfp */}
-        <div className="size-8 rounded-full overflow-hidden">
-          <Image
-            src={"/assets/temp.jpeg"}
-            alt=""
-            width={50}
-            height={50}
-            className="w-full h-full object-cover"
-          />
+        <div className="size-10 rounded-full overflow-hidden">
+          {ownerAvatar ? (
+            <Image
+              src={ownerAvatar}
+              alt={ownerName}
+              width={50}
+              height={50}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="size-10 bg-background flex items-center justify-center border border-border border-solid rounded-full">
+              <User2 className="text-muted-foreground  size-5" />
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <h5 className="text-sm font-medium ">{resource.name}</h5>
           <p className="text-xs  flex items-center gap-2">
-            <span>By isha</span> .{" "}
+            <span>By {ownerName}</span> .{" "}
             <span className="flex items-center gap-2">
-              <Star className="text-foreground size-4" /> 50
+              <Star className="text-foreground size-4" />
+              {resource.views}
             </span>
           </p>
         </div>

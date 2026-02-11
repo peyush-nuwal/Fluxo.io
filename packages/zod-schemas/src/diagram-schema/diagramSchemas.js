@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const createDiagramSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().optional().nullable(),
   data: z.any().optional().nullable(), // React Flow data
   projectId: z.string().uuid().optional().nullable(),
   description: z.string().optional().nullable(),
