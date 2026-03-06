@@ -5,22 +5,26 @@ import ResourceItem from "./resource-item";
 
 type Props = {
   resource: DiagramResource;
+  mode?: "active" | "trash";
 };
 
-const ResourceRow = ({ resource }: Props) => {
+const ResourceRow = ({ resource, mode = "active" }: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <ResourceItem
       resource={resource}
+      mode={mode}
       asChild
       onContextMenu={() => setMenuOpen(true)}
     >
-      {(r) => (
+      {(r, actions) => (
         <RowUI
           resource={r}
           menuOpen={menuOpen}
           onMenuOpenChange={setMenuOpen}
+          onEdit={actions.onEdit}
+          onDelete={actions.onDelete}
         />
       )}
     </ResourceItem>

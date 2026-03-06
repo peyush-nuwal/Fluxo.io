@@ -102,6 +102,9 @@ router.get(
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
+      maxAge:
+        Number(process.env.ACCESS_TOKEN_COOKIE_MAX_AGE_MS) ||
+        24 * 60 * 60 * 1000,
     });
 
     res.cookie("refresh_token", refreshToken, {
@@ -143,6 +146,9 @@ router.get(
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
+      maxAge:
+        Number(process.env.ACCESS_TOKEN_COOKIE_MAX_AGE_MS) ||
+        24 * 60 * 60 * 1000,
     });
 
     res.cookie("refresh_token", refreshToken, {

@@ -25,6 +25,7 @@ import { useDiagramStore } from "@/store/diagramsStore";
 import { Button } from "./ui/button";
 import { useFormStatus } from "react-dom";
 import { useUser } from "@/hooks/use-user";
+import { Plus } from "lucide-react";
 
 type CreateDiagramFormState = {
   success: boolean;
@@ -97,49 +98,58 @@ export default function CreateDiagramDialog() {
             <Input id="name" name="name" placeholder="Untitled diagram" />
           </Field>
 
-          <Field>
-            <FieldLabel htmlFor="projectId">Project</FieldLabel>
-            <Select
-              value={selectedProjectId}
-              onValueChange={setSelectedProjectId}
-              disabled={loading || !hasProjects}
-            >
-              <SelectTrigger id="projectId" className="w-full ">
-                <SelectValue
-                  placeholder={
-                    loading
-                      ? "Loading projects..."
-                      : hasProjects
-                        ? "Select a Project"
-                        : "No projects available"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Projects</SelectLabel>
-                  {loading && (
-                    <div className="px-2 py-2 text-sm text-muted-foreground">
-                      Loading projects...
-                    </div>
-                  )}
-                  {!loading && !hasProjects && (
-                    <div className="px-2 py-2 text-sm text-muted-foreground">
-                      No projects found
-                    </div>
-                  )}
-                  {!loading &&
-                    hasProjects &&
-                    projects.map((project) => (
-                      <SelectItem key={project.id} value={project.id}>
-                        {project.title}
-                      </SelectItem>
-                    ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <input type="hidden" name="projectId" value={selectedProjectId} />
-          </Field>
+          <div>
+            <Field>
+              <div className="flex justify-between items-center ">
+                {" "}
+                <FieldLabel htmlFor="projectId">Project</FieldLabel>
+                <Button size={"sm"} variant={"ghost-primary"} className="w-fit">
+                  <Plus />
+                  Create Project
+                </Button>
+              </div>
+              <Select
+                value={selectedProjectId}
+                onValueChange={setSelectedProjectId}
+                disabled={loading || !hasProjects}
+              >
+                <SelectTrigger id="projectId" className="w-full ">
+                  <SelectValue
+                    placeholder={
+                      loading
+                        ? "Loading projects..."
+                        : hasProjects
+                          ? "Select a Project"
+                          : "No projects available"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Projects</SelectLabel>
+                    {loading && (
+                      <div className="px-2 py-2 text-sm text-muted-foreground">
+                        Loading projects...
+                      </div>
+                    )}
+                    {!loading && !hasProjects && (
+                      <div className="px-2 py-2 text-sm text-muted-foreground">
+                        No projects found
+                      </div>
+                    )}
+                    {!loading &&
+                      hasProjects &&
+                      projects.map((project) => (
+                        <SelectItem key={project.id} value={project.id}>
+                          {project.title}
+                        </SelectItem>
+                      ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <input type="hidden" name="projectId" value={selectedProjectId} />
+            </Field>
+          </div>
 
           <Field>
             <FieldLabel htmlFor="description">Description</FieldLabel>

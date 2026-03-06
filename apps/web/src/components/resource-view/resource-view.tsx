@@ -30,15 +30,28 @@ const FILTER_OPTIONS: filterOption_array[] = [
   { value: "active_only", label: "Active Only" },
 ];
 
-const ResourceView = () => {
-  const { diagrams: resources, loading, fetchDiagrams } = useDiagramStore();
+type ResourceViewProps = {
+  mode?: "active" | "trash";
+};
+
+const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
+  const {
+    diagrams: resources,
+    loading,
+    fetchDiagrams,
+    fetchTrashDiagrams,
+  } = useDiagramStore();
   const [layoutMode, setLayoutMode] = useState<"list" | "card">("card");
   const [filter, setFilter] = useState<FilterOption>("last_viewed");
   const [query, setQuery] = useState("");
 
   useEffect(() => {
+    if (mode === "trash") {
+      fetchTrashDiagrams();
+      return;
+    }
     fetchDiagrams();
-  }, [fetchDiagrams]);
+  }, [fetchDiagrams, fetchTrashDiagrams, mode]);
 
   const searchFilteredResources = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -133,9 +146,17 @@ const ResourceView = () => {
       {/* 3️⃣ Normal render */}
       {(loading || hasFilteredResults) &&
         (layoutMode === "list" ? (
-          <ResourceListView resources={filteredResources} loading={loading} />
+          <ResourceListView
+            resources={filteredResources}
+            loading={loading}
+            mode={mode}
+          />
         ) : (
-          <ResourceCardView resources={filteredResources} loading={loading} />
+          <ResourceCardView
+            resources={filteredResources}
+            loading={loading}
+            mode={mode}
+          />
         ))}
     </div>
   );

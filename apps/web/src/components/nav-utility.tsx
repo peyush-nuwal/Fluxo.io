@@ -29,6 +29,7 @@ export function NavUtilities({ items, ...props }: NavUtilityProps) {
             >
               <SidebarMenuButton
                 asChild
+                isActive={item.isActive}
                 className="
   py-4
   hover:bg-sidebar-accent

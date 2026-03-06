@@ -6,7 +6,6 @@ import {
 
 import {
   verifyProjectOwnership,
-  verifyDiagramOwnership,
   toggleLikes,
   getLikeCount,
   createDiagram,
@@ -17,10 +16,12 @@ import {
   restoreDiagram,
   getDiagramsByUser,
   getUserDiagramById,
+  getSoftDeletedUserDiagramById,
   setDiagramVisibility,
   hardDeleteUserDiagram,
   updateDiagramLastOpened,
   getDiagramByProject,
+  getAllSoftDeletedDiagramByUser,
 } from "../services/diagram.service.js";
 
 /* ===================== PROJECT ===================== */
@@ -192,15 +193,34 @@ export const softDeleteDiagramController = async (req, res) => {
 
     const { diagramId } = req.params;
 
-    const diagram = await verifyDiagramOwnership(userId, diagramId);
+    const diagram = await getUserDiagramById(userId, diagramId);
     if (!diagram) {
       return res.status(404).json({ error: "Diagram not found" });
     }
 
-    await softDeleteDiagram(userId, diagramId);
+    const deleted = await softDeleteDiagram(userId, diagramId);
+    if (!deleted) {
+      return res.status(404).json({ error: "Diagram not found" });
+    }
+
     return res.status(204).send();
   } catch (error) {
     logger.error("Error soft deleting diagram:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getAllSoftDeletedDiagramByUserController = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const diagrams = await getAllSoftDeletedDiagramByUser(userId);
+
+    return res.status(200).json({ diagrams });
+  } catch (error) {
+    logger.error("Error getting deleted diagrams:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -212,7 +232,7 @@ export const hardDeleteUserDiagramController = async (req, res) => {
 
     const { diagramId } = req.params;
 
-    const diagram = await verifyDiagramOwnership(userId, diagramId);
+    const diagram = await getSoftDeletedUserDiagramById(userId, diagramId);
     if (!diagram) {
       return res.status(404).json({ error: "Diagram not found" });
     }
@@ -232,12 +252,11 @@ export const restoreDiagramController = async (req, res) => {
 
     const { diagramId } = req.params;
 
-    const diagram = await verifyDiagramOwnership(userId, diagramId);
-    if (!diagram) {
+    const restored = await restoreDiagram(userId, diagramId);
+    if (!restored) {
       return res.status(404).json({ error: "Diagram not found" });
     }
 
-    const restored = await restoreDiagram(userId, diagramId);
     return res.status(200).json({
       message: "Diagram restored",
       diagramId: restored.id,

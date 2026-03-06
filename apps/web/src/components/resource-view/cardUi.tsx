@@ -13,15 +13,9 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -29,9 +23,17 @@ type Props = {
   resource: DiagramResource;
   menuOpen: boolean;
   onMenuOpenChange: (open: boolean) => void;
+  onEdit: () => void;
+  onDelete: () => Promise<void>;
 };
 
-const CardUI = ({ resource, menuOpen, onMenuOpenChange }: Props) => {
+const CardUI = ({
+  resource,
+  menuOpen,
+  onMenuOpenChange,
+  onEdit,
+  onDelete,
+}: Props) => {
   const ownerName = resource.owner_username?.trim() || "Unknown";
   const ownerAvatar = resource.owner_avatar_url?.trim();
 
@@ -85,6 +87,8 @@ const CardUI = ({ resource, menuOpen, onMenuOpenChange }: Props) => {
           className="ml-auto"
           open={menuOpen}
           onOpenChange={onMenuOpenChange}
+          onEdit={onEdit}
+          onDelete={onDelete}
         />
       </div>
     </div>
@@ -97,12 +101,16 @@ type DropdownEllipsisMenuProps = {
   className?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onEdit: () => void;
+  onDelete: () => Promise<void>;
 };
 
 const DropdownEllipsisMenu = ({
   className,
   open,
   onOpenChange,
+  onEdit,
+  onDelete,
 }: DropdownEllipsisMenuProps) => {
   return (
     <DropdownMenu open={open} onOpenChange={onOpenChange}>
@@ -112,13 +120,24 @@ const DropdownEllipsisMenu = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-40">
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            onEdit();
+            onOpenChange(false);
+          }}
+        >
           <Edit />
           Edit
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive">
+        <DropdownMenuItem
+          variant="destructive"
+          onClick={async () => {
+            await onDelete();
+            onOpenChange(false);
+          }}
+        >
           <Trash />
           Delete
           <DropdownMenuShortcut>Del</DropdownMenuShortcut>

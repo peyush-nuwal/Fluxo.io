@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL;
+// Always call Next.js API routes from the browser (same-origin).
+// Next route handlers are responsible for proxying to backend services.
+const API_URL = "";
 
 export class ApiError extends Error {
   constructor(

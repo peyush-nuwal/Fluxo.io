@@ -121,6 +121,7 @@ export function startOAuth(provider: OAuthProvider) {
   if (!API_BASE_URL) {
     throw new Error("Missing env variable: NEXT_PUBLIC_API_BASE_URL");
   }
+  console.log("clicked ", provider);
   window.location.href = `${API_BASE_URL}/api/v1/auth/oauth/${provider}`;
 }
 

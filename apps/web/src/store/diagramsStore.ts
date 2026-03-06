@@ -6,6 +6,7 @@ import {
   getDiagramsByUser,
   getDiagramById,
   createDiagram,
+  getSoftDeletedDiagrams,
 } from "@/lib/diagrams/client";
 
 type DiagramState = {
@@ -21,6 +22,7 @@ type DiagramActions = {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   fetchDiagrams: () => Promise<void>;
+  fetchTrashDiagrams: () => Promise<void>;
   fetchDiagramById: (diagramId: string) => Promise<void>;
   createDiagram: (payload: {
     name?: string | null;
@@ -59,6 +61,19 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
       } catch (err: any) {
         set({
           error: err?.message ?? "Failed to fetch diagrams",
+          loading: false,
+        });
+      }
+    },
+
+    fetchTrashDiagrams: async () => {
+      set({ loading: true, error: null });
+      try {
+        const data = await getSoftDeletedDiagrams();
+        set({ diagrams: data?.diagrams ?? data ?? [], loading: false });
+      } catch (err: any) {
+        set({
+          error: err?.message ?? "Failed to fetch deleted diagrams",
           loading: false,
         });
       }

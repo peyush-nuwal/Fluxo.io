@@ -1,4 +1,4 @@
-export type ProjectResource = {
+export type DiagramResource = {
   id: string; // UUID
   project_id: string; // UUID
   user_id: string; // UUID

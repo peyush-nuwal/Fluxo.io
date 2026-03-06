@@ -28,6 +28,15 @@ export function AppSidebar() {
     [pathname],
   );
 
+  const utilItems = useMemo(
+    () =>
+      UTILITY_NAV.map((item) => ({
+        ...item,
+        isActive: pathname === item.href,
+      })),
+    [pathname],
+  );
+
   return (
     <Sidebar collapsible="icon" className="">
       {/* -----Header ----- */}
@@ -70,7 +79,7 @@ export function AppSidebar() {
         <NavProjects projects={PROJECT_NAV} />
 
         {/* ---------- utilities -----------        */}
-        <NavUtilities items={UTILITY_NAV} className="mt-auto" />
+        <NavUtilities items={utilItems} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter
         className="border-t border-t-border border-t-solid   group-data-[collapsible=icon]:items-center!

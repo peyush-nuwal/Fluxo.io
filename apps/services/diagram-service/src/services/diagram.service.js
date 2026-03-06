@@ -1,5 +1,5 @@
 import { db } from "../config/database.js";
-import { and, count, eq, isNull, not, sql } from "drizzle-orm";
+import { and, count, eq, isNotNull, isNull, not, sql, desc } from "drizzle-orm";
 import logger from "../config/logger.js";
 import { verifyProjectOwnership } from "./project.service.js";
 import { diagrams, diagram_likes } from "../models/index.model.js";
@@ -70,29 +70,33 @@ export const getDiagramsByUser = async (userId, defaultOwner = {}) => {
 };
 
 export const getUserDiagramById = async (userId, diagramId) => {
-  return db
-    .findFirst()
-    .from(diagrams)
-    .where(
-      and(
-        eq(diagrams.id, diagramId),
-        eq(diagrams.user_id, userId),
-        isNull(diagrams.deleted_at),
-      ),
-    );
+  return db.query.diagrams.findFirst({
+    where: and(
+      eq(diagrams.id, diagramId),
+      eq(diagrams.user_id, userId),
+      isNull(diagrams.deleted_at),
+    ),
+  });
+};
+
+export const getSoftDeletedUserDiagramById = async (userId, diagramId) => {
+  return db.query.diagrams.findFirst({
+    where: and(
+      eq(diagrams.id, diagramId),
+      eq(diagrams.user_id, userId),
+      isNotNull(diagrams.deleted_at),
+    ),
+  });
 };
 
 export const getPublicDiagramById = async (diagramId) => {
-  return db
-    .findFirst()
-    .from(diagrams)
-    .where(
-      and(
-        eq(diagrams.id, diagramId),
-        eq(diagrams.is_public, true),
-        isNull(diagrams.deleted_at),
-      ),
-    );
+  return db.query.diagrams.findFirst({
+    where: and(
+      eq(diagrams.id, diagramId),
+      eq(diagrams.is_public, true),
+      isNull(diagrams.deleted_at),
+    ),
+  });
 };
 
 export const createDiagram = async ({
@@ -188,7 +192,15 @@ export const softDeleteDiagram = async (userId, diagramId) => {
     )
     .returning({ id: diagrams.id });
 
-  return diagram;
+  return diagram ?? null;
+};
+
+export const getAllSoftDeletedDiagramByUser = async (userId) => {
+  return db
+    .select()
+    .from(diagrams)
+    .where(and(eq(diagrams.user_id, userId), isNotNull(diagrams.deleted_at)))
+    .orderBy(desc(diagrams.deleted_at));
 };
 
 export const restoreDiagram = async (userId, diagramId) => {

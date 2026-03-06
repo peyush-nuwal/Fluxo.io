@@ -13,9 +13,14 @@ import RowSkeleton from "./resource-row-skeleton";
 type Props = {
   resources: DiagramResource[];
   loading?: boolean;
+  mode?: "active" | "trash";
 };
 
-const ResourceListView = ({ resources, loading = false }: Props) => {
+const ResourceListView = ({
+  resources,
+  loading = false,
+  mode = "active",
+}: Props) => {
   const tableHeading = ["Name", "Description", "Visibility", "Views", ""];
   return (
     <div className="px-6">
@@ -41,7 +46,9 @@ const ResourceListView = ({ resources, loading = false }: Props) => {
                 <RowSkeleton key={`skeleton-${i}`} />
               ))
             : resources?.length
-              ? resources.map((r) => <ResourceRow key={r.id} resource={r} />)
+              ? resources.map((r) => (
+                  <ResourceRow key={r.id} resource={r} mode={mode} />
+                ))
               : null}
         </TableBody>
       </Table>

@@ -33,8 +33,8 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/hooks/use-user";
 import { useTheme } from "@/hooks/use-theme";
 import { Skeleton } from "@/components/ui/skeleton";
-import Link from "next/link";
 import { useModalStore } from "@/store/useModalStore";
+import { useEffect } from "react";
 
 export function NavUser() {
   const router = useRouter();
@@ -56,11 +56,21 @@ export function NavUser() {
       setMode("light");
 
       toast.success(message);
-      router.replace("/home");
+      router.replace("/login");
     } catch (err: any) {
       toast.error(err?.message ?? "Logout failed");
     }
   };
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [loading, user, router]);
+
+  if (!loading && !user) {
+    return null;
+  }
 
   return (
     <SidebarMenu className="  group-data-[collapsible=icon]:items-center">
@@ -90,15 +100,15 @@ export function NavUser() {
                   <Avatar className="h-8 w-8 rounded-lg  items-center">
                     <AvatarImage src={user?.avatar_url} alt={user?.user_name} />
                     <AvatarFallback className="rounded-lg">
-                      {user?.user_name?.[0] ?? "G"}
+                      {user?.user_name?.[0] ?? "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                     <span className="truncate font-medium">
-                      {user?.user_name ?? "Guest"}
+                      {user?.user_name ?? ""}
                     </span>
                     <span className="truncate text-xs">
-                      {user?.email ?? "Not signed in"}
+                      {user?.email ?? ""}
                     </span>
                   </div>
                   <ChevronsUpDown className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
@@ -180,20 +190,7 @@ export function NavUser() {
                   Log out
                 </DropdownMenuItem>
               </>
-            ) : (
-              <>
-                <DropdownMenuLabel className="p-2 text-sm">
-                  Guest
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/login">Log in</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/signup">Sign up</Link>
-                </DropdownMenuItem>
-              </>
-            )}
+            ) : null}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

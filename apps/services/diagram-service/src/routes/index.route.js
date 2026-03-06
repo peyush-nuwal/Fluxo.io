@@ -20,6 +20,7 @@ import {
   hardDeleteUserDiagramController,
   getPublicDiagramController,
   updateDiagramVisibilityController,
+  getAllSoftDeletedDiagramByUserController,
 } from "../controllers/diagram.controller.js";
 
 import {
@@ -47,8 +48,12 @@ router.get("/projects/:projectId/diagrams", getDiagramsByProjectController);
 // all diagrams of logged-in user
 router.get("/diagrams", getAllDiagramsByUserController);
 
+// get soft deleted diagrams
+router.get("/diagrams/trash", getAllSoftDeletedDiagramByUserController);
+
 // get single diagram
 router.get("/diagrams/:diagramId", getDiagramByIdController);
+
 // incrementDiagramViews
 router.get("/diagrams/:diagramId/public", getPublicDiagramController);
 
@@ -59,8 +64,9 @@ router.put("/diagrams/:diagramId", updateDiagramController);
 
 // soft delete diagram
 router.delete("/diagrams/:diagramId", softDeleteDiagramController);
+
 //restore deleted diagram
-router.delete("/diagrams/:diagramId/restore", restoreDiagramController);
+router.patch("/diagrams/:diagramId/restore", restoreDiagramController);
 // hard delete diagram
 router.delete("/admin/diagrams/:diagramId", hardDeleteUserDiagramController);
 

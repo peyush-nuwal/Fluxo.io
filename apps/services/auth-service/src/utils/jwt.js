@@ -7,8 +7,8 @@ const ACCESS_TOKEN_SECRET =
 const REFRESH_TOKEN_SECRET =
   process.env.REFRESH_TOKEN_SECRET || "refresh-secret-dev";
 
-const ACCESS_TOKEN_EXPIRES_IN = "1h";
-const REFRESH_TOKEN_EXPIRES_IN = "7d";
+const ACCESS_TOKEN_EXPIRES_IN = process.env.ACCESS_TOKEN_EXPIRES_IN || "1d";
+const REFRESH_TOKEN_EXPIRES_IN = process.env.REFRESH_TOKEN_EXPIRES_IN || "7d";
 
 export const jwttoken = {
   /* =========================

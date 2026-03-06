@@ -6,11 +6,11 @@ import { apiFetch } from "@/lib/api";
 // Example base: "/api/v1"
 
 export async function getDiagramsByUser() {
-  return apiFetch("/api/v1/diagram/diagrams");
+  return apiFetch("/api/v1/diagrams");
 }
 
 export async function getDiagramById(diagramId: string) {
-  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}`);
+  return apiFetch(`/api/v1/diagrams/${diagramId}`);
 }
 
 export async function createDiagram(payload: {
@@ -23,8 +23,24 @@ export async function createDiagram(payload: {
   owner_username?: string | null;
   owner_avatar_url?: string | null;
 }) {
-  return apiFetch("/api/v1/diagram/diagrams", {
+  return apiFetch("/api/v1/diagrams", {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+}
+
+export async function softDeleteDiagram(diagramId: string) {
+  return apiFetch(`/api/v1/diagrams/${diagramId}`, {
+    method: "DELETE",
+  });
+}
+
+export const getSoftDeletedDiagrams = async () => {
+  return apiFetch("/api/v1/diagrams/trash");
+};
+
+export async function hardDeleteDiagram(diagramId: string) {
+  return apiFetch(`/api/v1/diagrams/trash/${diagramId}`, {
+    method: "DELETE",
   });
 }

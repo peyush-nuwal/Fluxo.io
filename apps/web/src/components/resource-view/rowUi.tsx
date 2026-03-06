@@ -19,12 +19,16 @@ type Props = {
   resource: Resource;
   menuOpen: boolean;
   onMenuOpenChange: (open: boolean) => void;
+  onEdit: () => void;
+  onDelete: () => Promise<void>;
 } & Omit<React.ComponentPropsWithoutRef<typeof TableRow>, "resource">;
 
 const RowUI = ({
   resource,
   menuOpen,
   onMenuOpenChange,
+  onEdit,
+  onDelete,
   ...rowProps
 }: Props) => {
   return (
@@ -41,12 +45,23 @@ const RowUI = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                onEdit();
+                onMenuOpenChange(false);
+              }}
+            >
               <Edit />
               Edit
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={async () => {
+                await onDelete();
+                onMenuOpenChange(false);
+              }}
+            >
               <Trash />
               Delete
               <DropdownMenuShortcut>Del</DropdownMenuShortcut>

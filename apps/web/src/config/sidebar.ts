@@ -58,21 +58,18 @@ export const UTILITY_NAV: UtilityNavItem[] = [
     label: "Settings",
     href: "/settings",
     icon: Settings,
+    isActive: false,
   },
-  {
-    label: "Feedback",
-    href: "/feedback",
-    icon: Send,
-  },
-
   {
     label: "Community",
     href: "/community",
     icon: Globe,
+    isActive: false,
   },
   {
     label: "Trash",
     href: "/trash",
     icon: Trash2,
+    isActive: false,
   },
 ];
