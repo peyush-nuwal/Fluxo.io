@@ -26,6 +26,7 @@ import { Button } from "./ui/button";
 import { useFormStatus } from "react-dom";
 import { useUser } from "@/hooks/use-user";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 
 type CreateDiagramFormState = {
   success: boolean;
@@ -39,6 +40,7 @@ const initialFormState: CreateDiagramFormState = {
 
 export default function CreateDiagramDialog() {
   const { modelType, close } = useModalStore();
+  const createProjectOpen = useModalStore((s) => s.open);
   const { projects, loading, fetchProject } = useProjectStore();
   const createDiagram = useDiagramStore((s) => s.createDiagram);
   const { user } = useUser();
@@ -71,6 +73,7 @@ export default function CreateDiagramDialog() {
       });
 
       if (!created) {
+        toast.error("failed to create diagram!");
         return { success: false, error: "Failed to create diagram." };
       }
 
@@ -82,6 +85,7 @@ export default function CreateDiagramDialog() {
   useEffect(() => {
     if (!formState.success) return;
     setSelectedProjectId("");
+    toast.success("Diagram created Successfully");
     close();
   }, [formState.success, close]);
 
@@ -103,7 +107,13 @@ export default function CreateDiagramDialog() {
               <div className="flex justify-between items-center ">
                 {" "}
                 <FieldLabel htmlFor="projectId">Project</FieldLabel>
-                <Button size={"sm"} variant={"ghost-primary"} className="w-fit">
+                <Button
+                  onClick={() => createProjectOpen("createProjectDialog")}
+                  size={"sm"}
+                  variant={"ghost-primary"}
+                  className="w-fit"
+                  type="button"
+                >
                   <Plus />
                   Create Project
                 </Button>

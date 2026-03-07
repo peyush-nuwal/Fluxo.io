@@ -8,6 +8,7 @@ type ModalType =
   | "createDiagramDialog"
   | "themeDialog"
   | "commandMenuDialog"
+  | "createProjectDialog"
   | null;
 
 type ModalStore = {
