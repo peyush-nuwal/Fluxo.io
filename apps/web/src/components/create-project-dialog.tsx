@@ -4,6 +4,7 @@ import React, { useActionState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -13,8 +14,9 @@ import { Input } from "./ui/input";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { useUser } from "@/hooks/use-user";
 import { Textarea } from "./ui/textarea";
-import { createProject } from "@/lib/projects/client";
+
 import { toast } from "sonner";
+import { useProjectStore } from "@/store/projectsStore";
 
 type CreateProjectFormState = {
   success: boolean;
@@ -29,24 +31,38 @@ const initialFormState: CreateProjectFormState = {
 const createProjectDialog = () => {
   const { modelType, close } = useModalStore();
   const { user } = useUser();
+  const { createProject } = useProjectStore();
 
   const [formState, formAction] = useActionState(
     async (_prevState: CreateProjectFormState, formData: FormData) => {
-      const title = String(formData.get("name") ?? "").trim();
+      const title = String(formData.get("title") ?? "").trim();
       const description = String(formData.get("description") ?? "").trim();
+      const thumbnail = formData.get("thumbnail");
       const ownerName = user?.name?.trim() || null;
       const ownerUsername =
         user?.user_name?.trim() ||
         user?.name?.trim() ||
         (user?.email ? String(user.email).split("@")[0] : null);
       const ownerAvatarUrl = user?.avatar_url?.trim() || null;
-      const created = await createProject({
-        title,
-        description: description || null,
-        owner_name: ownerName,
-        owner_username: ownerUsername,
-        owner_avatar_url: ownerAvatarUrl,
-      });
+
+      if (!title) {
+        return {
+          success: false,
+          error: "Project title is required.",
+        };
+      }
+
+      const payload = new FormData();
+      payload.append("title", title);
+      if (description) payload.append("description", description);
+      if (ownerName) payload.append("owner_name", ownerName);
+      if (ownerUsername) payload.append("owner_username", ownerUsername);
+      if (ownerAvatarUrl) payload.append("owner_avatar_url", ownerAvatarUrl);
+      if (thumbnail instanceof File && thumbnail.size > 0) {
+        payload.append("thumbnail", thumbnail);
+      }
+
+      const created = await createProject(payload);
 
       if (!created) {
         toast.error("failed to create Project!");
@@ -71,12 +87,16 @@ const createProjectDialog = () => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Project</DialogTitle>
+          <DialogDescription className="sr-only">
+            Create a new project with optional thumbnail, title, and
+            description.
+          </DialogDescription>
         </DialogHeader>
 
         <form action={formAction} className="space-y-4">
           <Field>
-            <FieldLabel htmlFor="name">Project Name</FieldLabel>
-            <Input id="name" name="name" placeholder="Untitled Project" />
+            <FieldLabel htmlFor="title">Project Name</FieldLabel>
+            <Input id="title" name="title" placeholder="Untitled Project" />
           </Field>
           <Field>
             <FieldLabel htmlFor="description">Description</FieldLabel>
@@ -86,6 +106,15 @@ const createProjectDialog = () => {
               placeholder="Write a short description (optional)"
               rows={6}
               className="min-h-32!"
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="thumbnail">Thumbnail (optional)</FieldLabel>
+            <Input
+              id="thumbnail"
+              name="thumbnail"
+              type="file"
+              accept="image/*"
             />
           </Field>
 
@@ -112,7 +141,7 @@ function SubmitButton() {
 
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Creating..." : "Create Diagram"}
+      {pending ? "Creating..." : "Create Project"}
     </Button>
   );
 }

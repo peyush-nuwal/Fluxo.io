@@ -29,13 +29,39 @@ import {
   removeCollaborator,
   acceptInvitation,
 } from "../controllers/collaborator.controller.js";
+import multer from "multer";
 
 const router = Router();
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024, files: 1 },
+});
+const ThumbnailUpload = (req, res, next) => {
+  upload.fields([
+    { name: "thumbnail", maxCount: 1 },
+    { name: "thumbnail_url", maxCount: 1 },
+  ])(req, res, (error) => {
+    if (!error) return next();
+
+    if (error instanceof multer.MulterError) {
+      if (error.code === "LIMIT_FILE_SIZE") {
+        return res
+          .status(400)
+          .json({ error: "Thumbnail file must be 2MB or smaller" });
+      }
+      return res.status(400).json({ error: error.message });
+    }
+
+    return res.status(400).json({
+      error: error.message || "Invalid multipart/form-data payload",
+    });
+  });
+};
 
 /* ===================== PROJECTS ===================== */
 
 router.get("/projects", getAllProjects);
-router.post("/projects", createProject);
+router.post("/projects", ThumbnailUpload, createProject);
 router.get("/projects/:id", getProjectById);
 router.put("/projects/:id", updateProject);
 router.delete("/projects/:id", deleteProject);
@@ -58,7 +84,7 @@ router.get("/diagrams/:diagramId", getDiagramByIdController);
 router.get("/diagrams/:diagramId/public", getPublicDiagramController);
 
 // create diagram
-router.post("/diagrams", createDiagramController);
+router.post("/diagrams", ThumbnailUpload, createDiagramController);
 // update
 router.put("/diagrams/:diagramId", updateDiagramController);
 

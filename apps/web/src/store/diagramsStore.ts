@@ -24,16 +24,20 @@ type DiagramActions = {
   fetchDiagrams: () => Promise<void>;
   fetchTrashDiagrams: () => Promise<void>;
   fetchDiagramById: (diagramId: string) => Promise<void>;
-  createDiagram: (payload: {
-    name?: string | null;
-    projectId?: string | null;
-    data?: Record<string, any> | null;
-    description?: string | null;
-    thumbnail_url?: string | null;
-    owner_name?: string | null;
-    owner_username?: string | null;
-    owner_avatar_url?: string | null;
-  }) => Promise<DiagramResource | null>;
+  createDiagram: (
+    payload:
+      | {
+          name?: string | null;
+          projectId?: string | null;
+          data?: Record<string, any> | null;
+          description?: string | null;
+          thumbnail_url?: string | null;
+          owner_name?: string | null;
+          owner_username?: string | null;
+          owner_avatar_url?: string | null;
+        }
+      | FormData,
+  ) => Promise<DiagramResource | null>;
   reset: () => void;
 };
 

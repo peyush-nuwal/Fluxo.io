@@ -3,6 +3,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -57,20 +58,25 @@ export default function CreateDiagramDialog() {
       const description = String(formData.get("description") ?? "").trim();
       const projectId = String(formData.get("projectId") ?? "").trim();
       const ownerName = user?.name?.trim() || null;
+      const thumbnail = formData.get("thumbnail");
       const ownerUsername =
         user?.user_name?.trim() ||
         user?.name?.trim() ||
         (user?.email ? String(user.email).split("@")[0] : null);
       const ownerAvatarUrl = user?.avatar_url?.trim() || null;
 
-      const created = await createDiagram({
-        name,
-        description: description || null,
-        projectId: projectId || null,
-        owner_name: ownerName,
-        owner_username: ownerUsername,
-        owner_avatar_url: ownerAvatarUrl,
-      });
+      const payload = new FormData();
+      payload.append("name", name);
+      if (description) payload.append("description", description);
+      if (projectId) payload.append("projectId", projectId);
+      if (ownerName) payload.append("owner_name", ownerName);
+      if (ownerUsername) payload.append("owner_username", ownerUsername);
+      if (ownerAvatarUrl) payload.append("owner_avatar_url", ownerAvatarUrl);
+      if (thumbnail instanceof File && thumbnail.size > 0) {
+        payload.append("thumbnail", thumbnail);
+      }
+
+      const created = await createDiagram(payload);
 
       if (!created) {
         toast.error("failed to create diagram!");
@@ -94,6 +100,9 @@ export default function CreateDiagramDialog() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Diagram</DialogTitle>
+          <DialogDescription className="sr-only">
+            Create a new diagram and optionally attach a thumbnail image.
+          </DialogDescription>
         </DialogHeader>
 
         <form action={formAction} className="space-y-4">
@@ -169,6 +178,15 @@ export default function CreateDiagramDialog() {
               placeholder="Write a short description (optional)"
               rows={6}
               className="min-h-32!"
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="thumbnail">Thumbnail (optional)</FieldLabel>
+            <Input
+              id="thumbnail"
+              name="thumbnail"
+              type="file"
+              accept="image/*"
             />
           </Field>
 

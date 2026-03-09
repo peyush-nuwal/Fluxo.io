@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ResourceListView from "./resource-list-view";
 import ResourceCardView from "./resource-card-view";
 import { SegmentRadioGroup } from "../ui/segment-radio";
@@ -17,6 +17,8 @@ import {
 import { Input } from "../ui/input";
 import EmptyState from "../empty-state";
 import { useDiagramStore } from "@/store/diagramsStore";
+import { hardDeleteDiagram, softDeleteDiagram } from "@/lib/diagrams/client";
+import DeleteAlertDialog from "../delete-alert-dialog";
 
 const FILTER_OPTIONS: filterOption_array[] = [
   { value: "last_viewed", label: "Last Viewed" },
@@ -44,6 +46,11 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
   const [layoutMode, setLayoutMode] = useState<"list" | "card">("card");
   const [filter, setFilter] = useState<FilterOption>("last_viewed");
   const [query, setQuery] = useState("");
+  const [selectedDiagramId, setSelectedDiagramId] = useState<string | null>(
+    null,
+  );
+  const [confirmPermanentDeleteOpen, setConfirmPermanentDeleteOpen] =
+    useState(false);
 
   useEffect(() => {
     if (mode === "trash") {
@@ -94,6 +101,71 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
         return copy;
     }
   }, [filter, searchFilteredResources]);
+
+  useEffect(() => {
+    if (!selectedDiagramId) return;
+    const stillVisible = filteredResources.some(
+      (r) => r.id === selectedDiagramId,
+    );
+    if (!stillVisible) setSelectedDiagramId(null);
+  }, [filteredResources, selectedDiagramId]);
+
+  useEffect(() => {
+    if (!selectedDiagramId) {
+      setConfirmPermanentDeleteOpen(false);
+    }
+  }, [selectedDiagramId]);
+
+  const deleteSelectedDiagram = useCallback(async () => {
+    if (!selectedDiagramId) return;
+
+    try {
+      if (mode === "trash") {
+        await hardDeleteDiagram(selectedDiagramId);
+        await fetchTrashDiagrams();
+      } else {
+        await softDeleteDiagram(selectedDiagramId);
+        await fetchDiagrams();
+      }
+      setSelectedDiagramId(null);
+    } catch {
+      // Ignore and keep selection so user can retry.
+    }
+  }, [fetchDiagrams, fetchTrashDiagrams, mode, selectedDiagramId]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!selectedDiagramId) return;
+      if (event.key !== "Delete" && event.key !== "Backspace") return;
+
+      const target = event.target as HTMLElement | null;
+      const isTypingTarget =
+        target?.isContentEditable ||
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.tagName === "SELECT";
+
+      if (isTypingTarget) return;
+
+      event.preventDefault();
+      if (mode === "trash") {
+        setConfirmPermanentDeleteOpen(true);
+        return;
+      }
+      void deleteSelectedDiagram();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [deleteSelectedDiagram, mode, selectedDiagramId]);
+
+  const selectedDiagramName = useMemo(() => {
+    if (!selectedDiagramId) return "";
+    const selectedResource = filteredResources.find(
+      (r) => r.id === selectedDiagramId,
+    );
+    return selectedResource?.name ?? "this diagram";
+  }, [filteredResources, selectedDiagramId]);
 
   const hasAnyResources = resources.length > 0;
   const hasFilteredResults = filteredResources.length > 0;
@@ -150,14 +222,27 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
             resources={filteredResources}
             loading={loading}
             mode={mode}
+            selectedResourceId={selectedDiagramId}
+            onSelectResource={setSelectedDiagramId}
           />
         ) : (
           <ResourceCardView
             resources={filteredResources}
             loading={loading}
             mode={mode}
+            selectedResourceId={selectedDiagramId}
+            onSelectResource={setSelectedDiagramId}
           />
         ))}
+      {mode === "trash" && (
+        <DeleteAlertDialog
+          open={confirmPermanentDeleteOpen}
+          onOpenChange={setConfirmPermanentDeleteOpen}
+          onConfirm={deleteSelectedDiagram}
+          title="Permanently delete selected diagram?"
+          description={`"${selectedDiagramName}" will be permanently deleted and cannot be restored.`}
+        />
+      )}
     </div>
   );
 };

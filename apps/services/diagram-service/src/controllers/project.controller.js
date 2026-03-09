@@ -1,13 +1,42 @@
-import { db } from "../config/database.js";
-import { and, eq, isNull, or, sql } from "drizzle-orm";
 import logger from "../config/logger.js";
-import { projects } from "../models/index.model.js";
 import {
   createProjectSchema,
   updateProjectSchema,
   ZodError,
 } from "../../../../../packages/zod-schemas/index.js";
-import { verifyProjectOwnership } from "../services/project.service.js";
+import {
+  getProjectsByUser,
+  createProjectRecord,
+  updateProjectById,
+  deleteProjectById,
+  verifyProjectOwnership,
+  uploadThumbnail,
+} from "../services/project.service.js";
+
+const normalizeOptionalText = (value) => {
+  if (value === undefined) return undefined;
+  if (value === null) return null;
+  if (typeof value !== "string") return value;
+
+  const trimmed = value.trim();
+  if (trimmed === "") return null;
+  if (trimmed.toLowerCase() === "null") return null;
+  return trimmed;
+};
+
+export const getUploadedThumbnail = (req) => {
+  if (!req.files || typeof req.files !== "object") return null;
+
+  const files = req.files;
+  if (Array.isArray(files.thumbnail) && files.thumbnail.length > 0) {
+    return files.thumbnail[0];
+  }
+  if (Array.isArray(files.thumbnail_url) && files.thumbnail_url.length > 0) {
+    return files.thumbnail_url[0];
+  }
+
+  return null;
+};
 
 export const getAllProjects = async (req, res) => {
   try {
@@ -15,44 +44,7 @@ export const getAllProjects = async (req, res) => {
     const userEmail = req.user?.email;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
-    // Filter for projects owned by the user
-    const ownerFilter = and(
-      eq(projects.user_id, userId),
-      isNull(projects.deleted_at),
-    );
-
-    // Filter for projects where user is a collaborator (by email)
-    // Since collaborators array stores emails, we check if user's email is in the array
-    const normalizedUserEmail = userEmail?.trim().toLowerCase();
-    const collabFilter = normalizedUserEmail
-      ? and(
-          sql`${projects.collaborators}::jsonb @> ${JSON.stringify([normalizedUserEmail])}::jsonb`,
-          isNull(projects.deleted_at),
-        )
-      : null;
-
-    // Include both owned projects and collaborative projects
-    const whereClause = collabFilter
-      ? or(ownerFilter, collabFilter)
-      : ownerFilter;
-
-    let rows = await db.select().from(projects).where(whereClause);
-
-    if (rows.length === 0) {
-      await db.insert(projects).values({
-        user_id: userId,
-        title: "My First Project",
-        description: null,
-        thumbnail_url: null,
-        is_public: false,
-        collaborators: [],
-        owner_name: null,
-        owner_username: null,
-        owner_avatar_url: null,
-      });
-
-      rows = await db.select().from(projects).where(whereClause);
-    }
+    const rows = await getProjectsByUser(userId, userEmail);
 
     return res.status(200).json({ projects: rows });
   } catch (error) {
@@ -66,10 +58,41 @@ export const createProject = async (req, res) => {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
+    const uploadedThumbnail = getUploadedThumbnail(req);
+
+    if (
+      uploadedThumbnail &&
+      !uploadedThumbnail.mimetype?.startsWith("image/")
+    ) {
+      return res.status(400).json({ error: "Thumbnail must be an image file" });
+    }
+
+    const normalizedPayload = {
+      title:
+        typeof req.body?.title === "string"
+          ? req.body.title.trim()
+          : req.body?.title,
+      description: normalizeOptionalText(req.body?.description),
+      thumbnail_url: normalizeOptionalText(req.body?.thumbnail_url),
+      owner_name: normalizeOptionalText(req.body?.owner_name),
+      owner_username: normalizeOptionalText(req.body?.owner_username),
+      owner_avatar_url: normalizeOptionalText(req.body?.owner_avatar_url),
+    };
+
+    if (uploadedThumbnail?.buffer) {
+      try {
+        const uploadResult = await uploadThumbnail(userId, uploadedThumbnail);
+        normalizedPayload.thumbnail_url = uploadResult.url;
+      } catch (error) {
+        logger.error("Failed to upload project thumbnail:", error);
+        return res.status(500).json({ error: "Failed to upload thumbnail" });
+      }
+    }
+
     // Validate request body with Zod
     let validatedData;
     try {
-      validatedData = createProjectSchema.parse(req.body);
+      validatedData = createProjectSchema.parse(normalizedPayload);
     } catch (error) {
       if (error instanceof ZodError) {
         return res.status(400).json({
@@ -92,29 +115,15 @@ export const createProject = async (req, res) => {
       owner_avatar_url,
     } = validatedData;
 
-    const [newProject] = await db
-      .insert(projects)
-      .values({
-        user_id: userId,
-        title,
-        description,
-        thumbnail_url,
-        is_public: false,
-        collaborators: [],
-        owner_name,
-        owner_username,
-        owner_avatar_url,
-      })
-      .returning({
-        id: projects.id,
-        title: projects.title,
-        description: projects.description,
-        thumbnail_url: projects.thumbnail_url,
-        owner_name: projects.owner_name,
-        owner_username: projects.owner_username,
-        owner_avatar_url: projects.owner_avatar_url,
-        created_at: projects.created_at,
-      });
+    const newProject = await createProjectRecord({
+      userId,
+      title,
+      description,
+      thumbnail_url,
+      owner_name,
+      owner_username,
+      owner_avatar_url,
+    });
     logger.info(`Project ${newProject.title} created successfully`);
 
     return res.status(201).json({ project: newProject });
@@ -200,9 +209,7 @@ export const updateProject = async (req, res) => {
     }
 
     // Build update object with only provided fields
-    const updateFields = {
-      updated_at: new Date(),
-    };
+    const updateFields = {};
     if (title !== undefined) updateFields.title = title;
     if (description !== undefined) updateFields.description = description;
     if (thumbnail_url !== undefined) updateFields.thumbnail_url = thumbnail_url;
@@ -214,28 +221,11 @@ export const updateProject = async (req, res) => {
     if (owner_avatar_url !== undefined)
       updateFields.owner_avatar_url = owner_avatar_url;
 
-    const [updated_project] = await db
-      .update(projects)
-      .set(updateFields)
-      .where(
-        and(
-          eq(projects.id, projectId),
-          eq(projects.user_id, userId),
-          isNull(projects.deleted_at),
-        ),
-      )
-      .returning({
-        id: projects.id,
-        title: projects.title,
-        description: projects.description,
-        thumbnail_url: projects.thumbnail_url,
-        is_public: projects.is_public,
-        collaborators: projects.collaborators,
-        owner_name: projects.owner_name,
-        owner_username: projects.owner_username,
-        owner_avatar_url: projects.owner_avatar_url,
-        updated_at: projects.updated_at,
-      });
+    const updated_project = await updateProjectById(
+      userId,
+      projectId,
+      updateFields,
+    );
 
     if (!updated_project)
       return res.status(404).json({ error: "Project not found" });
@@ -271,16 +261,7 @@ export const deleteProject = async (req, res) => {
       return res.status(404).json({ error: "Project not found" });
     }
 
-    const [deleted_project] = await db
-      .delete(projects)
-      .where(
-        and(
-          eq(projects.id, projectId),
-          eq(projects.user_id, userId),
-          isNull(projects.deleted_at),
-        ),
-      )
-      .returning({ id: projects.id });
+    const deleted_project = await deleteProjectById(userId, projectId);
 
     if (!deleted_project)
       return res.status(404).json({ error: "Project not found" });

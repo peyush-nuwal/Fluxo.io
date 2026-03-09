@@ -18,18 +18,37 @@ export class ApiError extends Error {
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 async function rawRequest(path: string, options: Record<string, any> = {}) {
   try {
+    const isFormData =
+      typeof FormData !== "undefined" && options.data instanceof FormData;
+
+    const headers = { ...(options.headers || {}) };
+    if (isFormData) {
+      delete headers["Content-Type"];
+      delete headers["content-type"];
+    }
+
+    let requestData = options.data;
+    if (options.body !== undefined) {
+      if (typeof options.body === "string") {
+        try {
+          requestData = JSON.parse(options.body);
+        } catch {
+          requestData = options.body;
+        }
+      } else {
+        requestData = options.body;
+      }
+    }
+
     const res = await api.request({
       url: path,
       method: options.method || "GET",
-      headers: options.headers,
-      data: options.body ? JSON.parse(options.body) : options.data,
+      headers,
+      data: requestData,
       params: options.params,
     });
     return { status: res.status, data: res.data };

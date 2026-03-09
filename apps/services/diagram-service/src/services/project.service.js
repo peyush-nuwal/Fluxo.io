@@ -1,8 +1,126 @@
 import { db } from "../config/database.js";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, isNull, or, sql } from "drizzle-orm";
 import logger from "../config/logger.js";
+import { supabase } from "../config/supabase.js";
 
 import { projects } from "../models/index.model.js";
+import crypto from "crypto";
+
+const THUMBNAIL_BUCKET = process.env.SUPABASE_THUMBNAIL_BUCKET || "thumbnail";
+
+const projectSelectFields = {
+  id: projects.id,
+  title: projects.title,
+  description: projects.description,
+  thumbnail_url: projects.thumbnail_url,
+  is_public: projects.is_public,
+  collaborators: projects.collaborators,
+  owner_name: projects.owner_name,
+  owner_username: projects.owner_username,
+  owner_avatar_url: projects.owner_avatar_url,
+  created_at: projects.created_at,
+  updated_at: projects.updated_at,
+};
+
+export const getProjectsByUser = async (userId, userEmail) => {
+  const ownerFilter = and(
+    eq(projects.user_id, userId),
+    isNull(projects.deleted_at),
+  );
+
+  const normalizedUserEmail = userEmail?.trim().toLowerCase();
+  const collabFilter = normalizedUserEmail
+    ? and(
+        sql`${projects.collaborators}::jsonb @> ${JSON.stringify([normalizedUserEmail])}::jsonb`,
+        isNull(projects.deleted_at),
+      )
+    : null;
+
+  const whereClause = collabFilter
+    ? or(ownerFilter, collabFilter)
+    : ownerFilter;
+
+  let rows = await db.select().from(projects).where(whereClause);
+
+  if (rows.length === 0) {
+    await db.insert(projects).values({
+      user_id: userId,
+      title: "My First Project",
+      description: null,
+      thumbnail_url: null,
+      is_public: false,
+      collaborators: [],
+      owner_name: null,
+      owner_username: null,
+      owner_avatar_url: null,
+    });
+
+    rows = await db.select().from(projects).where(whereClause);
+  }
+
+  return rows;
+};
+
+export const createProjectRecord = async ({
+  userId,
+  title,
+  description,
+  thumbnail_url,
+  owner_name,
+  owner_username,
+  owner_avatar_url,
+}) => {
+  const [newProject] = await db
+    .insert(projects)
+    .values({
+      user_id: userId,
+      title,
+      description,
+      thumbnail_url,
+      is_public: false,
+      collaborators: [],
+      owner_name,
+      owner_username,
+      owner_avatar_url,
+    })
+    .returning(projectSelectFields);
+
+  return newProject;
+};
+
+export const updateProjectById = async (userId, projectId, updateData) => {
+  const [updatedProject] = await db
+    .update(projects)
+    .set({
+      ...updateData,
+      updated_at: new Date(),
+    })
+    .where(
+      and(
+        eq(projects.id, projectId),
+        eq(projects.user_id, userId),
+        isNull(projects.deleted_at),
+      ),
+    )
+    .returning(projectSelectFields);
+
+  return updatedProject ?? null;
+};
+
+export const deleteProjectById = async (userId, projectId) => {
+  const [deletedProject] = await db
+    .delete(projects)
+    .where(
+      and(
+        eq(projects.id, projectId),
+        eq(projects.user_id, userId),
+        isNull(projects.deleted_at),
+      ),
+    )
+    .returning({ id: projects.id });
+
+  return deletedProject ?? null;
+};
 
 export const verifyProjectOwnership = async (projectId, userId) => {
   try {
@@ -115,4 +233,28 @@ export const removeCollaboratorFromProject = async (
     logger.error("Error removing collaborator from project:", error);
     return null;
   }
+};
+
+export const uploadThumbnail = async (userId, file) => {
+  const ext = file.originalname?.split(".").pop() || "png";
+  const fileName = `${crypto.randomUUID()}.${ext}`;
+  const filePath = `${userId}/${fileName}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from(THUMBNAIL_BUCKET)
+    .upload(filePath, file.buffer, {
+      contentType: file.mimetype,
+      upsert: true,
+    });
+
+  if (uploadError) throw uploadError;
+
+  const { data: publicData } = supabase.storage
+    .from(THUMBNAIL_BUCKET)
+    .getPublicUrl(filePath);
+
+  return {
+    url: publicData.publicUrl,
+    path: filePath,
+  };
 };

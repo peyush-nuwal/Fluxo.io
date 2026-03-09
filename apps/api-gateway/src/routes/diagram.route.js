@@ -7,6 +7,7 @@ import { Router } from "express";
 const router = Router();
 
 const proxyOptions = {
+  parseReqBody: false,
   proxyReqPathResolver: (req) => {
     const upstreamPath = req.originalUrl.replace(
       /^\/api\/v1\/diagram/,

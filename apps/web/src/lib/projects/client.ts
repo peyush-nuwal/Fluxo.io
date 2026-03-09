@@ -13,11 +13,17 @@ export async function getProjects() {
   return apiFetch("/api/v1/projects");
 }
 
-export async function createProject(payload: createProjectPayload) {
-  return apiFetch("/api/v1/projects", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+export async function createProject(payload: createProjectPayload | FormData) {
+  const options: Record<string, unknown> = { method: "POST" };
+
+  if (payload instanceof FormData) {
+    options.data = payload;
+  } else {
+    options.body = JSON.stringify(payload);
+  }
+
+  const response = await apiFetch("/api/v1/projects", options);
+  return response?.project ?? response;
 }
 
 export async function getProjectById(projectId: string) {

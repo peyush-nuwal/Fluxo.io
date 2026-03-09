@@ -2,7 +2,9 @@ import logger from "../config/logger.js";
 import {
   createDiagramSchema,
   updateDiagramSchema,
+  ZodError,
 } from "../../../../../packages/zod-schemas/index.js";
+import { uploadThumbnail } from "../services/project.service.js";
 
 import {
   verifyProjectOwnership,
@@ -23,6 +25,31 @@ import {
   getDiagramByProject,
   getAllSoftDeletedDiagramByUser,
 } from "../services/diagram.service.js";
+
+const normalizeOptionalText = (value) => {
+  if (value === undefined) return undefined;
+  if (value === null) return null;
+  if (typeof value !== "string") return value;
+
+  const trimmed = value.trim();
+  if (trimmed === "") return null;
+  if (trimmed.toLowerCase() === "null") return null;
+  return trimmed;
+};
+
+const getUploadedThumbnail = (req) => {
+  if (!req.files || typeof req.files !== "object") return null;
+
+  const files = req.files;
+  if (Array.isArray(files.thumbnail) && files.thumbnail.length > 0) {
+    return files.thumbnail[0];
+  }
+  if (Array.isArray(files.thumbnail_url) && files.thumbnail_url.length > 0) {
+    return files.thumbnail_url[0];
+  }
+
+  return null;
+};
 
 /* ===================== PROJECT ===================== */
 
@@ -125,6 +152,35 @@ export const createDiagramController = async (req, res) => {
     const userId = req.user?.id;
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
+    const uploadedThumbnail = getUploadedThumbnail(req);
+    if (
+      uploadedThumbnail &&
+      !uploadedThumbnail.mimetype?.startsWith("image/")
+    ) {
+      return res.status(400).json({ error: "Thumbnail must be an image file" });
+    }
+
+    const normalizedPayload = {
+      name: normalizeOptionalText(req.body?.name),
+      data: req.body?.data,
+      projectId: normalizeOptionalText(req.body?.projectId),
+      description: normalizeOptionalText(req.body?.description),
+      thumbnail_url: normalizeOptionalText(req.body?.thumbnail_url),
+      owner_name: normalizeOptionalText(req.body?.owner_name),
+      owner_username: normalizeOptionalText(req.body?.owner_username),
+      owner_avatar_url: normalizeOptionalText(req.body?.owner_avatar_url),
+    };
+
+    if (uploadedThumbnail?.buffer) {
+      try {
+        const uploadResult = await uploadThumbnail(userId, uploadedThumbnail);
+        normalizedPayload.thumbnail_url = uploadResult.url;
+      } catch (error) {
+        logger.error("Failed to upload diagram thumbnail:", error);
+        return res.status(500).json({ error: "Failed to upload thumbnail" });
+      }
+    }
+
     const {
       name,
       data,
@@ -134,7 +190,7 @@ export const createDiagramController = async (req, res) => {
       owner_name,
       owner_username,
       owner_avatar_url,
-    } = createDiagramSchema.parse(req.body);
+    } = createDiagramSchema.parse(normalizedPayload);
 
     const normalizedName =
       typeof name === "string" && name.trim().length > 0 ? name.trim() : null;
@@ -158,6 +214,11 @@ export const createDiagramController = async (req, res) => {
     return res.status(201).json({ diagram });
   } catch (error) {
     logger.error("Error creating diagram:", error);
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json({ error: "Validation error", details: error.errors });
+    }
     return res.status(500).json({ error: "Internal server error" });
   }
 };

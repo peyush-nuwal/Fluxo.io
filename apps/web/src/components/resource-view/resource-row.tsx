@@ -6,15 +6,24 @@ import ResourceItem from "./resource-item";
 type Props = {
   resource: DiagramResource;
   mode?: "active" | "trash";
+  selected?: boolean;
+  onSelect?: () => void;
 };
 
-const ResourceRow = ({ resource, mode = "active" }: Props) => {
+const ResourceRow = ({
+  resource,
+  mode = "active",
+  selected = false,
+  onSelect,
+}: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <ResourceItem
       resource={resource}
       mode={mode}
+      selected={selected}
+      onSelect={onSelect}
       asChild
       onContextMenu={() => setMenuOpen(true)}
     >

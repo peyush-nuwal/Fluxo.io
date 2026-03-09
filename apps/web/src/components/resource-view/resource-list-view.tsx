@@ -14,12 +14,16 @@ type Props = {
   resources: DiagramResource[];
   loading?: boolean;
   mode?: "active" | "trash";
+  selectedResourceId?: string | null;
+  onSelectResource?: (resourceId: string) => void;
 };
 
 const ResourceListView = ({
   resources,
   loading = false,
   mode = "active",
+  selectedResourceId,
+  onSelectResource,
 }: Props) => {
   const tableHeading = ["Name", "Description", "Visibility", "Views", ""];
   return (
@@ -47,7 +51,13 @@ const ResourceListView = ({
               ))
             : resources?.length
               ? resources.map((r) => (
-                  <ResourceRow key={r.id} resource={r} mode={mode} />
+                  <ResourceRow
+                    key={r.id}
+                    resource={r}
+                    mode={mode}
+                    selected={selectedResourceId === r.id}
+                    onSelect={() => onSelectResource?.(r.id)}
+                  />
                 ))
               : null}
         </TableBody>

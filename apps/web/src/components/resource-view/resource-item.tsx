@@ -1,9 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Slot } from "@radix-ui/react-slot";
 import type { Resource } from "./rowUi";
 import { hardDeleteDiagram, softDeleteDiagram } from "@/lib/diagrams/client";
 import { useDiagramStore } from "@/store/diagramsStore";
+import DeleteAlertDialog from "../delete-alert-dialog";
 
 type Props = {
   resource: Resource;
@@ -16,6 +17,8 @@ type Props = {
       ) => React.ReactNode);
   asChild?: boolean;
   onContextMenu?: (event: React.MouseEvent) => void;
+  selected?: boolean;
+  onSelect?: () => void;
 };
 const ResourceItem = ({
   resource,
@@ -23,7 +26,10 @@ const ResourceItem = ({
   children,
   asChild,
   onContextMenu,
+  selected = false,
+  onSelect,
 }: Props) => {
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const fetchDiagrams = useDiagramStore((state) => state.fetchDiagrams);
   const fetchTrashDiagrams = useDiagramStore(
     (state) => state.fetchTrashDiagrams,
@@ -33,8 +39,9 @@ const ResourceItem = ({
     // open edit modal
   };
 
-  const handleDelete = async () => {
+  const performDelete = async () => {
     if (!resource.id) return;
+
     try {
       if (mode === "trash") {
         await hardDeleteDiagram(resource.id);
@@ -45,28 +52,66 @@ const ResourceItem = ({
       if (mode === "active") {
         await fetchDiagrams();
       }
-    } catch (error) {
-      console.error("Failed to delete diagram", error);
+    } catch {
+      // Keep UI responsive even if deletion fails.
     }
   };
-  const Comp = asChild ? Slot : "div";
+
+  const handleDelete = async () => {
+    if (mode === "trash") {
+      setConfirmOpen(true);
+      return;
+    }
+
+    await performDelete();
+  };
+
+  const handleConfirmDelete = async () => {
+    await performDelete();
+    setConfirmOpen(false);
+  };
 
   const content =
     typeof children === "function"
       ? children(resource, { onEdit: handleEdit, onDelete: handleDelete })
       : children;
 
-  return (
-    <Comp
-      data-resource-id={resource.id ?? undefined}
-      onContextMenu={(e) => {
+  const itemProps = {
+    "data-resource-id": resource.id ?? undefined,
+    "data-state": selected ? "selected" : undefined,
+    className: "cursor-pointer focus-visible:outline-none",
+    tabIndex: 0,
+    onClick: () => onSelect?.(),
+    onKeyDown: (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
-        // open actions menu
-        onContextMenu?.(e);
-      }}
-    >
-      {content}
-    </Comp>
+        onSelect?.();
+      }
+    },
+    onContextMenu: (e: React.MouseEvent) => {
+      e.preventDefault();
+      // open actions menu
+      onContextMenu?.(e);
+    },
+  } as const;
+
+  return (
+    <>
+      {asChild ? (
+        <Slot {...(itemProps as any)}>{content as any}</Slot>
+      ) : (
+        <div {...itemProps}>{content}</div>
+      )}
+      {mode === "trash" && (
+        <DeleteAlertDialog
+          open={confirmOpen}
+          onOpenChange={setConfirmOpen}
+          onConfirm={handleConfirmDelete}
+          title="Permanently delete this diagram?"
+          description={`"${resource.name}" will be permanently deleted and cannot be restored.`}
+        />
+      )}
+    </>
   );
 };
 

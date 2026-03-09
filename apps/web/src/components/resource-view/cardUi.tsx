@@ -8,6 +8,7 @@ import {
   User2,
 } from "lucide-react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +22,7 @@ import {
 
 type Props = {
   resource: DiagramResource;
+  selected?: boolean;
   menuOpen: boolean;
   onMenuOpenChange: (open: boolean) => void;
   onEdit: () => void;
@@ -29,6 +31,7 @@ type Props = {
 
 const CardUI = ({
   resource,
+  selected = false,
   menuOpen,
   onMenuOpenChange,
   onEdit,
@@ -38,27 +41,32 @@ const CardUI = ({
   const ownerAvatar = resource.owner_avatar_url?.trim();
 
   return (
-    <div className="rounded-lg p-4 w-full max-w-[320px] shadow bg-card border border-solid border-border">
-      <div className="rounded-md bg-background w-full h-36 flex items-center justify-center overflow-hidden">
-        {resource.thumbnail ? (
+    <div
+      className={cn(
+        "flex h-full w-full max-w-[320px] flex-col rounded-lg border border-solid border-border bg-card p-4 shadow transition-colors cursor-pointer",
+        selected && "border-primary ring-2 ring-primary/25",
+      )}
+    >
+      <div className="relative h-36 w-full overflow-hidden rounded-md bg-background">
+        {resource.thumbnail_url ? (
           <Image
-            src={resource.thumbnail}
-            alt=""
-            width={50}
-            height={50}
-            className="object-fill w-full h-full "
+            src={resource.thumbnail_url}
+            alt={resource.name || "Diagram thumbnail"}
+            fill
+            sizes="(max-width: 768px) 100vw, 320px"
+            className="object-cover object-center"
           />
         ) : (
-          <div className="flex flex-col items-center justify-center gap-2 ">
+          <div className="flex h-full flex-col items-center justify-center gap-2">
             <MountainSnow className="text-muted-foreground" />
             <p className="text-xs text-muted-foreground">No Thumbnail</p>
           </div>
         )}
       </div>
       {/* // data  */}
-      <div className="flex  mt-5 gap-3">
+      <div className="mt-5 flex items-start gap-3">
         {/* user pfp */}
-        <div className="size-10 rounded-full overflow-hidden">
+        <div className="size-10 shrink-0 overflow-hidden rounded-full">
           {ownerAvatar ? (
             <Image
               src={ownerAvatar}
@@ -73,18 +81,19 @@ const CardUI = ({
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-2">
-          <h5 className="text-sm font-medium ">{resource.name}</h5>
-          <p className="text-xs  flex items-center gap-2">
-            <span>By {ownerName}</span> .{" "}
-            <span className="flex items-center gap-2">
-              <Star className="text-foreground size-4" />
+        <div className="min-w-0 flex-1">
+          <h5 className="truncate text-sm font-medium">{resource.name}</h5>
+          <p className="mt-1 flex min-w-0 items-center gap-2 text-xs">
+            <span className="min-w-0 truncate">By {ownerName}</span>
+            <span className="text-muted-foreground">.</span>
+            <span className="flex shrink-0 items-center gap-1.5">
+              <Star className="size-4 text-foreground" />
               {resource.views}
             </span>
           </p>
         </div>
         <DropdownEllipsisMenu
-          className="ml-auto"
+          className="ml-auto shrink-0"
           open={menuOpen}
           onOpenChange={onMenuOpenChange}
           onEdit={onEdit}

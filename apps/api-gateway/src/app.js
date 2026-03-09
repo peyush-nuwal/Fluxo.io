@@ -30,7 +30,7 @@ app.use(cookieParser());
 
 app.use(
   morgan("combined", {
-    stream: { write: (msg) => console.log(msg.trim()) },
+    stream: { write: (msg) => process.stdout.write(msg) },
   }),
 );
 
@@ -77,12 +77,7 @@ app.use(
   authRoutes,
 );
 
-app.use(
-  "/api/v1/diagram",
-  express.json(),
-  express.urlencoded({ extended: true }),
-  diagramRoutes,
-);
+app.use("/api/v1/diagram", diagramRoutes);
 
 app.use(
   "/api/v1/ai",

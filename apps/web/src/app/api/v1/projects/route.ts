@@ -1,6 +1,8 @@
 import { API_BASE_URL } from "@/config/server-env";
 import { NextRequest, NextResponse } from "next/server";
 
+type ProxyBody = string | FormData | undefined;
+
 export async function GET(req: NextRequest) {
   try {
     const cookie = req.headers.get("cookie");
@@ -33,7 +35,7 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json(data, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },
@@ -45,16 +47,27 @@ export async function POST(req: NextRequest) {
   try {
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
-    const body = await req.json();
+    const contentType = req.headers.get("content-type") || "";
+
+    const headers: Record<string, string> = {
+      Cookie: cookie ?? "",
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    };
+
+    let body: ProxyBody;
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await req.formData();
+      body = formData;
+    } else {
+      const json = await req.json();
+      headers["Content-Type"] = "application/json";
+      body = JSON.stringify(json);
+    }
 
     const res = await fetch(`${API_BASE_URL}/api/v1/diagram/projects`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: cookie ?? "",
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
-      body: JSON.stringify(body),
+      headers,
+      body,
       credentials: "include",
       cache: "no-store",
     });
@@ -73,7 +86,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(data, { status: res.status });
-  } catch (_error) {
+  } catch {
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },

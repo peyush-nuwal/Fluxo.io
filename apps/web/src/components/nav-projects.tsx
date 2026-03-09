@@ -6,7 +6,6 @@ import {
   Share,
   Trash2,
   ChevronRight,
-  type LucideIcon,
 } from "lucide-react";
 
 import {
@@ -32,13 +31,20 @@ import {
 } from "@/components/ui/collapsible";
 import Link from "next/link";
 import { ProjectNavItem } from "@/types/sidebar";
+import { useEffect } from "react";
+import { useProjectStore } from "@/store/projectsStore";
 
 type NavProjectsProps = {
   projects: ProjectNavItem[];
 };
 
-export function NavProjects({ projects }: NavProjectsProps) {
+export function NavProjects({ projects: _projects }: NavProjectsProps) {
   const { isMobile } = useSidebar();
+  const { projects: resources, fetchProject } = useProjectStore();
+
+  useEffect(() => {
+    fetchProject();
+  }, [fetchProject]);
 
   return (
     <Collapsible
@@ -52,16 +58,15 @@ export function NavProjects({ projects }: NavProjectsProps) {
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenu>
-            {projects.map((item) => (
-              <SidebarMenuItem key={item.label}>
+            {resources.map((item) => (
+              <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton
                   asChild
                   className="hover:bg-sidebar-accent
   hover:text-sidebar-primary"
                 >
-                  <Link href={item.href}>
-                    <item.icon />
-                    <span className="text-sm">{item.label}</span>
+                  <Link href={item.id}>
+                    <span className="text-sm">{item.title}</span>
                   </Link>
                 </SidebarMenuButton>
                 <DropdownMenu>

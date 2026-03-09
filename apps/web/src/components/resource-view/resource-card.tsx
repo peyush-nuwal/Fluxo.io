@@ -7,20 +7,30 @@ import type { DiagramResource } from "@/types/diagrams";
 type Props = {
   resource: DiagramResource;
   mode?: "active" | "trash";
+  selected?: boolean;
+  onSelect?: () => void;
 };
 
-const ResourceCard = ({ resource, mode = "active" }: Props) => {
+const ResourceCard = ({
+  resource,
+  mode = "active",
+  selected = false,
+  onSelect,
+}: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <ResourceItem
       resource={resource}
       mode={mode}
+      selected={selected}
+      onSelect={onSelect}
       onContextMenu={() => setMenuOpen(true)}
     >
       {(r, actions) => (
         <CardUI
           resource={r}
+          selected={selected}
           menuOpen={menuOpen}
           onMenuOpenChange={setMenuOpen}
           onEdit={actions.onEdit}
