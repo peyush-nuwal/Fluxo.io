@@ -28,6 +28,7 @@ import { useFormStatus } from "react-dom";
 import { useUser } from "@/hooks/use-user";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { FileUpload } from "./file-upload";
 
 type CreateDiagramFormState = {
   success: boolean;
@@ -76,13 +77,17 @@ export default function CreateDiagramDialog() {
         payload.append("thumbnail", thumbnail);
       }
 
-      const created = await createDiagram(payload);
-
-      if (!created) {
-        toast.error("failed to create diagram!");
-        return { success: false, error: "Failed to create diagram." };
+      const result = await createDiagram(payload);
+      console.log("result", result);
+      if (!result.success) {
+        toast.error(result?.message);
+        return {
+          success: false,
+          error: result.message ?? "Failed to create diagram",
+        };
       }
 
+      toast.success("Diagram created");
       return { success: true, error: null };
     },
     initialFormState,
@@ -180,14 +185,10 @@ export default function CreateDiagramDialog() {
               className="min-h-32!"
             />
           </Field>
+
           <Field>
             <FieldLabel htmlFor="thumbnail">Thumbnail (optional)</FieldLabel>
-            <Input
-              id="thumbnail"
-              name="thumbnail"
-              type="file"
-              accept="image/*"
-            />
+            <FileUpload name="thumbnail" />
           </Field>
 
           {formState.error && (

@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!res.ok) {
-      return NextResponse.json({ message: data }, { status: res.status });
+      return NextResponse.json({ message: data.error }, { status: res.status });
     }
 
     return NextResponse.json(data, { status: res.status });

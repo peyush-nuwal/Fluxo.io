@@ -6,6 +6,7 @@ import {
   Share,
   Trash2,
   ChevronRight,
+  Plus,
 } from "lucide-react";
 
 import {
@@ -33,6 +34,8 @@ import Link from "next/link";
 import { ProjectNavItem } from "@/types/sidebar";
 import { useEffect } from "react";
 import { useProjectStore } from "@/store/projectsStore";
+import { Button } from "./ui/button";
+import { useModalStore } from "@/store/useModalStore";
 
 type NavProjectsProps = {
   projects: ProjectNavItem[];
@@ -41,20 +44,39 @@ type NavProjectsProps = {
 export function NavProjects({ projects: _projects }: NavProjectsProps) {
   const { isMobile } = useSidebar();
   const { projects: resources, fetchProject } = useProjectStore();
-
+  const createProjectOpen = useModalStore((s) => s.open);
   useEffect(() => {
     fetchProject();
   }, [fetchProject]);
 
+  const onClickCreateProject = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    createProjectOpen("createProjectDialog");
+  };
   return (
     <Collapsible
       defaultOpen
       className="group/collapsible group-data-[collapsible=icon]:hidden"
     >
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-        <CollapsibleTrigger className="flex w-full items-center justify-between ">
-          <SidebarGroupLabel className="text-sm">Projects</SidebarGroupLabel>
-          <ChevronRight className="size-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
+        <CollapsibleTrigger asChild>
+          <div className="flex w-full items-center justify-between group">
+            <SidebarGroupLabel className="text-sm">Projects</SidebarGroupLabel>
+
+            <div className="flex gap-2 items-center">
+              <Button
+                onClick={onClickCreateProject}
+                size="sm"
+                variant="ghost"
+                className="opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <Plus className="size-4" />
+              </Button>
+
+              <ChevronRight className="size-4 transition-transform group-data-[state=open]/collapsible:rotate-90" />
+            </div>
+          </div>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenu>

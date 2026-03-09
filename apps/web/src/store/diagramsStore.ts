@@ -15,7 +15,11 @@ type DiagramState = {
   loading: boolean;
   error: string | null;
 };
-
+type CreateDiagramResult = {
+  success: boolean;
+  diagram?: DiagramResource;
+  message?: string;
+};
 type DiagramActions = {
   setDiagrams: (diagrams: DiagramResource[]) => void;
   setSelectedDiagram: (diagram: DiagramResource | null) => void;
@@ -37,7 +41,7 @@ type DiagramActions = {
           owner_avatar_url?: string | null;
         }
       | FormData,
-  ) => Promise<DiagramResource | null>;
+  ) => Promise<CreateDiagramResult>;
   reset: () => void;
 };
 
@@ -98,22 +102,22 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
     },
 
     createDiagram: async (payload) => {
-      set({ loading: true, error: null });
       try {
         const data = await createDiagram(payload);
         const diagram = data?.diagram ?? data ?? null;
-        if (diagram) {
-          set({ diagrams: [diagram, ...get().diagrams], loading: false });
-        } else {
-          set({ loading: false });
+
+        if (!diagram) {
+          return { success: false, message: "Failed to create diagram" };
         }
-        return diagram;
+
+        set({ diagrams: [diagram, ...get().diagrams] });
+
+        return { success: true, diagram };
       } catch (err: any) {
-        set({
-          error: err?.message ?? "Failed to create diagram",
-          loading: false,
-        });
-        return null;
+        return {
+          success: false,
+          message: err?.message ?? "Failed to create diagram",
+        };
       }
     },
 
