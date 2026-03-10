@@ -1,9 +1,9 @@
 "use client";
 
 import CommandMenu from "./command-menu";
-import CreateDiagramDialog from "./create-diagram-dialog";
+import DiagramForm from "./diagram-form";
 import { useModalStore } from "@/store/useModalStore";
-import CreateProjectDialog from "./create-project-dialog";
+import ProjectForm from "./project-form";
 
 export default function ModalProvider() {
   const { modelType } = useModalStore();
@@ -11,8 +11,8 @@ export default function ModalProvider() {
   return (
     <>
       <CommandMenu />
-      {modelType === "createDiagramDialog" && <CreateDiagramDialog />}
-      {modelType === "createProjectDialog" && <CreateProjectDialog />}
+      {modelType === "DiagramForm" && <DiagramForm />}
+      {modelType === "ProjectForm" && <ProjectForm />}
     </>
   );
 }

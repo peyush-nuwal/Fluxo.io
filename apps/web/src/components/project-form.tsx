@@ -17,24 +17,27 @@ import { Textarea } from "./ui/textarea";
 
 import { toast } from "sonner";
 import { useProjectStore } from "@/store/projectsStore";
+import { FileUpload } from "./file-upload";
 
-type CreateProjectFormState = {
+type ProjectFormState = {
   success: boolean;
   error: string | null;
 };
 
-const initialFormState: CreateProjectFormState = {
+const initialFormState: ProjectFormState = {
   success: false,
   error: null,
 };
 
-const createProjectDialog = () => {
-  const { modelType, close } = useModalStore();
+const ProjectForm = () => {
+  const { modelType, close, data } = useModalStore();
   const { user } = useUser();
   const { createProject } = useProjectStore();
+  const mode = data?.mode ?? "create";
+  const project = data?.project;
 
   const [formState, formAction] = useActionState(
-    async (_prevState: CreateProjectFormState, formData: FormData) => {
+    async (_prevState: ProjectFormState, formData: FormData) => {
       const title = String(formData.get("title") ?? "").trim();
       const description = String(formData.get("description") ?? "").trim();
       const thumbnail = formData.get("thumbnail");
@@ -82,21 +85,32 @@ const createProjectDialog = () => {
     toast.success("Project created Successfully");
     close();
   }, [formState.success, close]);
+
+  const formTitle =
+    mode === "edit"
+      ? `Edit ${project?.name ?? "Project"}`
+      : "Create New Project";
+  const formDescription =
+    mode === "edit" ? "Modify the project details." : "Create a new Project.";
   return (
-    <Dialog open={modelType === "createProjectDialog"} onOpenChange={close}>
+    <Dialog open={modelType === "ProjectForm"} onOpenChange={close}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
+          <DialogTitle>{formTitle}</DialogTitle>
           <DialogDescription className="sr-only">
-            Create a new project with optional thumbnail, title, and
-            description.
+            {formDescription}
           </DialogDescription>
         </DialogHeader>
 
         <form action={formAction} className="space-y-4">
           <Field>
             <FieldLabel htmlFor="title">Project Name</FieldLabel>
-            <Input id="title" name="title" placeholder="Untitled Project" />
+            <Input
+              id="title"
+              name="title"
+              placeholder="Untitled Project"
+              defaultValue={mode == "edit" ? project.title : ""}
+            />
           </Field>
           <Field>
             <FieldLabel htmlFor="description">Description</FieldLabel>
@@ -106,15 +120,14 @@ const createProjectDialog = () => {
               placeholder="Write a short description (optional)"
               rows={6}
               className="min-h-32!"
+              defaultValue={mode === "edit" ? project?.description : ""}
             />
           </Field>
           <Field>
             <FieldLabel htmlFor="thumbnail">Thumbnail (optional)</FieldLabel>
-            <Input
-              id="thumbnail"
+            <FileUpload
               name="thumbnail"
-              type="file"
-              accept="image/*"
+              initialPreview={mode === "edit" ? project?.thumbnail_url : null}
             />
           </Field>
 
@@ -126,7 +139,7 @@ const createProjectDialog = () => {
             <Button type="button" variant="outline" onClick={close}>
               Cancel
             </Button>
-            <SubmitButton />
+            <SubmitButton mode={mode} />
           </div>
         </form>
       </DialogContent>
@@ -134,14 +147,20 @@ const createProjectDialog = () => {
   );
 };
 
-export default createProjectDialog;
+export default ProjectForm;
 
-function SubmitButton() {
+function SubmitButton({ mode }: { mode: "create" | "edit" }) {
   const { pending } = useFormStatus();
 
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Creating..." : "Create Project"}
+      {pending
+        ? mode === "edit"
+          ? "Updating..."
+          : "Creating..."
+        : mode === "edit"
+          ? "Update Project"
+          : "Create Project"}
     </Button>
   );
 }

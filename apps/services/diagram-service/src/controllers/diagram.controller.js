@@ -37,6 +37,26 @@ const normalizeOptionalText = (value) => {
   return trimmed;
 };
 
+const normalizeOptionalBoolean = (value) => {
+  if (value === undefined || value === null || value === "") return undefined;
+  if (typeof value === "boolean") return value;
+  if (typeof value !== "string") return value;
+
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "true" || normalized === "1") return true;
+  if (normalized === "false" || normalized === "0") return false;
+
+  return value;
+};
+
+const normalizeUpdateName = (value) => {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== "string") return value;
+
+  const trimmed = value.trim();
+  return trimmed === "" ? undefined : trimmed;
+};
+
 const getUploadedThumbnail = (req) => {
   if (!req.files || typeof req.files !== "object") return null;
 
@@ -235,12 +255,54 @@ export const updateDiagramController = async (req, res) => {
       return res.status(404).json({ error: "Diagram not found" });
     }
 
-    const updateData = updateDiagramSchema.parse(req.body);
+    const uploadedThumbnail = getUploadedThumbnail(req);
+    if (
+      uploadedThumbnail &&
+      !uploadedThumbnail.mimetype?.startsWith("image/")
+    ) {
+      return res.status(400).json({ error: "Thumbnail must be an image file" });
+    }
+
+    const normalizedPayload = {
+      name: normalizeUpdateName(req.body?.name),
+      description: normalizeOptionalText(req.body?.description),
+      data: req.body?.data,
+      is_active: normalizeOptionalBoolean(req.body?.is_active),
+      thumbnail_url: normalizeOptionalText(req.body?.thumbnail_url),
+      owner_name: normalizeOptionalText(req.body?.owner_name),
+      owner_username: normalizeOptionalText(req.body?.owner_username),
+      owner_avatar_url: normalizeOptionalText(req.body?.owner_avatar_url),
+    };
+
+    if (uploadedThumbnail?.buffer) {
+      try {
+        const uploadResult = await uploadThumbnail(userId, uploadedThumbnail);
+        normalizedPayload.thumbnail_url = uploadResult.url;
+      } catch (error) {
+        logger.error("Failed to upload diagram thumbnail:", error);
+        return res.status(500).json({ error: "Failed to upload thumbnail" });
+      }
+    }
+
+    const parsed = updateDiagramSchema.parse(normalizedPayload);
+    const updateData = Object.fromEntries(
+      Object.entries(parsed).filter(([, value]) => value !== undefined),
+    );
+
     const updatedDiagram = await updateDiagram(diagramId, updateData);
+
+    if (!updatedDiagram) {
+      return res.status(404).json({ error: "Diagram not found" });
+    }
 
     return res.status(200).json({ diagram: updatedDiagram });
   } catch (error) {
     logger.error("Error updating diagram:", error);
+    if (error instanceof ZodError) {
+      return res
+        .status(400)
+        .json({ error: "Validation error", details: error.errors });
+    }
     return res.status(500).json({ error: "Internal server error" });
   }
 };

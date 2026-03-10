@@ -1,12 +1,17 @@
 "use client";
 
 import { create } from "zustand";
-import type { DiagramResource } from "@/types/diagrams";
+import type {
+  DiagramPayload,
+  DiagramResource,
+  UpdateDiagramPayload,
+} from "@/types/diagrams";
 import {
   getDiagramsByUser,
   getDiagramById,
   createDiagram,
   getSoftDeletedDiagrams,
+  updateDiagram,
 } from "@/lib/diagrams/client";
 
 type DiagramState = {
@@ -15,7 +20,7 @@ type DiagramState = {
   loading: boolean;
   error: string | null;
 };
-type CreateDiagramResult = {
+type diagramResult = {
   success: boolean;
   diagram?: DiagramResource;
   message?: string;
@@ -28,20 +33,11 @@ type DiagramActions = {
   fetchDiagrams: () => Promise<void>;
   fetchTrashDiagrams: () => Promise<void>;
   fetchDiagramById: (diagramId: string) => Promise<void>;
-  createDiagram: (
-    payload:
-      | {
-          name?: string | null;
-          projectId?: string | null;
-          data?: Record<string, any> | null;
-          description?: string | null;
-          thumbnail_url?: string | null;
-          owner_name?: string | null;
-          owner_username?: string | null;
-          owner_avatar_url?: string | null;
-        }
-      | FormData,
-  ) => Promise<CreateDiagramResult>;
+  createDiagram: (payload: DiagramPayload | FormData) => Promise<diagramResult>;
+  updateDiagram: (
+    payload: UpdateDiagramPayload | FormData,
+    diagramId: string,
+  ) => Promise<diagramResult>;
   reset: () => void;
 };
 
@@ -117,6 +113,29 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
         return {
           success: false,
           message: err?.message ?? "Failed to create diagram",
+        };
+      }
+    },
+    updateDiagram: async (payload, diagramId) => {
+      try {
+        const data = await updateDiagram(payload, diagramId);
+        const diagram = data?.diagram ?? data ?? null;
+
+        if (!diagram) {
+          return { success: false, message: "Failed to update diagram" };
+        }
+
+        const diagrams = get().diagrams;
+        const updatedDiagrams = diagrams.some((d) => d.id === diagram.id)
+          ? diagrams.map((d) => (d.id === diagram.id ? diagram : d))
+          : [diagram, ...diagrams];
+        set({ diagrams: updatedDiagrams });
+
+        return { success: true, diagram };
+      } catch (err: any) {
+        return {
+          success: false,
+          message: err?.message ?? "Failed to update diagram",
         };
       }
     },

@@ -3,12 +3,10 @@ import { create } from "zustand";
 
 type ModalType =
   | "deleteDiagram"
-  | "renameDiagram"
-  | "createProject"
-  | "createDiagramDialog"
+  | "ProjectForm"
+  | "DiagramForm"
   | "themeDialog"
   | "commandMenuDialog"
-  | "createProjectDialog"
   | null;
 
 type ModalStore = {

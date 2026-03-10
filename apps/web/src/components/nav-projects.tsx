@@ -7,6 +7,7 @@ import {
   Trash2,
   ChevronRight,
   Plus,
+  Edit,
 } from "lucide-react";
 
 import {
@@ -36,6 +37,7 @@ import { useEffect } from "react";
 import { useProjectStore } from "@/store/projectsStore";
 import { Button } from "./ui/button";
 import { useModalStore } from "@/store/useModalStore";
+import { ProjectType } from "@/types/project";
 
 type NavProjectsProps = {
   projects: ProjectNavItem[];
@@ -52,7 +54,11 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
   const onClickCreateProject = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
-    createProjectOpen("createProjectDialog");
+    createProjectOpen("ProjectForm", { mode: "create" });
+  };
+
+  const handleEditProject = (project: ProjectType) => {
+    createProjectOpen("ProjectForm", { mode: "edit", project });
   };
   return (
     <Collapsible
@@ -61,7 +67,7 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
     >
       <SidebarGroup className="group-data-[collapsible=icon]:hidden">
         <CollapsibleTrigger asChild>
-          <div className="flex w-full items-center justify-between group">
+          <div className="flex w-full items-center justify-between group/sidebar-label">
             <SidebarGroupLabel className="text-sm">Projects</SidebarGroupLabel>
 
             <div className="flex gap-2 items-center">
@@ -69,7 +75,7 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
                 onClick={onClickCreateProject}
                 size="sm"
                 variant="ghost"
-                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                className="opacity-0 group-hover/sidebar-label:opacity-100 transition-opacity"
               >
                 <Plus className="size-4" />
               </Button>
@@ -103,6 +109,10 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
                     side={isMobile ? "bottom" : "right"}
                     align={isMobile ? "end" : "start"}
                   >
+                    <DropdownMenuItem onClick={() => handleEditProject(item)}>
+                      <Edit />
+                      Edit
+                    </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Folder className="text-muted-foreground" />
                       <span>View Project</span>

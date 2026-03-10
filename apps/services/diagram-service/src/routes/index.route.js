@@ -86,7 +86,7 @@ router.get("/diagrams/:diagramId/public", getPublicDiagramController);
 // create diagram
 router.post("/diagrams", ThumbnailUpload, createDiagramController);
 // update
-router.put("/diagrams/:diagramId", updateDiagramController);
+router.put("/diagrams/:diagramId", ThumbnailUpload, updateDiagramController);
 
 // soft delete diagram
 router.delete("/diagrams/:diagramId", softDeleteDiagramController);

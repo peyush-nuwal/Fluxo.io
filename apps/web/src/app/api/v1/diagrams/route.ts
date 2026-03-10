@@ -8,12 +8,13 @@ export async function GET(req: NextRequest) {
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
 
+    const headers: Record<string, string> = {
+      ...(cookie && { Cookie: cookie }),
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+    };
     const res = await fetch(`${API_BASE_URL}/api/v1/diagram/diagrams`, {
       method: "GET",
-      headers: {
-        Cookie: cookie ?? "",
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
+      headers,
       credentials: "include",
       cache: "no-store",
     });
@@ -46,15 +47,16 @@ export async function POST(req: NextRequest) {
     const accessToken = req.cookies.get("access_token")?.value;
 
     const contentType = req.headers.get("content-type") || "";
+
     const headers: Record<string, string> = {
-      Cookie: cookie ?? "",
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      ...(cookie && { Cookie: cookie }),
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     };
 
     let body: ProxyBody;
+
     if (contentType.includes("multipart/form-data")) {
-      const formData = await req.formData();
-      body = formData;
+      body = await req.formData();
     } else {
       const json = await req.json();
       headers["Content-Type"] = "application/json";
@@ -65,21 +67,19 @@ export async function POST(req: NextRequest) {
       method: "POST",
       headers,
       body,
-      credentials: "include",
       cache: "no-store",
     });
 
     const text = await res.text();
-    let data: any = null;
+    let data = null;
 
-    try {
-      data = text ? JSON.parse(text) : null;
-    } catch {
-      data = null;
-    }
+    data = text ? JSON.parse(text) : null;
 
     if (!res.ok) {
-      return NextResponse.json({ message: data.error }, { status: res.status });
+      return NextResponse.json(
+        { message: data?.error || "Request failed" },
+        { status: res.status },
+      );
     }
 
     return NextResponse.json(data, { status: res.status });

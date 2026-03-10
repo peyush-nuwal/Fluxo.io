@@ -29,65 +29,84 @@ import { useUser } from "@/hooks/use-user";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { FileUpload } from "./file-upload";
-
-type CreateDiagramFormState = {
+import { Switch } from "@/components/ui/switch";
+type DiagramFormState = {
   success: boolean;
   error: string | null;
 };
 
-const initialFormState: CreateDiagramFormState = {
+const initialFormState: DiagramFormState = {
   success: false,
   error: null,
 };
 
-export default function CreateDiagramDialog() {
-  const { modelType, close } = useModalStore();
+export default function DiagramForm() {
+  const { modelType, close, data } = useModalStore();
   const createProjectOpen = useModalStore((s) => s.open);
   const { projects, loading, fetchProject } = useProjectStore();
   const createDiagram = useDiagramStore((s) => s.createDiagram);
+  const updateDiagram = useDiagramStore((s) => s.updateDiagram);
   const { user } = useUser();
-  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const mode = data?.mode ?? "create";
+  const diagram = data?.diagram;
+  const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const hasProjects = projects.length > 0;
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     fetchProject();
   }, [fetchProject]);
 
   const [formState, formAction] = useActionState(
-    async (_prevState: CreateDiagramFormState, formData: FormData) => {
+    async (_prevState: DiagramFormState, formData: FormData) => {
       const name = String(formData.get("name") ?? "").trim();
       const description = String(formData.get("description") ?? "").trim();
       const projectId = String(formData.get("projectId") ?? "").trim();
       const ownerName = user?.name?.trim() || null;
+
       const thumbnail = formData.get("thumbnail");
+
       const ownerUsername =
         user?.user_name?.trim() ||
         user?.name?.trim() ||
         (user?.email ? String(user.email).split("@")[0] : null);
+
       const ownerAvatarUrl = user?.avatar_url?.trim() || null;
 
       const payload = new FormData();
+
       payload.append("name", name);
       if (description) payload.append("description", description);
       if (projectId) payload.append("projectId", projectId);
       if (ownerName) payload.append("owner_name", ownerName);
       if (ownerUsername) payload.append("owner_username", ownerUsername);
       if (ownerAvatarUrl) payload.append("owner_avatar_url", ownerAvatarUrl);
+      if (mode === "edit") {
+        payload.append("is_active", String(isActive));
+      }
+
       if (thumbnail instanceof File && thumbnail.size > 0) {
         payload.append("thumbnail", thumbnail);
       }
 
-      const result = await createDiagram(payload);
-      console.log("result", result);
+      let result;
+
+      if (mode === "edit" && diagram?.id) {
+        result = await updateDiagram(payload, diagram.id);
+      } else {
+        result = await createDiagram(payload);
+      }
+
       if (!result.success) {
         toast.error(result?.message);
         return {
           success: false,
-          error: result.message ?? "Failed to create diagram",
+          error: result.message ?? "Operation failed",
         };
       }
 
-      toast.success("Diagram created");
+      toast.success(mode === "edit" ? "Diagram updated" : "Diagram created");
+
       return { success: true, error: null };
     },
     initialFormState,
@@ -95,34 +114,58 @@ export default function CreateDiagramDialog() {
 
   useEffect(() => {
     if (!formState.success) return;
+
     setSelectedProjectId("");
     toast.success("Diagram created Successfully");
     close();
   }, [formState.success, close]);
 
+  useEffect(() => {
+    if (diagram?.project_id && projects.length) {
+      setSelectedProjectId(diagram.project_id);
+    }
+  }, [diagram, projects]);
+
+  useEffect(() => {
+    if (mode === "edit" && diagram) {
+      setIsActive(diagram.is_active ?? false);
+    }
+  }, [diagram, mode]);
+
+  const formTitle =
+    mode === "edit"
+      ? `Edit ${diagram?.name ?? "Diagram"}`
+      : "Create New Diagram";
+  const description =
+    mode === "edit" ? "Modify the diagram details." : "Create a new diagram.";
+
   return (
-    <Dialog open={modelType === "createDiagramDialog"} onOpenChange={close}>
+    <Dialog open={modelType === "DiagramForm"} onOpenChange={close}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create New Diagram</DialogTitle>
+          <DialogTitle>{formTitle}</DialogTitle>
           <DialogDescription className="sr-only">
-            Create a new diagram and optionally attach a thumbnail image.
+            {description}
           </DialogDescription>
         </DialogHeader>
 
         <form action={formAction} className="space-y-4">
           <Field>
             <FieldLabel htmlFor="name">Diagram Name</FieldLabel>
-            <Input id="name" name="name" placeholder="Untitled diagram" />
+            <Input
+              id="name"
+              name="name"
+              defaultValue={mode === "edit" ? diagram?.name : ""}
+              placeholder="Untitled diagram"
+            />
           </Field>
-
           <div>
             <Field>
               <div className="flex justify-between items-center ">
                 {" "}
                 <FieldLabel htmlFor="projectId">Project</FieldLabel>
                 <Button
-                  onClick={() => createProjectOpen("createProjectDialog")}
+                  onClick={() => createProjectOpen("ProjectForm")}
                   size={"sm"}
                   variant={"ghost-primary"}
                   className="w-fit"
@@ -146,7 +189,9 @@ export default function CreateDiagramDialog() {
                           ? "Select a Project"
                           : "No projects available"
                     }
-                  />
+                  >
+                    {projects.find((p) => p.id === selectedProjectId)?.title}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -174,32 +219,41 @@ export default function CreateDiagramDialog() {
               <input type="hidden" name="projectId" value={selectedProjectId} />
             </Field>
           </div>
-
           <Field>
             <FieldLabel htmlFor="description">Description</FieldLabel>
             <Textarea
               id="description"
               name="description"
               placeholder="Write a short description (optional)"
+              defaultValue={mode === "edit" ? diagram?.description : ""}
               rows={6}
               className="min-h-32!"
             />
           </Field>
-
           <Field>
             <FieldLabel htmlFor="thumbnail">Thumbnail (optional)</FieldLabel>
-            <FileUpload name="thumbnail" />
+            <FileUpload
+              name="thumbnail"
+              initialPreview={mode === "edit" ? diagram?.thumbnail_url : null}
+            />
           </Field>
+          {mode === "edit" && (
+            <Field>
+              <FieldLabel>Active</FieldLabel>
 
+              <Switch checked={isActive} onCheckedChange={setIsActive} />
+
+              <input type="hidden" name="isActive" value={String(isActive)} />
+            </Field>
+          )}{" "}
           {formState.error && (
             <p className="text-sm text-destructive">{formState.error}</p>
           )}
-
           <div className="flex justify-end gap-2">
             <Button type="button" variant="outline" onClick={close}>
               Cancel
             </Button>
-            <SubmitButton />
+            <SubmitButton mode={mode} />
           </div>
         </form>
       </DialogContent>
@@ -207,12 +261,18 @@ export default function CreateDiagramDialog() {
   );
 }
 
-function SubmitButton() {
+function SubmitButton({ mode }: { mode: "create" | "edit" }) {
   const { pending } = useFormStatus();
 
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? "Creating..." : "Create Diagram"}
+      {pending
+        ? mode === "edit"
+          ? "Updating..."
+          : "Creating..."
+        : mode === "edit"
+          ? "Update Diagram"
+          : "Create Diagram"}
     </Button>
   );
 }

@@ -43,3 +43,18 @@ export type DropDownFilterProps = {
   filter: FilterOption;
   onFilterChange: (value: FilterOption) => void;
 };
+
+export type DiagramPayload = {
+  name?: string | null;
+  projectId?: string | null;
+  data?: Record<string, any> | null;
+  description?: string | null;
+  thumbnail_url?: string | null;
+  owner_name?: string | null;
+  owner_username?: string | null;
+  owner_avatar_url?: string | null;
+};
+
+export type UpdateDiagramPayload = DiagramPayload & {
+  is_active?: boolean;
+};

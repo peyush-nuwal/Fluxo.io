@@ -5,20 +5,23 @@ type Params = {
   params: Promise<{ diagramId: string }>;
 };
 
+type ProxyBody = string | FormData | undefined;
+
 export async function GET(req: NextRequest, { params }: Params) {
   try {
     const { diagramId } = await params;
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
 
+    const headers: Record<string, string> = {
+      ...(cookie && { Cookie: cookie }),
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+    };
     const res = await fetch(
       `${API_BASE_URL}/api/v1/diagram/diagrams/${diagramId}`,
       {
         method: "GET",
-        headers: {
-          Cookie: cookie ?? "",
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        },
+        headers,
         credentials: "include",
         cache: "no-store",
       },
@@ -52,14 +55,18 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
 
+    const headers: Record<string, string> = {
+      ...(cookie && { Cookie: cookie }),
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+    };
+
+    const body = req.formData;
+
     const res = await fetch(
       `${API_BASE_URL}/api/v1/diagram/diagrams/${diagramId}`,
       {
         method: "DELETE",
-        headers: {
-          Cookie: cookie ?? "",
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        },
+        headers,
         credentials: "include",
         cache: "no-store",
       },
@@ -84,6 +91,63 @@ export async function DELETE(req: NextRequest, { params }: Params) {
 
     return NextResponse.json(data, { status: res.status });
   } catch (_error) {
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+export async function PUT(req: NextRequest, { params }: Params) {
+  try {
+    const { diagramId } = await params;
+    const cookie = req.headers.get("cookie");
+    const accessToken = req.cookies.get("access_token")?.value;
+
+    const headers: Record<string, string> = {
+      ...(cookie && { Cookie: cookie }),
+      ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+    };
+
+    const contentType = req.headers.get("content-type") || "";
+
+    let body: ProxyBody;
+
+    if (contentType.includes("multipart/form-data")) {
+      body = await req.formData();
+    } else {
+      const json = await req.json();
+      headers["Content-Type"] = "application/json";
+      body = JSON.stringify(json);
+    }
+
+    const res = await fetch(
+      `${API_BASE_URL}/api/v1/diagram/diagrams/${diagramId}`,
+      {
+        method: "PUT",
+        headers,
+        body,
+        cache: "no-store",
+      },
+    );
+
+    const text = await res.text();
+    let data: any = null;
+
+    data = text ? JSON.parse(text) : null;
+
+    if (!res.ok) {
+      return NextResponse.json(
+        { message: data?.error || "Request failed" },
+        { status: res.status },
+      );
+    }
+
+    if (res.status === 204) {
+      return new NextResponse(null, { status: 204 });
+    }
+
+    return NextResponse.json(data, { status: res.status });
+  } catch {
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 },

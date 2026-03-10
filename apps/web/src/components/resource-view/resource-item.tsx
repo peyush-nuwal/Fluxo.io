@@ -5,6 +5,7 @@ import type { Resource } from "./rowUi";
 import { hardDeleteDiagram, softDeleteDiagram } from "@/lib/diagrams/client";
 import { useDiagramStore } from "@/store/diagramsStore";
 import DeleteAlertDialog from "../delete-alert-dialog";
+import { useModalStore } from "@/store/useModalStore";
 
 type Props = {
   resource: Resource;
@@ -29,6 +30,7 @@ const ResourceItem = ({
   selected = false,
   onSelect,
 }: Props) => {
+  const open = useModalStore((s) => s.open);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const fetchDiagrams = useDiagramStore((state) => state.fetchDiagrams);
   const fetchTrashDiagrams = useDiagramStore(
@@ -36,7 +38,8 @@ const ResourceItem = ({
   );
 
   const handleEdit = () => {
-    // open edit modal
+    if (!resource.id) return;
+    open("DiagramForm", { mode: "edit", diagram: resource });
   };
 
   const performDelete = async () => {
