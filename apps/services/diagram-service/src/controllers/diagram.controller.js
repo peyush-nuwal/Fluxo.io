@@ -1,11 +1,11 @@
 import logger from "../config/logger.js";
 import {
   createDiagramSchema,
+  setDiagramActiveSchema,
   updateDiagramSchema,
   ZodError,
 } from "../../../../../packages/zod-schemas/index.js";
 import { uploadThumbnail } from "../services/project.service.js";
-
 import {
   verifyProjectOwnership,
   toggleLikes,
@@ -25,74 +25,38 @@ import {
   getDiagramByProject,
   getAllSoftDeletedDiagramByUser,
 } from "../services/diagram.service.js";
-
-const normalizeOptionalText = (value) => {
-  if (value === undefined) return undefined;
-  if (value === null) return null;
-  if (typeof value !== "string") return value;
-
-  const trimmed = value.trim();
-  if (trimmed === "") return null;
-  if (trimmed.toLowerCase() === "null") return null;
-  return trimmed;
-};
-
-const normalizeOptionalBoolean = (value) => {
-  if (value === undefined || value === null || value === "") return undefined;
-  if (typeof value === "boolean") return value;
-  if (typeof value !== "string") return value;
-
-  const normalized = value.trim().toLowerCase();
-  if (normalized === "true" || normalized === "1") return true;
-  if (normalized === "false" || normalized === "0") return false;
-
-  return value;
-};
-
-const normalizeUpdateName = (value) => {
-  if (value === undefined || value === null) return undefined;
-  if (typeof value !== "string") return value;
-
-  const trimmed = value.trim();
-  return trimmed === "" ? undefined : trimmed;
-};
-
-const getUploadedThumbnail = (req) => {
-  if (!req.files || typeof req.files !== "object") return null;
-
-  const files = req.files;
-  if (Array.isArray(files.thumbnail) && files.thumbnail.length > 0) {
-    return files.thumbnail[0];
-  }
-  if (Array.isArray(files.thumbnail_url) && files.thumbnail_url.length > 0) {
-    return files.thumbnail_url[0];
-  }
-
-  return null;
-};
+import {
+  normalizeOptionalText,
+  normalizeUpdateName,
+  normalizeOptionalBoolean,
+} from "../utils/helper.js";
+import { getUploadedThumbnail } from "./file.controller.js";
+import { formatZodDetails, sendError, sendSuccess } from "../utils/response.js";
 
 /* ===================== PROJECT ===================== */
 
 export const getDiagramsByProjectController = async (req, res) => {
   try {
     const userId = req.user?.id;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { projectId } = req.params;
     if (!projectId) {
-      return res.status(400).json({ error: "Project ID is required" });
+      return sendError(res, 400, "Project ID is required");
     }
 
     const project = await verifyProjectOwnership(projectId, userId);
     if (!project) {
-      return res.status(404).json({ error: "Project not found" });
+      return sendError(res, 404, "Project not found");
     }
 
     const diagrams = await getDiagramByProject(userId, projectId);
-    return res.status(200).json({ diagrams });
+    return sendSuccess(res, 200, "Project diagrams fetched successfully", {
+      diagrams,
+    });
   } catch (error) {
     logger.error("Error getting diagrams by project:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to fetch project diagrams");
   }
 };
 
@@ -102,7 +66,7 @@ export const getAllDiagramsByUserController = async (req, res) => {
   try {
     const userId = req.user?.id;
     const userEmail = req.user?.email;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const defaultOwnerUsername = userEmail
       ? userEmail.split("@")[0]
@@ -113,10 +77,12 @@ export const getAllDiagramsByUserController = async (req, res) => {
       owner_username: defaultOwnerUsername,
       owner_avatar_url: null,
     });
-    return res.status(200).json({ diagrams });
+    return sendSuccess(res, 200, "Diagrams fetched successfully", {
+      diagrams,
+    });
   } catch (error) {
     logger.error("Error getting diagrams by user:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to fetch diagrams");
   }
 };
 
@@ -125,22 +91,22 @@ export const getAllDiagramsByUserController = async (req, res) => {
 export const getDiagramByIdController = async (req, res) => {
   try {
     const userId = req.user?.id;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { diagramId } = req.params;
 
     const diagram = await getUserDiagramById(userId, diagramId);
     if (!diagram) {
-      return res.status(404).json({ error: "Diagram not found" });
+      return sendError(res, 404, "Diagram not found");
     }
 
     updateDiagramLastOpened(diagramId).catch(() => {});
     incrementDiagramViews(diagramId).catch(() => {});
 
-    return res.status(200).json({ diagram });
+    return sendSuccess(res, 200, "Diagram fetched successfully", { diagram });
   } catch (error) {
     logger.error("Error getting diagram by id:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to fetch diagram");
   }
 };
 
@@ -152,16 +118,16 @@ export const getPublicDiagramController = async (req, res) => {
 
     const diagram = await getPublicDiagramById(diagramId);
     if (!diagram) {
-      return res.status(404).json({ error: "Diagram not found" });
+      return sendError(res, 404, "Diagram not found");
     }
 
     updateDiagramLastOpened(diagramId).catch(() => {});
     incrementDiagramViews(diagramId).catch(() => {});
 
-    return res.status(200).json({ diagram });
+    return sendSuccess(res, 200, "Diagram fetched successfully", { diagram });
   } catch (error) {
     logger.error("Error getting public diagram:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to fetch public diagram");
   }
 };
 
@@ -170,14 +136,14 @@ export const getPublicDiagramController = async (req, res) => {
 export const createDiagramController = async (req, res) => {
   try {
     const userId = req.user?.id;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const uploadedThumbnail = getUploadedThumbnail(req);
     if (
       uploadedThumbnail &&
       !uploadedThumbnail.mimetype?.startsWith("image/")
     ) {
-      return res.status(400).json({ error: "Thumbnail must be an image file" });
+      return sendError(res, 400, "Thumbnail must be an image file");
     }
 
     const normalizedPayload = {
@@ -197,7 +163,7 @@ export const createDiagramController = async (req, res) => {
         normalizedPayload.thumbnail_url = uploadResult.url;
       } catch (error) {
         logger.error("Failed to upload diagram thumbnail:", error);
-        return res.status(500).json({ error: "Failed to upload thumbnail" });
+        return sendError(res, 500, "Failed to upload thumbnail");
       }
     }
 
@@ -231,28 +197,28 @@ export const createDiagramController = async (req, res) => {
       owner_avatar_url,
     });
 
-    return res.status(201).json({ diagram });
+    return sendSuccess(res, 201, "Diagram created successfully", { diagram });
   } catch (error) {
     logger.error("Error creating diagram:", error);
     if (error instanceof ZodError) {
-      return res
-        .status(400)
-        .json({ error: "Validation error", details: error.errors });
+      return sendError(res, 400, "Validation error", {
+        details: formatZodDetails(error),
+      });
     }
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to create diagram");
   }
 };
 
 export const updateDiagramController = async (req, res) => {
   try {
     const userId = req.user?.id;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { diagramId } = req.params;
 
     const diagram = await getUserDiagramById(userId, diagramId);
     if (!diagram) {
-      return res.status(404).json({ error: "Diagram not found" });
+      return sendError(res, 404, "Diagram not found");
     }
 
     const uploadedThumbnail = getUploadedThumbnail(req);
@@ -260,14 +226,13 @@ export const updateDiagramController = async (req, res) => {
       uploadedThumbnail &&
       !uploadedThumbnail.mimetype?.startsWith("image/")
     ) {
-      return res.status(400).json({ error: "Thumbnail must be an image file" });
+      return sendError(res, 400, "Thumbnail must be an image file");
     }
 
     const normalizedPayload = {
       name: normalizeUpdateName(req.body?.name),
       description: normalizeOptionalText(req.body?.description),
       data: req.body?.data,
-      is_active: normalizeOptionalBoolean(req.body?.is_active),
       thumbnail_url: normalizeOptionalText(req.body?.thumbnail_url),
       owner_name: normalizeOptionalText(req.body?.owner_name),
       owner_username: normalizeOptionalText(req.body?.owner_username),
@@ -280,8 +245,17 @@ export const updateDiagramController = async (req, res) => {
         normalizedPayload.thumbnail_url = uploadResult.url;
       } catch (error) {
         logger.error("Failed to upload diagram thumbnail:", error);
-        return res.status(500).json({ error: "Failed to upload thumbnail" });
+        return sendError(res, 500, "Failed to upload thumbnail");
       }
+    }
+
+    const isDataUpdateRequested = normalizedPayload.data !== undefined;
+    if (isDataUpdateRequested && diagram.is_active !== true) {
+      return sendError(
+        res,
+        409,
+        "Diagram is inactive. Open the canvas before saving data.",
+      );
     }
 
     const parsed = updateDiagramSchema.parse(normalizedPayload);
@@ -292,18 +266,20 @@ export const updateDiagramController = async (req, res) => {
     const updatedDiagram = await updateDiagram(diagramId, updateData);
 
     if (!updatedDiagram) {
-      return res.status(404).json({ error: "Diagram not found" });
+      return sendError(res, 404, "Diagram not found");
     }
 
-    return res.status(200).json({ diagram: updatedDiagram });
+    return sendSuccess(res, 200, "Diagram updated successfully", {
+      diagram: updatedDiagram,
+    });
   } catch (error) {
     logger.error("Error updating diagram:", error);
     if (error instanceof ZodError) {
-      return res
-        .status(400)
-        .json({ error: "Validation error", details: error.errors });
+      return sendError(res, 400, "Validation error", {
+        details: formatZodDetails(error),
+      });
     }
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to update diagram");
   }
 };
 
@@ -312,24 +288,26 @@ export const updateDiagramController = async (req, res) => {
 export const softDeleteDiagramController = async (req, res) => {
   try {
     const userId = req.user?.id;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { diagramId } = req.params;
 
     const diagram = await getUserDiagramById(userId, diagramId);
     if (!diagram) {
-      return res.status(404).json({ error: "Diagram not found" });
+      return sendError(res, 404, "Diagram not found");
     }
 
     const deleted = await softDeleteDiagram(userId, diagramId);
     if (!deleted) {
-      return res.status(404).json({ error: "Diagram not found" });
+      return sendError(res, 404, "Diagram not found");
     }
 
-    return res.status(204).send();
+    return sendSuccess(res, 200, "Diagram moved to trash", {
+      diagramId: deleted.id,
+    });
   } catch (error) {
     logger.error("Error soft deleting diagram:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to delete diagram");
   }
 };
 
@@ -337,56 +315,59 @@ export const getAllSoftDeletedDiagramByUserController = async (req, res) => {
   try {
     const userId = req.user?.id;
 
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const diagrams = await getAllSoftDeletedDiagramByUser(userId);
 
-    return res.status(200).json({ diagrams });
+    return sendSuccess(res, 200, "Deleted diagrams fetched successfully", {
+      diagrams,
+    });
   } catch (error) {
     logger.error("Error getting deleted diagrams:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to fetch deleted diagrams");
   }
 };
 
 export const hardDeleteUserDiagramController = async (req, res) => {
   try {
     const userId = req.user?.id;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { diagramId } = req.params;
 
     const diagram = await getSoftDeletedUserDiagramById(userId, diagramId);
     if (!diagram) {
-      return res.status(404).json({ error: "Diagram not found" });
+      return sendError(res, 404, "Diagram not found");
     }
 
     await hardDeleteUserDiagram(userId, diagramId);
-    return res.status(204).send();
+    return sendSuccess(res, 200, "Diagram deleted permanently", {
+      diagramId,
+    });
   } catch (error) {
     logger.error("Error hard deleting diagram:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to delete diagram permanently");
   }
 };
 
 export const restoreDiagramController = async (req, res) => {
   try {
     const userId = req.user?.id;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { diagramId } = req.params;
 
     const restored = await restoreDiagram(userId, diagramId);
     if (!restored) {
-      return res.status(404).json({ error: "Diagram not found" });
+      return sendError(res, 404, "Diagram not found");
     }
 
-    return res.status(200).json({
-      message: "Diagram restored",
+    return sendSuccess(res, 200, "Diagram restored successfully", {
       diagramId: restored.id,
     });
   } catch (error) {
     logger.error("Error restoring diagram:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to restore diagram");
   }
 };
 
@@ -395,18 +376,18 @@ export const restoreDiagramController = async (req, res) => {
 export const handleDiagramLikes = async (req, res) => {
   try {
     const userId = req.user?.id;
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { diagramId } = req.params;
     const result = await toggleLikes(diagramId, userId);
 
-    return res.status(200).json({
+    return sendSuccess(res, 200, "Diagram like status updated", {
       diagramId,
       ...result,
     });
   } catch (error) {
     logger.error("Error toggling like:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to update diagram like");
   }
 };
 
@@ -415,10 +396,53 @@ export const getDiagramLikesCount = async (req, res) => {
     const { diagramId } = req.params;
     const likes = await getLikeCount(diagramId);
 
-    return res.status(200).json({ diagramId, likes });
+    return sendSuccess(res, 200, "Diagram like count fetched successfully", {
+      diagramId,
+      likes,
+    });
   } catch (error) {
     logger.error("Error getting like count:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to fetch diagram like count");
+  }
+};
+
+/* ===================== ACTIVE STATUS ===================== */
+
+export const updateDiagramActiveStatusController = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return sendError(res, 401, "Unauthorized");
+
+    const { diagramId } = req.params;
+
+    const diagram = await getUserDiagramById(userId, diagramId);
+    if (!diagram) {
+      return sendError(res, 404, "Diagram not found");
+    }
+
+    const parsed = setDiagramActiveSchema.parse({
+      is_active: normalizeOptionalBoolean(req.body?.is_active),
+    });
+
+    const updatedDiagram = await updateDiagram(diagramId, {
+      is_active: parsed.is_active,
+    });
+
+    if (!updatedDiagram) {
+      return sendError(res, 404, "Diagram not found");
+    }
+
+    return sendSuccess(res, 200, "Diagram active state updated successfully", {
+      diagram: updatedDiagram,
+    });
+  } catch (error) {
+    logger.error("Error updating diagram active state:", error);
+    if (error instanceof ZodError) {
+      return sendError(res, 400, "Validation error", {
+        details: formatZodDetails(error),
+      });
+    }
+    return sendError(res, 500, "Failed to update diagram active state");
   }
 };
 
@@ -430,17 +454,19 @@ export const updateDiagramVisibilityController = async (req, res) => {
     const { isPublic } = req.body;
 
     if (typeof isPublic !== "boolean") {
-      return res.status(400).json({ error: "isPublic must be boolean" });
+      return sendError(res, 400, "isPublic must be boolean");
     }
 
     const diagram = await setDiagramVisibility(diagramId, isPublic);
     if (!diagram) {
-      return res.status(404).json({ error: "Diagram not found" });
+      return sendError(res, 404, "Diagram not found");
     }
 
-    return res.status(200).json({ diagram });
+    return sendSuccess(res, 200, "Diagram visibility updated successfully", {
+      diagram,
+    });
   } catch (error) {
     logger.error("Error updating diagram visibility:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Failed to update diagram visibility");
   }
 };

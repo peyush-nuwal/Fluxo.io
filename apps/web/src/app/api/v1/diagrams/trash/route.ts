@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "@/config/server-env";
+import { buildProxyErrorPayload } from "@/lib/proxy-response";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -26,7 +27,9 @@ export async function GET(req: NextRequest) {
     }
 
     if (!res.ok) {
-      return NextResponse.json({ message: data }, { status: res.status });
+      return NextResponse.json(buildProxyErrorPayload(data), {
+        status: res.status,
+      });
     }
 
     return NextResponse.json(data, { status: 200 });

@@ -34,6 +34,7 @@ const ResourceRow = ({
           onMenuOpenChange={setMenuOpen}
           onEdit={actions.onEdit}
           onDelete={actions.onDelete}
+          onDoubleClick={actions.handleDoubleClick}
         />
       )}
     </ResourceItem>

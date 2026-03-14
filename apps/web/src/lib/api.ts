@@ -20,6 +20,18 @@ const api = axios.create({
   withCredentials: true,
 });
 
+function getApiErrorMessage(data: any) {
+  if (typeof data?.message === "string" && data.message.trim()) {
+    return data.message;
+  }
+
+  if (typeof data?.error === "string" && data.error.trim()) {
+    return data.error;
+  }
+
+  return "API request failed";
+}
+
 async function rawRequest(path: string, options: Record<string, any> = {}) {
   try {
     const isFormData =
@@ -77,16 +89,12 @@ export async function apiFetch(
       const retry = await rawRequest(path, options);
       if (retry.status >= 200 && retry.status < 300) return retry.data;
       throw new ApiError(
-        retry.data?.message || "API request failed",
+        getApiErrorMessage(retry.data),
         retry.status,
         retry.data,
       );
     }
   }
 
-  throw new ApiError(
-    first.data?.message || "API request failed",
-    first.status,
-    first.data,
-  );
+  throw new ApiError(getApiErrorMessage(first.data), first.status, first.data);
 }

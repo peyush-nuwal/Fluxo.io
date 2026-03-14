@@ -1,5 +1,6 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import ResourceListView from "./resource-list-view";
 import ResourceCardView from "./resource-card-view";
 import { SegmentRadioGroup } from "../ui/segment-radio";
@@ -41,8 +42,10 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
     diagrams: resources,
     loading,
     fetchDiagrams,
+    fetchProjectDiagrams,
     fetchTrashDiagrams,
   } = useDiagramStore();
+  const searchParams = useSearchParams();
   const [layoutMode, setLayoutMode] = useState<"list" | "card">("card");
   const [filter, setFilter] = useState<FilterOption>("last_viewed");
   const [query, setQuery] = useState("");
@@ -51,14 +54,25 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
   );
   const [confirmPermanentDeleteOpen, setConfirmPermanentDeleteOpen] =
     useState(false);
+  const projectId = mode === "active" ? searchParams.get("projectId") : null;
 
   useEffect(() => {
     if (mode === "trash") {
       fetchTrashDiagrams();
       return;
     }
+    if (projectId) {
+      fetchProjectDiagrams(projectId);
+      return;
+    }
     fetchDiagrams();
-  }, [fetchDiagrams, fetchTrashDiagrams, mode]);
+  }, [
+    fetchDiagrams,
+    fetchProjectDiagrams,
+    fetchTrashDiagrams,
+    mode,
+    projectId,
+  ]);
 
   const searchFilteredResources = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -125,13 +139,24 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
         await fetchTrashDiagrams();
       } else {
         await softDeleteDiagram(selectedDiagramId);
-        await fetchDiagrams();
+        if (projectId) {
+          await fetchProjectDiagrams(projectId);
+        } else {
+          await fetchDiagrams();
+        }
       }
       setSelectedDiagramId(null);
     } catch {
       // Ignore and keep selection so user can retry.
     }
-  }, [fetchDiagrams, fetchTrashDiagrams, mode, selectedDiagramId]);
+  }, [
+    fetchDiagrams,
+    fetchProjectDiagrams,
+    fetchTrashDiagrams,
+    mode,
+    projectId,
+    selectedDiagramId,
+  ]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

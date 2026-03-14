@@ -29,7 +29,6 @@ import { useUser } from "@/hooks/use-user";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { FileUpload } from "./file-upload";
-import { Switch } from "@/components/ui/switch";
 type DiagramFormState = {
   success: boolean;
   error: string | null;
@@ -51,7 +50,6 @@ export default function DiagramForm() {
   const diagram = data?.diagram;
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const hasProjects = projects.length > 0;
-  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     fetchProject();
@@ -81,9 +79,6 @@ export default function DiagramForm() {
       if (ownerName) payload.append("owner_name", ownerName);
       if (ownerUsername) payload.append("owner_username", ownerUsername);
       if (ownerAvatarUrl) payload.append("owner_avatar_url", ownerAvatarUrl);
-      if (mode === "edit") {
-        payload.append("is_active", String(isActive));
-      }
 
       if (thumbnail instanceof File && thumbnail.size > 0) {
         payload.append("thumbnail", thumbnail);
@@ -105,7 +100,10 @@ export default function DiagramForm() {
         };
       }
 
-      toast.success(mode === "edit" ? "Diagram updated" : "Diagram created");
+      toast.success(
+        result.message ??
+          (mode === "edit" ? "Diagram updated" : "Diagram created"),
+      );
 
       return { success: true, error: null };
     },
@@ -116,7 +114,6 @@ export default function DiagramForm() {
     if (!formState.success) return;
 
     setSelectedProjectId("");
-    toast.success("Diagram created Successfully");
     close();
   }, [formState.success, close]);
 
@@ -125,12 +122,6 @@ export default function DiagramForm() {
       setSelectedProjectId(diagram.project_id);
     }
   }, [diagram, projects]);
-
-  useEffect(() => {
-    if (mode === "edit" && diagram) {
-      setIsActive(diagram.is_active ?? false);
-    }
-  }, [diagram, mode]);
 
   const formTitle =
     mode === "edit"
@@ -237,15 +228,6 @@ export default function DiagramForm() {
               initialPreview={mode === "edit" ? diagram?.thumbnail_url : null}
             />
           </Field>
-          {mode === "edit" && (
-            <Field>
-              <FieldLabel>Active</FieldLabel>
-
-              <Switch checked={isActive} onCheckedChange={setIsActive} />
-
-              <input type="hidden" name="isActive" value={String(isActive)} />
-            </Field>
-          )}{" "}
           {formState.error && (
             <p className="text-sm text-destructive">{formState.error}</p>
           )}

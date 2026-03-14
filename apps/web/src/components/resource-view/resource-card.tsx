@@ -35,6 +35,7 @@ const ResourceCard = ({
           onMenuOpenChange={setMenuOpen}
           onEdit={actions.onEdit}
           onDelete={actions.onDelete}
+          handleDoubleClick={actions.handleDoubleClick}
         />
       )}
     </ResourceItem>

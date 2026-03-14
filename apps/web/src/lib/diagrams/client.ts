@@ -1,7 +1,11 @@
 "use client";
 
 import { apiFetch } from "@/lib/api";
-import { DiagramPayload, UpdateDiagramPayload } from "@/types";
+import {
+  DiagramPayload,
+  SetDiagramActivePayload,
+  UpdateDiagramPayload,
+} from "@/types";
 
 // TODO: replace these endpoints with your API gateway routes for diagram-service.
 // Example base: "/api/v1"
@@ -23,20 +27,19 @@ export async function createDiagram(payload: DiagramPayload | FormData) {
     options.body = JSON.stringify(payload);
   }
 
-  const response = await apiFetch("/api/v1/diagrams", options);
-  return response?.diagram ?? response;
+  return apiFetch("/api/v1/diagrams", options);
 }
 
 export async function updateDiagram(
   payload: UpdateDiagramPayload | FormData,
   diagramId: string,
 ) {
-  const options: RequestInit = {
+  const options: Record<string, unknown> = {
     method: "PUT",
   };
 
   if (payload instanceof FormData) {
-    options.body = payload;
+    options.data = payload;
   } else {
     options.body = JSON.stringify(payload);
     options.headers = {
@@ -44,9 +47,27 @@ export async function updateDiagram(
     };
   }
 
-  const response = await apiFetch(`/api/v1/diagrams/${diagramId}`, options);
+  return apiFetch(`/api/v1/diagrams/${diagramId}`, options);
+}
 
-  return response?.diagram ?? response;
+export async function updateDiagramData(
+  diagramId: string,
+  data: Record<string, unknown> | null,
+) {
+  return updateDiagram({ data }, diagramId);
+}
+
+export async function setDiagramActiveState(
+  diagramId: string,
+  payload: SetDiagramActivePayload,
+) {
+  return apiFetch(`/api/v1/diagrams/${diagramId}/active`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
 export async function softDeleteDiagram(diagramId: string) {

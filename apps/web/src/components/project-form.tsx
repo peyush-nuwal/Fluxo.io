@@ -1,6 +1,6 @@
 import { useModalStore } from "@/store/useModalStore";
 
-import React, { useActionState, useEffect } from "react";
+import { useActionState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -32,7 +32,7 @@ const initialFormState: ProjectFormState = {
 const ProjectForm = () => {
   const { modelType, close, data } = useModalStore();
   const { user } = useUser();
-  const { createProject } = useProjectStore();
+  const { createProject, updateProject } = useProjectStore();
   const mode = data?.mode ?? "create";
   const project = data?.project;
 
@@ -65,15 +65,25 @@ const ProjectForm = () => {
         payload.append("thumbnail", thumbnail);
       }
 
-      const created = await createProject(payload);
+      let result;
+      if (mode === "edit" && project?.id) {
+        result = await updateProject(project.id, payload);
+      } else {
+        result = await createProject(payload);
+      }
 
-      if (!created) {
-        toast.error("failed to create Project!");
+      if (!result.success) {
+        toast.error(result?.message);
         return {
           success: false,
-          error: "Failed to create Project.",
+          error: result.message ?? "Operation failed",
         };
       }
+
+      toast.success(
+        result.message ??
+          (mode === "edit" ? "Project updated" : "Project created"),
+      );
 
       return { success: true, error: null };
     },
@@ -82,13 +92,12 @@ const ProjectForm = () => {
 
   useEffect(() => {
     if (!formState.success) return;
-    toast.success("Project created Successfully");
     close();
   }, [formState.success, close]);
 
   const formTitle =
     mode === "edit"
-      ? `Edit ${project?.name ?? "Project"}`
+      ? `Edit ${project?.title ?? "Project"}`
       : "Create New Project";
   const formDescription =
     mode === "edit" ? "Modify the project details." : "Create a new Project.";

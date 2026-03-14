@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "@/config/server-env";
+import { buildProxyErrorPayload } from "@/lib/proxy-response";
 import { NextRequest, NextResponse } from "next/server";
 
 type ProxyBody = string | FormData | undefined;
@@ -29,7 +30,9 @@ export async function GET(req: NextRequest) {
     }
 
     if (!res.ok) {
-      return NextResponse.json({ message: data }, { status: res.status });
+      return NextResponse.json(buildProxyErrorPayload(data), {
+        status: res.status,
+      });
     }
 
     return NextResponse.json(data, { status: 200 });
@@ -73,13 +76,16 @@ export async function POST(req: NextRequest) {
     const text = await res.text();
     let data = null;
 
-    data = text ? JSON.parse(text) : null;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      data = null;
+    }
 
     if (!res.ok) {
-      return NextResponse.json(
-        { message: data?.error || "Request failed" },
-        { status: res.status },
-      );
+      return NextResponse.json(buildProxyErrorPayload(data), {
+        status: res.status,
+      });
     }
 
     return NextResponse.json(data, { status: res.status });

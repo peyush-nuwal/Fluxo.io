@@ -21,7 +21,6 @@ export const updateDiagramSchema = z.object({
   name: z.string().min(1, "Name must be at least 1 character").optional(),
   description: z.string().optional().nullable(),
   data: z.any().optional().nullable(),
-  is_active: z.boolean().optional(),
   thumbnail_url: z
     .union([z.string().url(), z.literal("")])
     .optional()
@@ -32,4 +31,8 @@ export const updateDiagramSchema = z.object({
     .union([z.string().url(), z.literal("")])
     .optional()
     .nullable(),
+});
+
+export const setDiagramActiveSchema = z.object({
+  is_active: z.boolean(),
 });

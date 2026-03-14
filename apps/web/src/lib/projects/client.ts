@@ -1,19 +1,11 @@
 import { apiFetch } from "../api";
-
-type createProjectPayload = {
-  title?: string | null;
-  description?: string | null;
-  thumbnail_url?: string | null;
-  owner_name?: string | null;
-  owner_username?: string | null;
-  owner_avatar_url?: string | null;
-};
+import { ProjectPayload, UpdateProjectPayload } from "@/types/project";
 
 export async function getProjects() {
   return apiFetch("/api/v1/projects");
 }
 
-export async function createProject(payload: createProjectPayload | FormData) {
+export async function createProject(payload: ProjectPayload | FormData) {
   const options: Record<string, unknown> = { method: "POST" };
 
   if (payload instanceof FormData) {
@@ -22,8 +14,28 @@ export async function createProject(payload: createProjectPayload | FormData) {
     options.body = JSON.stringify(payload);
   }
 
-  const response = await apiFetch("/api/v1/projects", options);
-  return response?.project ?? response;
+  return apiFetch("/api/v1/projects", options);
+}
+
+export async function updateProject(
+  projectId: string,
+  payload: UpdateProjectPayload | FormData,
+) {
+  const options: Record<string, unknown> = { method: "PUT" };
+
+  if (payload instanceof FormData) {
+    options.data = payload;
+  } else {
+    options.body = JSON.stringify(payload);
+  }
+
+  return apiFetch(`/api/v1/projects/${projectId}`, options);
+}
+
+export async function deleteProject(projectId: string) {
+  return apiFetch(`/api/v1/projects/${projectId}`, {
+    method: "DELETE",
+  });
 }
 
 export async function getProjectById(projectId: string) {

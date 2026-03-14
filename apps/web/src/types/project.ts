@@ -13,3 +13,14 @@ export type ProjectType = {
   owner_username: string | null;
   owner_avatar_url: string | null;
 };
+
+export type ProjectPayload = {
+  title?: string | null;
+  description?: string | null;
+  thumbnail_url?: string | null;
+  owner_name?: string | null;
+  owner_username?: string | null;
+  owner_avatar_url?: string | null;
+};
+
+export type UpdateProjectPayload = ProjectPayload;

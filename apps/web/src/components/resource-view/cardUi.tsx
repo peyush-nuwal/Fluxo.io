@@ -27,6 +27,7 @@ type Props = {
   onMenuOpenChange: (open: boolean) => void;
   onEdit: () => void;
   onDelete: () => Promise<void>;
+  handleDoubleClick: () => void;
 };
 
 const CardUI = ({
@@ -36,6 +37,7 @@ const CardUI = ({
   onMenuOpenChange,
   onEdit,
   onDelete,
+  handleDoubleClick,
 }: Props) => {
   const ownerName = resource.owner_username?.trim() || "Unknown";
   const ownerAvatar = resource.owner_avatar_url?.trim();
@@ -46,6 +48,7 @@ const CardUI = ({
         "flex h-full w-full max-w-[320px] flex-col rounded-lg border border-solid border-border bg-card p-4 shadow transition-colors cursor-pointer",
         selected && "border-primary ring-2 ring-primary/25",
       )}
+      onDoubleClick={handleDoubleClick}
     >
       <div className="relative h-36 w-full overflow-hidden rounded-md bg-background">
         {resource.thumbnail_url ? (

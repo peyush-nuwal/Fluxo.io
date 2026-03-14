@@ -19,6 +19,7 @@ import {
   softDeleteDiagramController,
   hardDeleteUserDiagramController,
   getPublicDiagramController,
+  updateDiagramActiveStatusController,
   updateDiagramVisibilityController,
   getAllSoftDeletedDiagramByUserController,
 } from "../controllers/diagram.controller.js";
@@ -63,7 +64,7 @@ const ThumbnailUpload = (req, res, next) => {
 router.get("/projects", getAllProjects);
 router.post("/projects", ThumbnailUpload, createProject);
 router.get("/projects/:id", getProjectById);
-router.put("/projects/:id", updateProject);
+router.put("/projects/:id", ThumbnailUpload, updateProject);
 router.delete("/projects/:id", deleteProject);
 
 /* ===================== DIAGRAMS ===================== */
@@ -95,6 +96,12 @@ router.delete("/diagrams/:diagramId", softDeleteDiagramController);
 router.patch("/diagrams/:diagramId/restore", restoreDiagramController);
 // hard delete diagram
 router.delete("/admin/diagrams/:diagramId", hardDeleteUserDiagramController);
+
+// mark diagram active/inactive (canvas session)
+router.patch(
+  "/diagrams/:diagramId/active",
+  updateDiagramActiveStatusController,
+);
 
 // diagram likes
 router.post("/diagrams/:diagramId/like", handleDiagramLikes);

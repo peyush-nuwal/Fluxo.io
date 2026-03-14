@@ -55,6 +55,8 @@ export type DiagramPayload = {
   owner_avatar_url?: string | null;
 };
 
-export type UpdateDiagramPayload = DiagramPayload & {
-  is_active?: boolean;
+export type UpdateDiagramPayload = DiagramPayload;
+
+export type SetDiagramActivePayload = {
+  is_active: boolean;
 };

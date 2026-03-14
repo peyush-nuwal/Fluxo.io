@@ -7,6 +7,8 @@ import { useDiagramStore } from "@/store/diagramsStore";
 import DeleteAlertDialog from "../delete-alert-dialog";
 import { useModalStore } from "@/store/useModalStore";
 
+import { useRouter } from "next/navigation";
+
 type Props = {
   resource: Resource;
   mode?: "active" | "trash";
@@ -14,7 +16,11 @@ type Props = {
     | React.ReactNode
     | ((
         resource: Resource,
-        actions: { onEdit: () => void; onDelete: () => Promise<void> },
+        actions: {
+          onEdit: () => void;
+          onDelete: () => Promise<void>;
+          handleDoubleClick: () => void;
+        },
       ) => React.ReactNode);
   asChild?: boolean;
   onContextMenu?: (event: React.MouseEvent) => void;
@@ -36,6 +42,11 @@ const ResourceItem = ({
   const fetchTrashDiagrams = useDiagramStore(
     (state) => state.fetchTrashDiagrams,
   );
+  const router = useRouter();
+
+  const handleDoubleClick = () => {
+    router.push(`/diagram/${resource.id}`); // open page
+  };
 
   const handleEdit = () => {
     if (!resource.id) return;
@@ -76,7 +87,11 @@ const ResourceItem = ({
 
   const content =
     typeof children === "function"
-      ? children(resource, { onEdit: handleEdit, onDelete: handleDelete })
+      ? children(resource, {
+          onEdit: handleEdit,
+          onDelete: handleDelete,
+          handleDoubleClick: handleDoubleClick,
+        })
       : children;
 
   const itemProps = {
