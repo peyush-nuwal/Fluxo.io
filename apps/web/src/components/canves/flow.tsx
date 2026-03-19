@@ -755,6 +755,7 @@ export default function FlowCanves() {
             <CornerUpRight className="size-3.5" />
           </ControlButton>
         </Controls>
+
         {activeTool === "eraser" && <Eraser />}
       </ReactFlow>
     </div>

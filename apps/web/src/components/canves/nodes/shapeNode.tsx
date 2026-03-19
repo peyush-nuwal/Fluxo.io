@@ -5,6 +5,7 @@ import {
   useUpdateNodeInternals,
   type NodeProps,
 } from "@xyflow/react";
+import { useEffect } from "react";
 import { useDiagramEditorStore } from "@/store/diagramEditorStore";
 import { DEFAULT_NODE_STYLE, ShapeNodeType } from "./types";
 import { ShapeRenderer } from "./shapeRenderer";
@@ -76,6 +77,23 @@ export default function ShapeNode({
 
   const w = width ?? 200;
   const h = height ?? 100;
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      updateNodeInternals(id);
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [
+    id,
+    shape,
+    w,
+    h,
+    nodeStyle.borderWidth,
+    nodeStyle.borderRadius,
+    nodeStyle.borderStyle,
+    updateNodeInternals,
+  ]);
 
   return (
     <div className="relative" style={{ width: w, height: h }}>
