@@ -7,8 +7,8 @@ import {
   Diamond,
   Eraser,
   Hand,
-  Minus,
   MousePointer2,
+  Pencil,
   Square,
   Type,
 } from "lucide-react";
@@ -28,11 +28,11 @@ const TOOL_ICONS: Record<
   diamond: Diamond,
   circle: Circle,
   arrow: ArrowRight,
-  line: Minus,
   eraser: Eraser,
+  pencil: Pencil,
 };
 
-export default function ToolSidebar() {
+export default function ToolPanel() {
   const activeTool = useDiagramEditorStore((state) => state.activeTool);
   const setActiveTool = useDiagramEditorStore((state) => state.setActiveTool);
 
@@ -51,7 +51,7 @@ export default function ToolSidebar() {
   }, [setActiveTool]);
 
   return (
-    <aside className="flex w-18 flex-col gap-2 rounded-2xl border border-border/70 bg-background/95 p-2 shadow-lg backdrop-blur">
+    <aside className="flex items-center justify-center w-fit h-18  gap-2 rounded-2xl border border-border/70 bg-background/95 py-2 px-6 shadow-lg backdrop-blur">
       {TOOL_ITEMS.map((tool) => {
         const Icon = TOOL_ICONS[tool.id];
         const isActive = activeTool === tool.id;
@@ -62,13 +62,24 @@ export default function ToolSidebar() {
             type="button"
             variant={isActive ? "default" : "ghost"}
             size="icon"
-            className={cn("h-12 w-12 rounded-xl", isActive && "shadow-sm")}
+            className={cn(
+              "relative h-14 w-14 rounded-xl",
+              isActive && "shadow-sm",
+            )}
             onClick={() => setActiveTool(tool.id)}
             title={tool.label}
             aria-pressed={isActive}
           >
             <Icon className="size-5" />
             <span className="sr-only">{tool.label}</span>
+            <div
+              className={cn(
+                "absolute bottom-1 right-2   text-xs  ",
+                isActive ? "text-black" : " text-muted-foreground",
+              )}
+            >
+              {tool.key}
+            </div>
           </Button>
         );
       })}

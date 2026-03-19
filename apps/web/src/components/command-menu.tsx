@@ -92,8 +92,9 @@ const CommandMenu = () => {
               </CommandItem>
               <CommandItem
                 onSelect={() => {
-                  openModal("themeDialog");
                   closeModal();
+                  openModal("themeDialog");
+                  console.log("clicke");
                 }}
               >
                 <Palette />

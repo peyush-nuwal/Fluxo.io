@@ -203,6 +203,70 @@
   background-clip: content-box;
 }
 
+.scrollbar-minimal {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--foreground) 24%, transparent) transparent;
+}
+
+.scrollbar-minimal::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-minimal::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-minimal::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklab, var(--foreground) 24%, transparent);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.scrollbar-minimal:hover::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklab, var(--foreground) 36%, transparent);
+}
+
+/* =========================
+   FLOW CONTROLS
+========================= */
+.canves-controls {
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  background: color-mix(in oklab, var(--background) 92%, transparent);
+  box-shadow: 0 6px 18px color-mix(in oklab, var(--foreground) 10%, transparent);
+  overflow: hidden;
+  --xy-controls-box-shadow: none;
+  --xy-controls-button-background-color: transparent;
+  --xy-controls-button-background-color-hover: color-mix(
+    in oklab,
+    var(--foreground) 8%,
+    transparent
+  );
+  --xy-controls-button-color: var(--foreground);
+  --xy-controls-button-color-hover: var(--foreground);
+  --xy-controls-button-border-color: color-mix(
+    in oklab,
+    var(--border) 85%,
+    transparent
+  );
+}
+
+.canves-controls .react-flow__controls-button {
+  min-width: 32px;
+  min-height: 32px;
+  border: 0;
+}
+
+.canves-controls.horizontal .react-flow__controls-button {
+  border-right: 1px solid var(--xy-controls-button-border-color);
+}
+
+.canves-controls.horizontal .react-flow__controls-button:last-child {
+  border-right: 0;
+}
+
 
 
 
@@ -252,4 +316,6 @@
     @apply bg-destructive/10;
   }
 }
+
+ 
 

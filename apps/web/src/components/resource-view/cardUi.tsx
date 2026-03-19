@@ -50,7 +50,7 @@ const CardUI = ({
       )}
       onDoubleClick={handleDoubleClick}
     >
-      <div className="relative h-36 w-full overflow-hidden rounded-md bg-background">
+      <div className="relative h-36 w-full overflow-hidden rounded-md bg-secondary">
         {resource.thumbnail_url ? (
           <Image
             src={resource.thumbnail_url}

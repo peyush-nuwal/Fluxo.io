@@ -6,12 +6,13 @@ import { ArrowLeft, RefreshCcw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DiagramLoader from "@/components/ui/diagram-loader";
-import ReactFlowProvider from "@/components/ReactFlowProvider";
-import ToolSidebar from "@/components/canves/editor/tool-sidebar";
-import FlowCanves from "@/components/flow";
+import ReactFlowProvider from "@/components/canves/ReactFlowProvider";
+import FlowCanves from "@/components/canves/flow";
 import { useDiagramAutosave } from "@/hooks/use-diagram-autosave";
 import { useDiagramStore } from "@/store/diagramsStore";
 import { useDiagramEditorStore } from "@/store/diagramEditorStore";
+import StyleToolbar from "@/components/canves/editor/StyleToolbar";
+import ToolPanel from "@/components/canves/editor/tool-panel";
 
 type DiagramPageProps = {
   params: Promise<{
@@ -165,10 +166,13 @@ export default function DiagramPage({ params }: DiagramPageProps) {
             ) : null}
           </div>
 
-          <div className="absolute left-4 top-20 z-20">
-            <ToolSidebar />
+          <div className="absolute left-1/2  top-10 -translate-x-1/2 z-20">
+            <ToolPanel />
           </div>
 
+          <div className="absolute left-4 top-20 z-20 ">
+            <StyleToolbar />
+          </div>
           <ReactFlowProvider>
             <div className="h-full w-full">
               <FlowCanves key={diagramId} />
