@@ -10,6 +10,7 @@ type SaveStatus = "idle" | "pending" | "saving" | "saved" | "error";
 type UseDiagramAutosaveResult = {
   saveStatus: SaveStatus;
   saveMessage: string | null;
+  triggerSave: () => void;
 };
 
 type PersistedDiagramPayload = {
@@ -129,6 +130,10 @@ export function useDiagramAutosave(
     isSavingRef.current = false;
   }, [markSaved, updateDiagramData]);
 
+  const triggerSave = useCallback(() => {
+    void flushSave();
+  }, [flushSave]);
+
   useEffect(() => {
     if (!diagramId || !enabled) {
       if (saveTimeoutRef.current) {
@@ -215,5 +220,5 @@ export function useDiagramAutosave(
     };
   }, [diagramId, enabled, isDirty, nodes, edges, viewport, flushSave]);
 
-  return { saveStatus, saveMessage };
+  return { saveStatus, saveMessage, triggerSave };
 }

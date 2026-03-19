@@ -15,6 +15,12 @@ import {
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
+  useEdges,
+  useNodes,
+  useNodesInitialized,
+  useOnSelectionChange,
+  useKeyPress,
+  useUpdateNodeInternals,
   type EdgeMouseHandler,
   type NodeMouseHandler,
   type OnConnect,
@@ -107,6 +113,166 @@ function isShapeNode(node: CustomNodeType): node is ShapeNodeType {
   return node.type === "shape-node";
 }
 
+function isTypingTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false;
+
+  const tagName = target.tagName.toLowerCase();
+  return (
+    tagName === "input" || tagName === "textarea" || target.isContentEditable
+  );
+}
+
+function NodeInternalsSync() {
+  const nodes = useNodes<CustomNodeType>();
+  const nodesInitialized = useNodesInitialized();
+  const updateNodeInternals = useUpdateNodeInternals();
+
+  useEffect(() => {
+    if (!nodesInitialized) return;
+
+    const frame = requestAnimationFrame(() => {
+      nodes.forEach((node) => {
+        if (node.type === "shape-node") {
+          updateNodeInternals(node.id);
+        }
+      });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [nodesInitialized, nodes, updateNodeInternals]);
+
+  return null;
+}
+
+function SelectionSync() {
+  const setSelectedNodeId = useDiagramEditorStore(
+    (state) => state.setSelectedNodeId,
+  );
+  const setSelectedEdgeId = useDiagramEditorStore(
+    (state) => state.setSelectedEdgeId,
+  );
+
+  const onChange = useCallback(
+    ({
+      nodes,
+      edges,
+    }: {
+      nodes: CustomNodeType[];
+      edges: CustomEdgeType[];
+    }) => {
+      const nextNodeId = nodes[0]?.id ?? null;
+      const nextEdgeId = edges[0]?.id ?? null;
+
+      if (nextNodeId) {
+        setSelectedNodeId(nextNodeId);
+        return;
+      }
+
+      if (nextEdgeId) {
+        setSelectedEdgeId(nextEdgeId);
+        return;
+      }
+
+      setSelectedNodeId(null);
+      setSelectedEdgeId(null);
+    },
+    [setSelectedNodeId, setSelectedEdgeId],
+  );
+
+  useOnSelectionChange<CustomNodeType, CustomEdgeType>({ onChange });
+
+  return null;
+}
+
+function HotkeysSync({ isInteractive }: { isInteractive: boolean }) {
+  const nodes = useNodes<CustomNodeType>();
+  const edges = useEdges<CustomEdgeType>();
+  const setNodes = useDiagramEditorStore((state) => state.setNodes);
+  const setEdges = useDiagramEditorStore((state) => state.setEdges);
+  const clearSelection = useDiagramEditorStore((state) => state.clearSelection);
+  const undo = useDiagramEditorStore((state) => state.undo);
+  const redo = useDiagramEditorStore((state) => state.redo);
+
+  const undoPressed = useKeyPress(["Meta+z", "Strg+z", "Control+z"], {
+    preventDefault: true,
+    actInsideInputWithModifier: false,
+  });
+  const redoPressed = useKeyPress(
+    ["Meta+Shift+z", "Control+Shift+z", "Strg+Shift+z", "Control+y", "Strg+y"],
+    {
+      preventDefault: true,
+      actInsideInputWithModifier: false,
+    },
+  );
+  const deletePressed = useKeyPress(["Delete", "Backspace"], {
+    preventDefault: true,
+  });
+
+  const wasUndoPressedRef = useRef(false);
+  const wasRedoPressedRef = useRef(false);
+  const wasDeletePressedRef = useRef(false);
+
+  useEffect(() => {
+    if (undoPressed && !wasUndoPressedRef.current) {
+      undo();
+    }
+    wasUndoPressedRef.current = undoPressed;
+  }, [undoPressed, undo]);
+
+  useEffect(() => {
+    if (redoPressed && !wasRedoPressedRef.current) {
+      redo();
+    }
+    wasRedoPressedRef.current = redoPressed;
+  }, [redoPressed, redo]);
+
+  useEffect(() => {
+    if (!deletePressed || wasDeletePressedRef.current) {
+      wasDeletePressedRef.current = deletePressed;
+      return;
+    }
+
+    wasDeletePressedRef.current = true;
+
+    if (!isInteractive) return;
+    if (isTypingTarget(document.activeElement)) return;
+
+    const selectedNodeIds = new Set(
+      nodes.filter((node) => node.selected).map((node) => node.id),
+    );
+    const selectedEdgeIds = new Set(
+      edges.filter((edge) => edge.selected).map((edge) => edge.id),
+    );
+
+    if (selectedNodeIds.size === 0 && selectedEdgeIds.size === 0) return;
+
+    setNodes((prevNodes) =>
+      prevNodes.filter((node) => !selectedNodeIds.has(node.id)),
+    );
+
+    setEdges((prevEdges) =>
+      prevEdges.filter(
+        (edge) =>
+          !selectedEdgeIds.has(edge.id) &&
+          !selectedNodeIds.has(edge.source) &&
+          !selectedNodeIds.has(edge.target),
+      ),
+    );
+
+    clearSelection();
+  }, [
+    deletePressed,
+    isInteractive,
+    nodes,
+    edges,
+    setNodes,
+    setEdges,
+    clearSelection,
+  ]);
+
+  return null;
+}
+
 export default function FlowCanves() {
   const nodes = useDiagramEditorStore((state) => state.nodes);
   const edges = useDiagramEditorStore((state) => state.edges);
@@ -119,14 +285,6 @@ export default function FlowCanves() {
   const addNodeToEditor = useDiagramEditorStore((state) => state.addNode);
   const removeNode = useDiagramEditorStore((state) => state.removeNode);
   const removeEdge = useDiagramEditorStore((state) => state.removeEdge);
-  const setSelectedNodeId = useDiagramEditorStore(
-    (state) => state.setSelectedNodeId,
-  );
-  const setSelectedEdgeId = useDiagramEditorStore(
-    (state) => state.setSelectedEdgeId,
-  );
-  const selectedEdgeId = useDiagramEditorStore((state) => state.selectedEdgeId);
-  const selectedNodeId = useDiagramEditorStore((state) => state.selectedNodeId);
   const clearSelection = useDiagramEditorStore((state) => state.clearSelection);
   const undo = useDiagramEditorStore((state) => state.undo);
   const redo = useDiagramEditorStore((state) => state.redo);
@@ -557,85 +715,6 @@ export default function FlowCanves() {
   }, [removeNode, setNodes, setActiveTool]);
 
   useEffect(() => {
-    const isTypingTarget = (target: EventTarget | null) => {
-      if (!(target instanceof HTMLElement)) return false;
-
-      const tagName = target.tagName.toLowerCase();
-      return (
-        tagName === "input" ||
-        tagName === "textarea" ||
-        target.isContentEditable
-      );
-    };
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      const isModifier = event.metaKey || event.ctrlKey;
-      const key = event.key.toLowerCase();
-      const isUndoHotkey = isModifier && !event.shiftKey && key === "z";
-      const isRedoHotkey =
-        isModifier && ((event.shiftKey && key === "z") || key === "y");
-
-      if (isUndoHotkey || isRedoHotkey) {
-        if (isTypingTarget(event.target)) return;
-        event.preventDefault();
-        if (isUndoHotkey) undo();
-        else redo();
-        return;
-      }
-
-      if (!isInteractive) return;
-      if (event.key !== "Delete" && event.key !== "Backspace") return;
-      if (isTypingTarget(event.target)) return;
-
-      const selectedNodeIds = new Set(
-        nodes.filter((node) => node.selected).map((node) => node.id),
-      );
-      const selectedEdgeIds = new Set(
-        edges.filter((edge) => edge.selected).map((edge) => edge.id),
-      );
-
-      if (selectedNodeId) selectedNodeIds.add(selectedNodeId);
-      if (selectedEdgeId) selectedEdgeIds.add(selectedEdgeId);
-
-      if (selectedNodeIds.size === 0 && selectedEdgeIds.size === 0) return;
-
-      event.preventDefault();
-
-      setNodes((prevNodes) =>
-        prevNodes.filter((node) => !selectedNodeIds.has(node.id)),
-      );
-
-      setEdges((prevEdges) =>
-        prevEdges.filter(
-          (edge) =>
-            !selectedEdgeIds.has(edge.id) &&
-            !selectedNodeIds.has(edge.source) &&
-            !selectedNodeIds.has(edge.target),
-        ),
-      );
-
-      clearSelection();
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [
-    nodes,
-    edges,
-    selectedNodeId,
-    selectedEdgeId,
-    setNodes,
-    setEdges,
-    clearSelection,
-    isInteractive,
-    undo,
-    redo,
-  ]);
-
-  useEffect(() => {
     const handleWindowMouseUp = () => {
       onPaneMouseUp();
     };
@@ -672,10 +751,8 @@ export default function FlowCanves() {
         setActiveTool("select");
         return;
       }
-
-      setSelectedNodeId(node.id);
     },
-    [activeTool, removeNode, setActiveTool, setSelectedNodeId, isInteractive],
+    [activeTool, removeNode, setActiveTool, isInteractive],
   );
 
   const onEdgeClick: EdgeMouseHandler<CustomEdgeType> = useCallback(
@@ -687,10 +764,8 @@ export default function FlowCanves() {
         setActiveTool("select");
         return;
       }
-
-      setSelectedEdgeId(edge.id);
     },
-    [activeTool, removeEdge, setActiveTool, setSelectedEdgeId, isInteractive],
+    [activeTool, removeEdge, setActiveTool, isInteractive],
   );
 
   const onMoveEnd = useCallback(
@@ -755,7 +830,9 @@ export default function FlowCanves() {
             <CornerUpRight className="size-3.5" />
           </ControlButton>
         </Controls>
-
+        <SelectionSync />
+        <HotkeysSync isInteractive={isInteractive} />
+        <NodeInternalsSync />
         {activeTool === "eraser" && <Eraser />}
       </ReactFlow>
     </div>

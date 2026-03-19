@@ -74,10 +74,28 @@ export default function DiagramPage({ params }: DiagramPageProps) {
   const autosaveEnabled = Boolean(
     diagram && hasLoadedOnce && !loading && !error,
   );
-  const { saveStatus, saveMessage } = useDiagramAutosave(
+  const { saveStatus, saveMessage, triggerSave } = useDiagramAutosave(
     diagram?.id ?? null,
     autosaveEnabled,
   );
+
+  useEffect(() => {
+    if (!diagram) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      const key = event.key.toLowerCase();
+      const isSaveHotkey = (event.metaKey || event.ctrlKey) && key === "s";
+      if (!isSaveHotkey) return;
+
+      event.preventDefault();
+      triggerSave();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [diagram, triggerSave]);
 
   const backHref = diagram?.project_id
     ? `/home?projectId=${diagram.project_id}`
