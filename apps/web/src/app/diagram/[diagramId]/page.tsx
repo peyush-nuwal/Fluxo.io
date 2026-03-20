@@ -170,7 +170,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
             <Button variant="outline" asChild>
               <Link href={backHref}>
                 <ArrowLeft className="size-4" />
-                Back to Sidebar
+                Back
               </Link>
             </Button>
           </div>

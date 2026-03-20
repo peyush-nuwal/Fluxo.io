@@ -77,11 +77,11 @@ export default function ButtonEdge(props: EdgeProps<ButtonEdgeType>) {
           });
 
   const [edgePath, labelX, labelY] = pathResult;
-  const movingToken =
-    label.length > 4 ? label.slice(0, 4).toUpperCase() : label || ".";
-  const movingTokenText = movingToken.slice(0, 4);
+  const movingToken = label || ".";
+  const movingTokenText =
+    movingToken.length > 25 ? `${movingToken.slice(0, 25)}…` : movingToken;
   const tokenPaddingX = 8;
-  const tokenCharWidth = 8.5;
+  const tokenCharWidth = 7.4;
   const tokenHeight = 28;
   const tokenWidth = Math.max(
     30,

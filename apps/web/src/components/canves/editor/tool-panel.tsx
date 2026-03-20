@@ -7,14 +7,10 @@ import {
   Diamond,
   Eraser,
   Hand,
-  LocateFixed,
-  MoreHorizontal,
   MousePointer2,
   Pencil,
-  Redo2,
   Square,
   Type,
-  Undo2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -39,9 +35,6 @@ const TOOL_ICONS: Record<
 export default function ToolPanel() {
   const activeTool = useDiagramEditorStore((state) => state.activeTool);
   const setActiveTool = useDiagramEditorStore((state) => state.setActiveTool);
-  const undo = useDiagramEditorStore((state) => state.undo);
-  const redo = useDiagramEditorStore((state) => state.redo);
-  const setViewport = useDiagramEditorStore((state) => state.setViewport);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

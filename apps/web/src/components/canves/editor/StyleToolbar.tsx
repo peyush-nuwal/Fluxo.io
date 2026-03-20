@@ -137,14 +137,11 @@ export default function StyleToolbar() {
       ),
     );
   };
+
   return (
-    <aside className="scrollbar-minimal flex w-72 max-h-[calc(100vh-10rem)] flex-col gap-5 overflow-y-auto rounded-2xl border border-border/70 bg-background/95 p-5 shadow-lg backdrop-blur">
+    <aside className="scrollbar-minimal flex h-[calc(100vh-10rem)] w-70 flex-col gap-5 overflow-y-auto rounded-2xl border border-border/70 bg-background/95 p-5 shadow-lg backdrop-blur">
       <div className="space-y-1">
         <h3 className="text-sm font-semibold">Style</h3>
-        <p className="text-xs text-muted-foreground">
-          Colors are shown by default. Select a shape for shape-specific
-          options.
-        </p>
       </div>
 
       {!selectedEdge && selectedShapeNode && (
