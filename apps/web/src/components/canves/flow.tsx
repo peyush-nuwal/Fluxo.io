@@ -4,6 +4,7 @@ import {
   useRef,
   useState,
   type MouseEvent as ReactMouseEvent,
+  type WheelEvent as ReactWheelEvent,
 } from "react";
 import {
   Background,
@@ -463,6 +464,7 @@ export default function FlowCanves() {
         ...connection,
         id: crypto.randomUUID(),
         type: "button-edge",
+
         data: {
           variant: edgeVariant,
           endType: edgeEndType,
@@ -684,7 +686,6 @@ export default function FlowCanves() {
       }
 
       draftFreehandRef.current = null;
-      setActiveTool("select");
       return;
     }
 
@@ -775,8 +776,28 @@ export default function FlowCanves() {
     [setViewport],
   );
 
+  const onCanvasWheel = useCallback(
+    (event: ReactWheelEvent<HTMLDivElement>) => {
+      if (!event.shiftKey) return;
+
+      const instance = reactFlowInstanceRef.current;
+      if (!instance) return;
+
+      event.preventDefault();
+      const current = instance.getViewport();
+      const next: Viewport = {
+        ...current,
+        x: current.x - event.deltaY,
+      };
+
+      void instance.setViewport(next);
+      setViewport(next);
+    },
+    [setViewport],
+  );
+
   return (
-    <div className="h-full w-full fluxo-flow-theme">
+    <div className="h-full w-full fluxo-flow-theme" onWheel={onCanvasWheel}>
       <ReactFlow<CustomNodeType, CustomEdgeType>
         onInit={onInit}
         nodes={nodes}
@@ -833,6 +854,7 @@ export default function FlowCanves() {
         <SelectionSync />
         <HotkeysSync isInteractive={isInteractive} />
         <NodeInternalsSync />
+
         {activeTool === "eraser" && <Eraser />}
       </ReactFlow>
     </div>

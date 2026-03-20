@@ -9,6 +9,7 @@ export type NodeStyle = {
   borderRadius: number;
   borderColor: string;
   backgroundColor: string;
+  fontSize: number;
 };
 
 export const DEFAULT_NODE_STYLE: NodeStyle = {
@@ -17,6 +18,7 @@ export const DEFAULT_NODE_STYLE: NodeStyle = {
   borderRadius: 16,
   borderColor: "hsl(var(--border))",
   backgroundColor: "hsl(var(--background))",
+  fontSize: 14,
 };
 
 export type ShapeNodeData = {

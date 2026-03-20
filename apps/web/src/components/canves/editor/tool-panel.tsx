@@ -7,10 +7,14 @@ import {
   Diamond,
   Eraser,
   Hand,
+  LocateFixed,
+  MoreHorizontal,
   MousePointer2,
   Pencil,
+  Redo2,
   Square,
   Type,
+  Undo2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -35,6 +39,9 @@ const TOOL_ICONS: Record<
 export default function ToolPanel() {
   const activeTool = useDiagramEditorStore((state) => state.activeTool);
   const setActiveTool = useDiagramEditorStore((state) => state.setActiveTool);
+  const undo = useDiagramEditorStore((state) => state.undo);
+  const redo = useDiagramEditorStore((state) => state.redo);
+  const setViewport = useDiagramEditorStore((state) => state.setViewport);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -51,7 +58,7 @@ export default function ToolPanel() {
   }, [setActiveTool]);
 
   return (
-    <aside className="flex items-center justify-center w-fit h-18  gap-2 rounded-2xl border border-border/70 bg-background/95 py-2 px-6 shadow-lg backdrop-blur">
+    <aside className="flex h-18 w-fit items-center justify-center gap-2 rounded-2xl border border-border/70 bg-background/95 px-6 py-2 shadow-lg backdrop-blur">
       {TOOL_ITEMS.map((tool) => {
         const Icon = TOOL_ICONS[tool.id];
         const isActive = activeTool === tool.id;
@@ -74,7 +81,7 @@ export default function ToolPanel() {
             <span className="sr-only">{tool.label}</span>
             <div
               className={cn(
-                "absolute bottom-1 right-2   text-xs  ",
+                "absolute bottom-1 right-2 text-xs",
                 isActive ? "text-black" : " text-muted-foreground",
               )}
             >

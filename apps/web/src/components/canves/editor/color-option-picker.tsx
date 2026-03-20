@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/hooks/use-theme";
 
 const BASE_COLORS_LIGHT = [
-  "#111827",
   "#ef4444",
+  "#111827",
   "#f97316",
   "#facc15",
   "#84cc16",

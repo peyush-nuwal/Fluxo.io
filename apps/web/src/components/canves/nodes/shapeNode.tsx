@@ -114,6 +114,7 @@ export default function ShapeNode({
           label={data.label}
           shape={shape}
           labelColor={labelColor}
+          fontSize={nodeStyle.fontSize}
           className="text-sm font-medium"
         />
       </ShapeRenderer>
@@ -137,12 +138,14 @@ function ShapeLabelInput({
   label,
   shape,
   labelColor,
+  fontSize,
   className,
 }: {
   id: string;
   label?: string;
   shape: ShapeNodeType["data"]["shape"];
   labelColor: string;
+  fontSize?: number;
   className?: string;
 }) {
   const updateNodeData = useDiagramEditorStore((state) => state.updateNodeData);
@@ -161,7 +164,7 @@ function ShapeLabelInput({
       onClick={(event) => event.stopPropagation()}
       onDoubleClick={(event) => event.stopPropagation()}
       onKeyDown={(event) => event.stopPropagation()}
-      style={{ color: labelColor }}
+      style={{ color: labelColor, fontSize: fontSize ?? 14 }}
       className={cn(
         "nodrag nowheel w-full bg-transparent text-center outline-none placeholder:text-muted-foreground/70 px-1",
         shape === "text" ? "text-left" : "",
