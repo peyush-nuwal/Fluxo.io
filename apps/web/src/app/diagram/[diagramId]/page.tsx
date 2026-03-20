@@ -14,6 +14,8 @@ import { useDiagramEditorStore } from "@/store/diagramEditorStore";
 import StyleToolbar from "@/components/canves/editor/StyleToolbar";
 import ToolPanel from "@/components/canves/editor/tool-panel";
 
+import NotFoundFlow from "@/app/not-found";
+
 type DiagramPageProps = {
   params: Promise<{
     diagramId: string;
@@ -131,37 +133,10 @@ export default function DiagramPage({ params }: DiagramPageProps) {
         </div>
       ) : null}
 
-      {hasLoadedOnce && !loading && error ? (
-        <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold">Unable to open diagram</h1>
-            <p className="text-sm text-muted-foreground">{error}</p>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button variant="outline" onClick={retryFetch}>
-              <RefreshCcw className="size-4" />
-              Retry
-            </Button>
-            <Button variant="ghost" asChild>
-              <Link href={backHref}>Back to Sidebar</Link>
-            </Button>
-          </div>
-        </div>
-      ) : null}
+      {hasLoadedOnce && !loading && error ? <NotFoundFlow /> : null}
 
       {hasLoadedOnce && !loading && !error && !diagram ? (
-        <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold">Diagram not found</h1>
-            <p className="text-sm text-muted-foreground">
-              This diagram may have been removed or you may not have access to
-              it anymore.
-            </p>
-          </div>
-          <Button variant="outline" asChild>
-            <Link href="/home">Back to Sidebar</Link>
-          </Button>
-        </div>
+        <NotFoundFlow />
       ) : null}
 
       {diagram ? (

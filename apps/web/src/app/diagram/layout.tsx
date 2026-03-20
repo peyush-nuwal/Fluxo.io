@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { ThemeProvider } from "@/components/theme-provider";
 
 export default async function DiagramLayout({
   children,
@@ -13,5 +12,5 @@ export default async function DiagramLayout({
     redirect("/login");
   }
 
-  return <ThemeProvider>{children}</ThemeProvider>;
+  return children;
 }
