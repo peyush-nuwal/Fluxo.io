@@ -828,10 +828,28 @@ export default function FlowCanves() {
         }}
       >
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} />
-        <MiniMap pannable zoomable />
+        <MiniMap
+          pannable
+          zoomable
+          style={{
+            background: "var(--color-card)",
+            border: "1px solid var(--color-border)",
+            borderRadius: 12,
+          }}
+          maskColor="color-mix(in oklab, var(--primary) 16%, transparent)"
+          maskStrokeColor="color-mix(in oklab, var(--primary) 46%, var(--color-border))"
+          nodeColor="color-mix(in oklab, var(--foreground) 24%, var(--background))"
+          nodeStrokeColor="color-mix(in oklab, var(--primary) 40%, var(--color-border))"
+        />
         <Controls
           orientation="horizontal"
-          className="canves-controls "
+          className="canves-controls"
+          style={{
+            background:
+              "color-mix(in oklab, var(--background) 92%, transparent)",
+            border:
+              "1px solid color-mix(in oklab, var(--border) 85%, transparent)",
+          }}
           onInteractiveChange={setIsInteractive}
         >
           <ControlButton

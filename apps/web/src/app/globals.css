@@ -231,12 +231,7 @@
 /* =========================
    FLOW CONTROLS
 ========================= */
-.canves-controls {
-  border-radius: 10px;
-  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
-  background: color-mix(in oklab, var(--background) 92%, transparent);
-  box-shadow: 0 6px 18px color-mix(in oklab, var(--foreground) 10%, transparent);
-  overflow: hidden;
+.fluxo-flow-theme {
   --xy-controls-box-shadow: none;
   --xy-controls-button-background-color: transparent;
   --xy-controls-button-background-color-hover: color-mix(
@@ -251,20 +246,79 @@
     var(--border) 85%,
     transparent
   );
+
+  --xy-minimap-background-color: color-mix(
+    in oklab,
+    var(--color-card) 92%,
+    transparent
+  );
+  --xy-minimap-mask-background-color: color-mix(
+    in oklab,
+    var(--primary) 14%,
+    transparent
+  );
+  --xy-minimap-mask-stroke-color: color-mix(
+    in oklab,
+    var(--primary) 36%,
+    var(--border)
+  );
+  --xy-minimap-node-background-color: color-mix(
+    in oklab,
+    var(--foreground) 18%,
+    var(--background)
+  );
+  --xy-minimap-node-stroke-color: color-mix(
+    in oklab,
+    var(--primary) 40%,
+    var(--border)
+  );
 }
 
-.canves-controls .react-flow__controls-button {
+.canves-controls {
+  border-radius: 10px;
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  background: color-mix(in oklab, var(--background) 92%, transparent);
+  box-shadow: 0 6px 18px color-mix(in oklab, var(--foreground) 10%, transparent);
+  overflow: hidden;
+}
+
+.react-flow__controls.canves-controls .react-flow__controls-button {
   min-width: 32px;
   min-height: 32px;
   border: 0;
 }
 
-.canves-controls.horizontal .react-flow__controls-button {
+.react-flow__controls.canves-controls.horizontal .react-flow__controls-button {
   border-right: 1px solid var(--xy-controls-button-border-color);
 }
 
-.canves-controls.horizontal .react-flow__controls-button:last-child {
+.react-flow__controls.canves-controls.horizontal
+  .react-flow__controls-button:last-child {
   border-right: 0;
+}
+
+.fluxo-flow-theme .react-flow__controls {
+  background: color-mix(in oklab, var(--background) 92%, transparent);
+  border: 1px solid color-mix(in oklab, var(--border) 85%, transparent);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px color-mix(in oklab, var(--foreground) 10%, transparent);
+  overflow: hidden;
+}
+
+.fluxo-flow-theme .react-flow__controls-button {
+  background: transparent !important;
+  color: var(--foreground) !important;
+  border-color: color-mix(in oklab, var(--border) 85%, transparent) !important;
+}
+
+.fluxo-flow-theme .react-flow__controls-button:hover {
+  background: color-mix(in oklab, var(--foreground) 8%, transparent) !important;
+  color: var(--foreground) !important;
+}
+
+.fluxo-flow-theme .react-flow__controls-button svg {
+  fill: currentColor;
+  stroke: currentColor;
 }
 
 
