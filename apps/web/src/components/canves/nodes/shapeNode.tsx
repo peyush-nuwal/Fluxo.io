@@ -7,9 +7,10 @@ import {
 } from "@xyflow/react";
 import { useEffect } from "react";
 import { useDiagramEditorStore } from "@/store/diagramEditorStore";
-import { DEFAULT_NODE_STYLE, ShapeNodeType } from "./types";
+import { DEFAULT_NODE_STYLE, type NodeStyle, ShapeNodeType } from "./types";
 import { ShapeRenderer } from "./shapeRenderer";
 import { ShapeHandles } from "./shapeHandles";
+import { SHAPE_DEFAULT_SIZES } from "./nodes.config";
 import { cn } from "@/lib/utils";
 
 function getRgbFromColor(value: string) {
@@ -58,25 +59,63 @@ function getReadableTextColor(backgroundColor: string, fallback: string) {
   return luminance < 0.55 ? "#ffffff" : "#111827";
 }
 
+function toPositiveNumber(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number.parseFloat(value);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
+
 export default function ShapeNode({
   id,
   data,
   selected,
   width,
   height,
+  ...rest
 }: NodeProps<ShapeNodeType>) {
   const updateNodeSize = useDiagramEditorStore((s) => s.updateNodeSize);
   const updateNodeInternals = useUpdateNodeInternals();
+  const style = (rest as { style?: ShapeNodeType["style"] }).style;
 
   const shape = data.shape ?? "rectangle";
-  const nodeStyle = data.style ?? DEFAULT_NODE_STYLE;
+  const nodeStyle: NodeStyle = {
+    ...DEFAULT_NODE_STYLE,
+    ...(data.style ?? {}),
+  };
   const labelColor =
     shape === "text"
       ? nodeStyle.borderColor
       : getReadableTextColor(nodeStyle.backgroundColor, nodeStyle.borderColor);
 
-  const w = width ?? 200;
-  const h = height ?? 100;
+  const fallbackSize = SHAPE_DEFAULT_SIZES[shape];
+  const styleWidth = toPositiveNumber(style?.width);
+  const styleHeight = toPositiveNumber(style?.height);
+  const measuredWidth = toPositiveNumber(width);
+  const measuredHeight = toPositiveNumber(height);
+  const minMeasuredWidth = shape === "line" ? 1 : 24;
+  const minMeasuredHeight = shape === "line" ? 1 : 24;
+
+  const w =
+    styleWidth ??
+    (measuredWidth !== null && measuredWidth >= minMeasuredWidth
+      ? measuredWidth
+      : null) ??
+    fallbackSize.width;
+  const h =
+    styleHeight ??
+    (measuredHeight !== null && measuredHeight >= minMeasuredHeight
+      ? measuredHeight
+      : null) ??
+    fallbackSize.height;
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {

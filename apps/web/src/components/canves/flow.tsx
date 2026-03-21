@@ -400,7 +400,46 @@ export default function FlowCanves() {
         (change) => change.type !== "select" && change.type !== "dimensions",
       );
 
-      const updatedNodes = applyNodeChanges(changes, nodes) as CustomNodeType[];
+      const dimensionChanges = changes.filter(
+        (change) => change.type === "dimensions",
+      ) as Array<{
+        type: "dimensions";
+        id: string;
+        dimensions?: { width?: number; height?: number };
+      }>;
+
+      const updatedNodes = applyNodeChanges(changes, nodes).map((node) => {
+        if (!isShapeNode(node)) return node;
+
+        const dimensionChange = dimensionChanges.find(
+          (change) => change.id === node.id,
+        );
+        if (!dimensionChange) return node;
+
+        const width =
+          typeof dimensionChange.dimensions?.width === "number"
+            ? dimensionChange.dimensions.width
+            : undefined;
+        const height =
+          typeof dimensionChange.dimensions?.height === "number"
+            ? dimensionChange.dimensions.height
+            : undefined;
+
+        if (width === undefined && height === undefined) {
+          return node;
+        }
+
+        return {
+          ...node,
+          width: width ?? node.width,
+          height: height ?? node.height,
+          style: {
+            ...node.style,
+            ...(width !== undefined ? { width } : {}),
+            ...(height !== undefined ? { height } : {}),
+          },
+        };
+      }) as CustomNodeType[];
 
       changes.forEach((change) => {
         if (change.type === "position" && !change.dragging) {
@@ -555,11 +594,15 @@ export default function FlowCanves() {
 
   const onFlowMouseMove = useCallback(
     (event: ReactMouseEvent) => {
-      if ((event.buttons & 1) !== 1) {
+      const freehandDraft = draftFreehandRef.current;
+      const draft = draftCreateRef.current;
+
+      // Some browsers/environments can report `buttons` unreliably on pane mousemove.
+      // If we're in the middle of a draft create/draw interaction, keep processing.
+      if (!freehandDraft && !draft && (event.buttons & 1) !== 1) {
         return;
       }
 
-      const freehandDraft = draftFreehandRef.current;
       if (freehandDraft) {
         const instance = reactFlowInstanceRef.current;
         if (!instance) return;
@@ -626,7 +669,6 @@ export default function FlowCanves() {
         return;
       }
 
-      const draft = draftCreateRef.current;
       if (!draft) return;
 
       const instance = reactFlowInstanceRef.current;

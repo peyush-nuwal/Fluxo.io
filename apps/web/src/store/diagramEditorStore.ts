@@ -162,6 +162,59 @@ function isSameViewport(a: Viewport, b: Viewport) {
   return a.x === b.x && a.y === b.y && a.zoom === b.zoom;
 }
 
+function toPositiveNumber(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number.parseFloat(value);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
+
+function normalizeLoadedNodes(nodes: unknown): CustomNodeType[] {
+  if (!Array.isArray(nodes)) return [];
+
+  return nodes.map((node): CustomNodeType => {
+    if (!node || typeof node !== "object") {
+      return node as CustomNodeType;
+    }
+
+    const currentNode = node as CustomNodeType & {
+      width?: unknown;
+      height?: unknown;
+    };
+
+    if (currentNode.type !== "shape-node") {
+      return currentNode;
+    }
+
+    const style = currentNode.style ? { ...currentNode.style } : {};
+    const styleWidth = toPositiveNumber(style.width);
+    const styleHeight = toPositiveNumber(style.height);
+    const legacyWidth = toPositiveNumber(currentNode.width);
+    const legacyHeight = toPositiveNumber(currentNode.height);
+
+    if (styleWidth === null && legacyWidth !== null) {
+      style.width = legacyWidth;
+    }
+
+    if (styleHeight === null && legacyHeight !== null) {
+      style.height = legacyHeight;
+    }
+
+    return {
+      ...currentNode,
+      style,
+    };
+  });
+}
+
 export const useDiagramEditorStore = create<
   DiagramEditorState & DiagramEditorActions
 >((set) => ({
@@ -276,6 +329,8 @@ export const useDiagramEditorStore = create<
 
         return {
           ...node,
+          width,
+          height,
           style: { ...node.style, width, height },
         };
       });
@@ -358,7 +413,7 @@ export const useDiagramEditorStore = create<
 
   loadDiagramData: (data) =>
     set({
-      nodes: Array.isArray(data?.nodes) ? data.nodes : [],
+      nodes: normalizeLoadedNodes(data?.nodes),
       edges: Array.isArray(data?.edges) ? data.edges : [],
       viewport: data?.viewport ?? defaultViewport,
       selectedNodeId: null,

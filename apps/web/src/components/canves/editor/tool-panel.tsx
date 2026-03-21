@@ -9,13 +9,16 @@ import {
   Hand,
   MousePointer2,
   Pencil,
+  Share2,
   Square,
   Type,
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useDiagramEditorStore } from "@/store/diagramEditorStore";
 import { TOOL_ITEMS, type DiagramToolId } from "./tools";
+import { Separator } from "@/components/ui/separator";
 
 const TOOL_ICONS: Record<
   DiagramToolId,
@@ -83,6 +86,19 @@ export default function ToolPanel() {
           </Button>
         );
       })}
+      <Separator orientation="vertical" />
+      <Button
+        variant={"ghost"}
+        className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
+      >
+        <Share2 className="size-5" />
+      </Button>
+      <Button
+        variant={"ghost"}
+        className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
+      >
+        <Download className="size-5" />
+      </Button>
     </aside>
   );
 }

@@ -2,7 +2,7 @@
 
 import { use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, RefreshCcw } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DiagramLoader from "@/components/ui/diagram-loader";
@@ -150,7 +150,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
             </Button>
           </div>
 
-          <div className="absolute right-4 top-4 z-20 flex flex-col items-end gap-2">
+          <div className="absolute right-5 top-5 z-20 flex flex-col items-end gap-2 ">
             <Badge variant={saveBadge.variant}>{saveBadge.label}</Badge>
             {saveStatus === "error" && saveMessage ? (
               <p className="max-w-xs text-right text-xs text-destructive">
@@ -159,7 +159,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
             ) : null}
           </div>
 
-          <div className="absolute left-1/2  top-10 -translate-x-1/2 z-20">
+          <div className="absolute left-1/2  top-4 -translate-x-1/2 z-20">
             <ToolPanel />
           </div>
 

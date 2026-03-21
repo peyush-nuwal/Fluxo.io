@@ -18,15 +18,24 @@ export function ShapeRenderer({
   nodeStyle,
   children,
 }: Props) {
-  const resolvedStyle = nodeStyle ?? DEFAULT_NODE_STYLE;
+  const resolvedStyle = {
+    ...DEFAULT_NODE_STYLE,
+    ...(nodeStyle ?? {}),
+  };
   const base = "flex items-center justify-center pointer-events-none";
+  const borderWidth = Number.isFinite(Number(resolvedStyle.borderWidth))
+    ? Math.max(1, Number(resolvedStyle.borderWidth))
+    : DEFAULT_NODE_STYLE.borderWidth;
+  const borderRadius = Number.isFinite(Number(resolvedStyle.borderRadius))
+    ? Math.max(0, Number(resolvedStyle.borderRadius))
+    : DEFAULT_NODE_STYLE.borderRadius;
 
   const ring = selected && "ring-2 ring-primary/30";
   const commonStyle = {
     width,
     height,
     borderStyle: resolvedStyle.borderStyle,
-    borderWidth: resolvedStyle.borderWidth,
+    borderWidth,
     borderColor: resolvedStyle.borderColor,
     backgroundColor: resolvedStyle.backgroundColor,
   } as const;
@@ -47,10 +56,7 @@ export function ShapeRenderer({
 
   if (shape === "rectangle") {
     return (
-      <div
-        style={{ ...commonStyle, borderRadius: resolvedStyle.borderRadius }}
-        className={cn(base, ring)}
-      >
+      <div style={{ ...commonStyle, borderRadius }} className={cn(base, ring)}>
         <div className="pointer-events-auto">{children}</div>
       </div>
     );
@@ -67,9 +73,9 @@ export function ShapeRenderer({
   if (shape === "diamond") {
     const dashArray =
       resolvedStyle.borderStyle === "dashed"
-        ? `${resolvedStyle.borderWidth * 4} ${resolvedStyle.borderWidth * 2}`
+        ? `${borderWidth * 4} ${borderWidth * 2}`
         : resolvedStyle.borderStyle === "dotted"
-          ? `1 ${resolvedStyle.borderWidth * 2.5}`
+          ? `1 ${borderWidth * 2.5}`
           : undefined;
 
     return (
@@ -83,10 +89,10 @@ export function ShapeRenderer({
           className="absolute inset-0 overflow-visible"
         >
           <polygon
-            points={`${width / 2},${resolvedStyle.borderWidth / 2} ${width - resolvedStyle.borderWidth / 2},${height / 2} ${width / 2},${height - resolvedStyle.borderWidth / 2} ${resolvedStyle.borderWidth / 2},${height / 2}`}
+            points={`${width / 2},${borderWidth / 2} ${width - borderWidth / 2},${height / 2} ${width / 2},${height - borderWidth / 2} ${borderWidth / 2},${height / 2}`}
             fill={resolvedStyle.backgroundColor}
             stroke={resolvedStyle.borderColor}
-            strokeWidth={resolvedStyle.borderWidth}
+            strokeWidth={borderWidth}
             strokeDasharray={dashArray}
             strokeLinecap="round"
             strokeLinejoin="round"

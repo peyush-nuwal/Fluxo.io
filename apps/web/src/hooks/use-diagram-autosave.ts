@@ -19,8 +19,43 @@ type PersistedDiagramPayload = {
   viewport: Viewport;
 };
 
+function toPositiveNumber(value: unknown) {
+  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value === "string") {
+    const parsed = Number.parseFloat(value);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  return null;
+}
+
 function sanitizeNodes(nodes: Node[]): Node[] {
   return nodes.map((node) => {
+    const styleWidth = toPositiveNumber(node.style?.width);
+    const styleHeight = toPositiveNumber(node.style?.height);
+    const runtimeWidth = toPositiveNumber((node as { width?: unknown }).width);
+    const runtimeHeight = toPositiveNumber(
+      (node as { height?: unknown }).height,
+    );
+    const resolvedWidth =
+      node.type === "shape-node" ? styleWidth : (styleWidth ?? runtimeWidth);
+    const resolvedHeight =
+      node.type === "shape-node" ? styleHeight : (styleHeight ?? runtimeHeight);
+    const normalizedStyle =
+      node.type === "shape-node" &&
+      (resolvedWidth !== null || resolvedHeight !== null)
+        ? {
+            ...(node.style ?? {}),
+            ...(resolvedWidth !== null ? { width: resolvedWidth } : {}),
+            ...(resolvedHeight !== null ? { height: resolvedHeight } : {}),
+          }
+        : node.style;
+
     const {
       measured: _measured,
       selected: _selected,
@@ -33,7 +68,12 @@ function sanitizeNodes(nodes: Node[]): Node[] {
       ...persistedNode
     } = node;
 
-    return persistedNode;
+    return {
+      ...persistedNode,
+      ...(resolvedWidth !== null ? { width: resolvedWidth } : {}),
+      ...(resolvedHeight !== null ? { height: resolvedHeight } : {}),
+      style: normalizedStyle,
+    };
   });
 }
 
