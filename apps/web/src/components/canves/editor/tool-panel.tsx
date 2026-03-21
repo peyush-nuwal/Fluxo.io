@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { useDiagramEditorStore } from "@/store/diagramEditorStore";
 import { TOOL_ITEMS, type DiagramToolId } from "./tools";
 import { Separator } from "@/components/ui/separator";
+import CustomTooltip from "@/components/custom-tooltip";
 
 const TOOL_ICONS: Record<
   DiagramToolId,
@@ -60,45 +61,50 @@ export default function ToolPanel() {
         const isActive = activeTool === tool.id;
 
         return (
-          <Button
-            key={tool.id}
-            type="button"
-            variant={isActive ? "default" : "ghost"}
-            size="icon"
-            className={cn(
-              "relative h-14 w-14 rounded-xl",
-              isActive && "shadow-sm",
-            )}
-            onClick={() => setActiveTool(tool.id)}
-            title={tool.label}
-            aria-pressed={isActive}
-          >
-            <Icon className="size-5" />
-            <span className="sr-only">{tool.label}</span>
-            <div
+          <CustomTooltip content={tool.label}>
+            <Button
+              key={tool.id}
+              type="button"
+              variant={isActive ? "default" : "ghost"}
+              size="icon"
               className={cn(
-                "absolute bottom-1 right-2 text-xs",
-                isActive ? "text-black" : " text-muted-foreground",
+                "relative h-14 w-14 rounded-xl",
+                isActive && "shadow-sm",
               )}
+              onClick={() => setActiveTool(tool.id)}
             >
-              {tool.key}
-            </div>
-          </Button>
+              <Icon className="size-5" />
+              <span className="sr-only">{tool.label}</span>
+              <div
+                className={cn(
+                  "absolute bottom-1 right-2 text-xs",
+                  isActive ? "text-black" : " text-muted-foreground",
+                )}
+              >
+                {tool.key}
+              </div>
+            </Button>
+          </CustomTooltip>
         );
       })}
       <Separator orientation="vertical" />
-      <Button
-        variant={"ghost"}
-        className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
-      >
-        <Share2 className="size-5" />
-      </Button>
-      <Button
-        variant={"ghost"}
-        className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
-      >
-        <Download className="size-5" />
-      </Button>
+      <CustomTooltip content="Share">
+        <Button
+          variant={"ghost"}
+          className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
+        >
+          <Share2 className="size-5" />
+        </Button>
+      </CustomTooltip>
+
+      <CustomTooltip content="Download">
+        <Button
+          variant={"ghost"}
+          className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
+        >
+          <Download className="size-5" />
+        </Button>
+      </CustomTooltip>
     </aside>
   );
 }
