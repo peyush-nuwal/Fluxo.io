@@ -321,6 +321,52 @@
   stroke: currentColor;
 }
 
+/* =========================
+   NODE RESIZER OFFSET
+========================= */
+.fluxo-node-resizer-line {
+  border-color: color-mix(in oklab, var(--primary) 62%, var(--border));
+}
+
+.fluxo-node-resizer-handle {
+  width: 10px !important;
+  height: 10px !important;
+  border: 1px solid color-mix(in oklab, var(--primary) 72%, var(--border));
+  background: var(--background);
+}
+
+.fluxo-node-resizer-line--outer.top {
+  transform: translateY(-4px);
+}
+
+.fluxo-node-resizer-line--outer.bottom {
+  transform: translateY(4px);
+}
+
+.fluxo-node-resizer-line--outer.left {
+  transform: translateX(-4px);
+}
+
+.fluxo-node-resizer-line--outer.right {
+  transform: translateX(4px);
+}
+
+.fluxo-node-resizer-handle--outer.top.left {
+  transform: translate(-4px, -4px);
+}
+
+.fluxo-node-resizer-handle--outer.top.right {
+  transform: translate(4px, -4px);
+}
+
+.fluxo-node-resizer-handle--outer.bottom.left {
+  transform: translate(-4px, 4px);
+}
+
+.fluxo-node-resizer-handle--outer.bottom.right {
+  transform: translate(4px, 4px);
+}
+
 
 
 

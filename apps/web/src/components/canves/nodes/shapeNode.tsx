@@ -116,6 +116,7 @@ export default function ShapeNode({
       ? measuredHeight
       : null) ??
     fallbackSize.height;
+  const offsetResizeOverlay = shape === "rectangle" || shape === "circle";
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -163,6 +164,14 @@ export default function ShapeNode({
         isVisible={selected}
         minWidth={40}
         minHeight={24}
+        lineClassName={cn(
+          "fluxo-node-resizer-line",
+          offsetResizeOverlay && "fluxo-node-resizer-line--outer",
+        )}
+        handleClassName={cn(
+          "fluxo-node-resizer-handle",
+          offsetResizeOverlay && "fluxo-node-resizer-handle--outer",
+        )}
         onResizeEnd={(_, params) => {
           updateNodeSize(id, params.width, params.height);
           updateNodeInternals(id);

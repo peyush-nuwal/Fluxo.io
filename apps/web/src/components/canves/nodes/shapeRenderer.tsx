@@ -34,6 +34,7 @@ export function ShapeRenderer({
   const commonStyle = {
     width,
     height,
+    boxSizing: "content-box" as const,
     borderStyle: resolvedStyle.borderStyle,
     borderWidth,
     borderColor: resolvedStyle.borderColor,
@@ -71,33 +72,19 @@ export function ShapeRenderer({
   }
 
   if (shape === "diamond") {
-    const dashArray =
-      resolvedStyle.borderStyle === "dashed"
-        ? `${borderWidth * 4} ${borderWidth * 2}`
-        : resolvedStyle.borderStyle === "dotted"
-          ? `1 ${borderWidth * 2.5}`
-          : undefined;
-
     return (
       <div
         style={{ width, height }}
         className={cn("relative pointer-events-none", ring)}
       >
-        <svg
-          width={width}
-          height={height}
-          className="absolute inset-0 overflow-visible"
-        >
-          <polygon
-            points={`${width / 2},${borderWidth / 2} ${width - borderWidth / 2},${height / 2} ${width / 2},${height - borderWidth / 2} ${borderWidth / 2},${height / 2}`}
-            fill={resolvedStyle.backgroundColor}
-            stroke={resolvedStyle.borderColor}
-            strokeWidth={borderWidth}
-            strokeDasharray={dashArray}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <div
+          style={{
+            ...commonStyle,
+            width: Math.min(width, height),
+            height: Math.min(width, height),
+          }}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45"
+        />
         <div className="absolute inset-0 flex items-center justify-center pointer-events-auto">
           <div>{children}</div>
         </div>

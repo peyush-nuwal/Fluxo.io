@@ -33,6 +33,7 @@
     "cmdk": "^1.1.1",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
+    "html-to-image": "^1.11.13",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.562.0",
     "motion": "^12.24.10",
