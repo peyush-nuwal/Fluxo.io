@@ -11,6 +11,7 @@ export const projects = pgTable("projects", {
   description: text("description"),
   thumbnail_url: text("thumbnail_url"),
   is_public: boolean("is_public").default(false),
+  is_default: boolean("is_default").default(false),
   collaborators: json("collaborators").default([]),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),

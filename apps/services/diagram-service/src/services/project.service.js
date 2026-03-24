@@ -43,15 +43,10 @@ export const getProjectsByUser = async (userId, userEmail) => {
   let rows = await db.select().from(projects).where(whereClause);
 
   if (rows.length === 0) {
-    await db.insert(projects).values({
-      user_id: userId,
-      title: "My First Project",
-      description: null,
-      thumbnail_url: null,
-      is_public: false,
-      collaborators: [],
+    await createDefaultProject({
+      userId,
       owner_name: null,
-      owner_username: null,
+      owner_username: userEmail ? userEmail.split("@")[0] : null,
       owner_avatar_url: null,
     });
 
@@ -61,11 +56,43 @@ export const getProjectsByUser = async (userId, userEmail) => {
   return rows;
 };
 
-export const createProjectRecord = async ({
+export async function createDefaultProject({
+  userId,
+  owner_name,
+  owner_username,
+  owner_avatar_url,
+}) {
+  let [project] = await db
+    .select()
+    .from(projects)
+    .where(
+      and(
+        eq(projects.user_id, userId),
+        eq(projects.is_default, true),
+        isNull(projects.deleted_at),
+      ),
+    );
+
+  if (project) return project;
+
+  return createProject({
+    userId: userId,
+    title: "My Workspace",
+    description: null,
+    thumbnail_url: null,
+    is_default: true,
+    owner_name: owner_name ?? null,
+    owner_username: owner_username ?? null,
+    owner_avatar_url: owner_avatar_url ?? null,
+  });
+}
+
+export const createProject = async ({
   userId,
   title,
   description,
   thumbnail_url,
+  is_default,
   owner_name,
   owner_username,
   owner_avatar_url,
@@ -77,6 +104,7 @@ export const createProjectRecord = async ({
       title,
       description,
       thumbnail_url,
+      is_default,
       is_public: false,
       collaborators: [],
       owner_name,

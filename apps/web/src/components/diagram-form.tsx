@@ -180,9 +180,7 @@ export default function DiagramForm() {
                           ? "Select a Project"
                           : "No projects available"
                     }
-                  >
-                    {projects.find((p) => p.id === selectedProjectId)?.title}
-                  </SelectValue>
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>

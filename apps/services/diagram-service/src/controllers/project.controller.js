@@ -6,7 +6,7 @@ import {
 } from "../../../../../packages/zod-schemas/index.js";
 import {
   getProjectsByUser,
-  createProjectRecord,
+  createProject,
   updateProjectById,
   deleteProjectById,
   verifyProjectOwnership,
@@ -16,7 +16,7 @@ import { normalizeOptionalText, normalizeUpdateName } from "../utils/helper.js";
 import { getUploadedThumbnail } from "./file.controller.js";
 import { formatZodDetails, sendError, sendSuccess } from "../utils/response.js";
 
-export const getAllProjects = async (req, res) => {
+export const getAllProjectsByUser = async (req, res) => {
   try {
     const userId = req.user?.id;
     const userEmail = req.user?.email;
@@ -33,7 +33,7 @@ export const getAllProjects = async (req, res) => {
   }
 };
 
-export const createProject = async (req, res) => {
+export const createProjectController = async (req, res) => {
   try {
     const userId = req.user?.id;
     if (!userId) return sendError(res, 401, "Unauthorized");
@@ -91,7 +91,7 @@ export const createProject = async (req, res) => {
       owner_avatar_url,
     } = validatedData;
 
-    const newProject = await createProjectRecord({
+    const newProject = await createProject({
       userId,
       title,
       description,

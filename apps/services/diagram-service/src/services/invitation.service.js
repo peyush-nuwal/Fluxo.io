@@ -106,7 +106,7 @@ export const getInvitationByToken = async (token) => {
 /**
  * Accept an invitation
  */
-export const acceptInvitation = async (token, userEmail) => {
+export const acceptInvitation = async (token) => {
   try {
     // Get invitation
     const invitation = await getInvitationByToken(token);
@@ -127,14 +127,6 @@ export const acceptInvitation = async (token, userEmail) => {
         .set({ status: "expired" })
         .where(eq(project_invitations.id, invitation.id));
       throw new Error("Invitation has expired");
-    }
-
-    // Verify that the accepting user's email matches the invitation email
-    const normalizedUserEmail = userEmail.trim().toLowerCase();
-    const normalizedInvitationEmail = invitation.email.trim().toLowerCase();
-
-    if (normalizedUserEmail !== normalizedInvitationEmail) {
-      throw new Error("This invitation was not sent to your email address");
     }
 
     // Add user as collaborator to the project

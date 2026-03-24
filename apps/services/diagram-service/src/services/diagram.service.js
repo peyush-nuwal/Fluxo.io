@@ -2,6 +2,7 @@ import { db } from "../config/database.js";
 import { and, count, eq, isNotNull, isNull, not, sql, desc } from "drizzle-orm";
 import logger from "../config/logger.js";
 import { diagrams, diagram_likes } from "../models/index.model.js";
+import { createDefaultProject } from "./project.service.js";
 
 export { verifyProjectOwnership } from "./project.service.js";
 
@@ -105,11 +106,22 @@ export const createDiagram = async ({
     viewport: { x: 0, y: 0, zoom: 1 },
   };
 
+  let defaultProjectId = null;
+  if (!projectId) {
+    const defaultProject = await createDefaultProject({
+      userId,
+      owner_name: owner_name,
+      owner_username: owner_username,
+      owner_avatar_url: owner_avatar_url,
+    });
+    defaultProjectId = defaultProject.id;
+  }
+
   const [diagram] = await db
     .insert(diagrams)
     .values({
       user_id: userId,
-      project_id: projectId,
+      project_id: projectId ?? defaultProjectId,
       name: resolvedName,
       data: resolvedData,
       description: description ?? null,
@@ -121,6 +133,7 @@ export const createDiagram = async ({
     .returning({
       id: diagrams.id,
       name: diagrams.name,
+      projectId: diagrams.project_id,
       data: diagrams.data,
       description: diagrams.description,
       thumbnail_url: diagrams.thumbnail_url,

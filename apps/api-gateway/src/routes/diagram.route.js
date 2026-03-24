@@ -39,6 +39,9 @@ router.use("/projects", httpProxy(SERVICES.DIAGRAM, proxyOptions));
 // FOR DIAGRAM ROUTES
 router.use("/diagrams", httpProxy(SERVICES.DIAGRAM, proxyOptions));
 
+// FOR INVITATION ROUTES
+router.use("/invitations", httpProxy(SERVICES.DIAGRAM, proxyOptions));
+
 // FOR ADMIN DIAGRAM ROUTES (e.g. hard delete)
 router.use("/admin", httpProxy(SERVICES.DIAGRAM, proxyOptions));
 

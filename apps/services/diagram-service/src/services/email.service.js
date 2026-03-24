@@ -39,14 +39,14 @@ export const sendProjectInvitation = async (
   projectTitle,
   ownerName,
   invitationToken,
-  frontendUrl = process.env.FRONTEND_URL || "http://localhost:4000",
+  frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000",
 ) => {
   try {
     const transporter = createTransporter();
 
     const subject = `You've been invited to collaborate on "${projectTitle}"`;
 
-    const invitationLink = `${frontendUrl}/projects/invitation/accept?token=${encodeURIComponent(invitationToken)}`;
+    const invitationLink = `${frontendUrl}/invitations/accept?token=${encodeURIComponent(invitationToken)}`;
 
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
-  getAllProjects,
-  createProject,
+  getAllProjectsByUser,
+  createProjectController,
   getProjectById,
   updateProject,
   deleteProject,
@@ -62,8 +62,8 @@ const ThumbnailUpload = (req, res, next) => {
 
 /* ===================== PROJECTS ===================== */
 
-router.get("/projects", getAllProjects);
-router.post("/projects", ThumbnailUpload, createProject);
+router.get("/projects", getAllProjectsByUser);
+router.post("/projects", ThumbnailUpload, createProjectController);
 router.get("/projects/:id", getProjectById);
 router.put("/projects/:id", ThumbnailUpload, updateProject);
 router.delete("/projects/:id", deleteProject);
@@ -118,11 +118,11 @@ router.patch(
 
 /* ===================== COLLABORATORS ===================== */
 
-router.get("/projects/:projectId/collaborators", getCollaboratorsByProject);
+router.get("/diagrams/:projectId/collaborators", getCollaboratorsByProject);
 
-router.post("/projects/:projectId/collaborators", addCollaborator);
+router.post("/diagrams/:projectId/collaborators", addCollaborator);
 
-router.delete("/projects/:projectId/collaborators", removeCollaborator);
+router.delete("/diagrams/:projectId/collaborators", removeCollaborator);
 
 /* ===================== INVITATIONS ===================== */
 

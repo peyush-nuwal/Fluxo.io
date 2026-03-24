@@ -54,14 +54,19 @@ app.use((req, res, next) => {
     "/api/v1/auth/oauth/github",
     "/api/v1/auth/oauth/github/callback",
     "/health",
+    "/api/v1/diagram/invitations/accept",
   ];
 
-  const isPublicAuth = PUBLIC_AUTH_PATHS.some(
+  const isPublicPath = PUBLIC_AUTH_PATHS.some(
     (p) => req.path === p || req.path.startsWith(`${p}/`),
   );
 
+  if (isPublicPath) {
+    return next();
+  }
+
   if (req.path.startsWith("/api/v1/auth")) {
-    return isPublicAuth ? next() : verifyToken(req, res, next);
+    return verifyToken(req, res, next);
   }
 
   return verifyToken(req, res, next);
