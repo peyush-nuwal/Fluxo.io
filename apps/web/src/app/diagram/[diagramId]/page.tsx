@@ -34,10 +34,10 @@ export default function DiagramPage({ params }: DiagramPageProps) {
   const loadDiagramData = useDiagramEditorStore(
     (state) => state.loadDiagramData,
   );
+
   const resetEditor = useDiagramEditorStore((state) => state.reset);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const hasInitializedEditorRef = useRef(false);
-  const [isInviteBtnVisible, setIsInviteBtnVisible] = useState<boolean>(false);
 
   useEffect(() => {
     let active = true;
@@ -69,7 +69,6 @@ export default function DiagramPage({ params }: DiagramPageProps) {
     ) {
       return;
     }
-    retryFetch();
     loadDiagramData(diagram.data);
     hasInitializedEditorRef.current = true;
   }, [diagram, diagramId, loadDiagramData]);
@@ -103,11 +102,6 @@ export default function DiagramPage({ params }: DiagramPageProps) {
   const backHref = diagram?.project_id
     ? `/home?projectId=${diagram.project_id}`
     : "/home";
-
-  const retryFetch = () => {
-    hasInitializedEditorRef.current = false;
-    void fetchDiagramById(diagramId);
-  };
 
   const saveBadge =
     saveStatus === "pending"
@@ -161,7 +155,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
           </div>
 
           <div className="absolute left-1/2  top-4 -translate-x-1/2 z-20">
-            <ToolPanel />
+            <ToolPanel diagramId={diagramId} />
           </div>
 
           <div className="absolute left-4 top-20 z-20 ">

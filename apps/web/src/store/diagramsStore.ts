@@ -52,7 +52,7 @@ type DiagramActions = {
     isActive: boolean,
   ) => Promise<diagramResult>;
   reset: () => void;
-  VerifyDiagramOwnership: (diagramId: string) => Promise<boolean>;
+  verifyDiagramOwnership: (diagramId: string) => Promise<boolean>;
 };
 
 const initialState: DiagramState = {
@@ -242,18 +242,12 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
     },
 
     reset: () => set({ ...initialState }),
-    VerifyDiagramOwnership: async (diagramId) => {
+    verifyDiagramOwnership: async (diagramId) => {
       try {
         const data = await VerifyOwnerOfDiagram(diagramId);
 
-        if (typeof data?.is_owner === "boolean") {
-          return data.is_owner;
-        }
-        if (typeof data?.isOwner === "boolean") {
-          return data.isOwner;
-        }
-
-        return false;
+        if (!data) return false;
+        return Boolean(data?.isOwner);
       } catch (err: any) {
         set({
           error: err?.message ?? "Failed to verify diagram ownership",

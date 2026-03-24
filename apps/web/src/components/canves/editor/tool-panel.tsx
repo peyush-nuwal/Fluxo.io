@@ -24,6 +24,11 @@ import { toJpeg, toPng, toSvg } from "html-to-image";
 import { getNodesBounds, getViewportForBounds } from "@xyflow/react";
 import DownloadDiagramForm from "@/components/download-diagram-form";
 import { toast } from "sonner";
+import { useDiagramStore } from "@/store/diagramsStore";
+
+type ToolPanelProps = {
+  diagramId: string;
+};
 
 const TOOL_ICONS: Record<
   DiagramToolId,
@@ -47,11 +52,12 @@ function triggerDownload(dataUrl: string, fileName: string, extension: string) {
   anchor.click();
 }
 
-export default function ToolPanel() {
+export default function ToolPanel({ diagramId }: ToolPanelProps) {
   const activeTool = useDiagramEditorStore((state) => state.activeTool);
   const setActiveTool = useDiagramEditorStore((state) => state.setActiveTool);
   const nodes = useDiagramEditorStore((state) => state.nodes);
-
+  const { verifyDiagramOwnership } = useDiagramStore();
+  const [isInviteBtnVisible, setIsInviteBtnVisible] = useState<boolean>(false);
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -155,6 +161,24 @@ export default function ToolPanel() {
     [nodes],
   );
 
+  useEffect(() => {
+    if (!diagramId) return;
+
+    let mounted = true;
+
+    const run = async () => {
+      const isOwner = await verifyDiagramOwnership(diagramId);
+      if (!mounted) return;
+      setIsInviteBtnVisible(isOwner);
+    };
+
+    void run();
+
+    return () => {
+      mounted = false;
+    };
+  }, [diagramId, verifyDiagramOwnership]);
+
   return (
     <aside className="flex h-18 w-fit items-center justify-center gap-2 rounded-2xl border border-border/70 bg-background/95 px-6 py-2 shadow-lg backdrop-blur">
       {TOOL_ITEMS.map((tool) => {
@@ -190,14 +214,16 @@ export default function ToolPanel() {
 
       <Separator orientation="vertical" />
 
-      <CustomTooltip content="Share">
-        <Button
-          variant="ghost"
-          className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
-        >
-          <Share2 className="size-5" />
-        </Button>
-      </CustomTooltip>
+      {isInviteBtnVisible && (
+        <CustomTooltip content="Share">
+          <Button
+            variant="ghost"
+            className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
+          >
+            <Share2 className="size-5" />
+          </Button>
+        </CustomTooltip>
+      )}
 
       <CustomTooltip content="Download">
         <Button
