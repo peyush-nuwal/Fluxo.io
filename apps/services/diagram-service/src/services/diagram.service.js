@@ -1,39 +1,27 @@
 import { db } from "../config/database.js";
 import { and, count, eq, isNotNull, isNull, not, sql, desc } from "drizzle-orm";
 import logger from "../config/logger.js";
-import { verifyProjectOwnership } from "./project.service.js";
 import { diagrams, diagram_likes } from "../models/index.model.js";
 
 export { verifyProjectOwnership } from "./project.service.js";
 
-export const verifyDiagramOwnership = async (diagramId, projectId, userId) => {
+export const verifyDiagramOwnership = async (diagramId, userId) => {
   try {
-    // First verify the project belongs to the user
-    const project = await verifyProjectOwnership(projectId, userId);
-    if (!project) {
-      return null;
-    }
-
-    // Then verify the diagram exists and belongs to the project
     const [diagram] = await db
-      .select()
+      .select({ id: diagrams.id })
       .from(diagrams)
       .where(
         and(
           eq(diagrams.id, diagramId),
-          eq(diagrams.project_id, projectId),
+          eq(diagrams.user_id, userId),
           isNull(diagrams.deleted_at),
         ),
       );
 
-    if (!diagram) {
-      throw new Error("Diagram not found");
-    }
-
-    return diagram;
+    return !!diagram;
   } catch (error) {
     logger.error("Error verifying diagram ownership:", error);
-    return null;
+    return false;
   }
 };
 

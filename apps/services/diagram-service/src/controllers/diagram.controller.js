@@ -24,6 +24,7 @@ import {
   updateDiagramLastOpened,
   getDiagramByProject,
   getAllSoftDeletedDiagramByUser,
+  verifyDiagramOwnership,
 } from "../services/diagram.service.js";
 import {
   normalizeOptionalText,
@@ -244,7 +245,7 @@ export const updateDiagramController = async (req, res) => {
         const uploadResult = await uploadThumbnail(userId, uploadedThumbnail);
         normalizedPayload.thumbnail_url = uploadResult.url;
       } catch (error) {
-        logger.error("Failed to upload diagram thumbnail:", error);
+        logger.error("Failed to upload diagram thumbnail bucket:", error);
         return sendError(res, 500, "Failed to upload thumbnail");
       }
     }
@@ -468,5 +469,22 @@ export const updateDiagramVisibilityController = async (req, res) => {
   } catch (error) {
     logger.error("Error updating diagram visibility:", error);
     return sendError(res, 500, "Failed to update diagram visibility");
+  }
+};
+export const verifyDiagramOwnershipController = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) return sendError(res, 401, "Unauthorized");
+
+    const { diagramId } = req.params;
+
+    const isOwner = await verifyDiagramOwnership(diagramId, userId);
+    return sendSuccess(res, 200, "Diagram ownership checked successfully", {
+      diagramId,
+      isOwner,
+    });
+  } catch (error) {
+    logger.error("Error getting diagram ownership:", error);
+    return sendError(res, 500, "Failed to verify diagram ownership");
   }
 };

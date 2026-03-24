@@ -85,3 +85,9 @@ export async function hardDeleteDiagram(diagramId: string) {
     method: "DELETE",
   });
 }
+
+export async function VerifyOwnerOfDiagram(diagramId: string) {
+  return apiFetch(`/api/v1/diagrams/${diagramId}/ownership`, {
+    method: "GET",
+  });
+}

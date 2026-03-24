@@ -22,6 +22,7 @@ import {
   updateDiagramActiveStatusController,
   updateDiagramVisibilityController,
   getAllSoftDeletedDiagramByUserController,
+  verifyDiagramOwnershipController,
 } from "../controllers/diagram.controller.js";
 
 import {
@@ -96,6 +97,8 @@ router.delete("/diagrams/:diagramId", softDeleteDiagramController);
 router.patch("/diagrams/:diagramId/restore", restoreDiagramController);
 // hard delete diagram
 router.delete("/admin/diagrams/:diagramId", hardDeleteUserDiagramController);
+
+router.get("/diagrams/:diagramId/ownership", verifyDiagramOwnershipController);
 
 // mark diagram active/inactive (canvas session)
 router.patch(

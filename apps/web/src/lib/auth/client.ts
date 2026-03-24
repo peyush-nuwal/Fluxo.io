@@ -36,6 +36,64 @@ function isBrowser() {
   return typeof window !== "undefined";
 }
 
+type FieldErrors = Record<string, string[]>;
+
+function toErrorList(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item ?? "").trim())
+      .filter((item) => item.length > 0);
+  }
+  if (typeof value === "string") {
+    const message = value.trim();
+    return message ? [message] : [];
+  }
+  return [];
+}
+
+function setMappedError(
+  target: FieldErrors,
+  key: string,
+  value: unknown,
+): void {
+  const messages = toErrorList(value);
+  if (messages.length) {
+    target[key] = messages;
+  }
+}
+
+function normalizeErrorDetails(
+  details: unknown,
+  fallbackMessage?: string,
+): FieldErrors {
+  const normalized: FieldErrors = {};
+
+  if (details && typeof details === "object") {
+    const source = details as Record<string, unknown>;
+    setMappedError(
+      normalized,
+      "username",
+      source.username ?? source.userName ?? source.user_name,
+    );
+    setMappedError(normalized, "name", source.name);
+    setMappedError(normalized, "email", source.email);
+    setMappedError(normalized, "password", source.password);
+    setMappedError(
+      normalized,
+      "_form",
+      source._form ?? source.form ?? source.non_field_errors ?? source.detail,
+    );
+  } else if (Array.isArray(details) || typeof details === "string") {
+    setMappedError(normalized, "_form", details);
+  }
+
+  if (!normalized._form?.length && fallbackMessage) {
+    setMappedError(normalized, "_form", fallbackMessage);
+  }
+
+  return normalized;
+}
+
 /* ------------------ Auth ------------------ */
 
 export async function login(email: string, password: string) {
@@ -57,7 +115,10 @@ export async function login(email: string, password: string) {
   }
 
   if (!res.ok) {
-    throw data;
+    throw {
+      ...data,
+      details: normalizeErrorDetails(data?.details, data?.message),
+    };
   }
 
   clearUserCache();
@@ -65,7 +126,7 @@ export async function login(email: string, password: string) {
 }
 
 export async function signup(
-  userName: string,
+  username: string,
   name: string,
   email: string,
   password: string,
@@ -74,7 +135,7 @@ export async function signup(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ userName, name, email, password }),
+    body: JSON.stringify({ username, name, email, password }),
   });
 
   const text = await res.text();
@@ -87,10 +148,11 @@ export async function signup(
   }
 
   if (!res.ok) {
+    const message = data?.message || "Signup failed";
     return {
       ok: false,
-      message: data?.message || "Signup failed",
-      details: data?.details,
+      message,
+      details: normalizeErrorDetails(data?.details, message),
     };
   }
 

@@ -37,6 +37,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
   const resetEditor = useDiagramEditorStore((state) => state.reset);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const hasInitializedEditorRef = useRef(false);
+  const [isInviteBtnVisible, setIsInviteBtnVisible] = useState<boolean>(false);
 
   useEffect(() => {
     let active = true;
@@ -68,7 +69,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
     ) {
       return;
     }
-
+    retryFetch();
     loadDiagramData(diagram.data);
     hasInitializedEditorRef.current = true;
   }, [diagram, diagramId, loadDiagramData]);

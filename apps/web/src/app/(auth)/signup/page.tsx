@@ -26,12 +26,12 @@ export default function SignupPage() {
     setErrors({});
 
     const formData = new FormData(e.currentTarget);
-    const userName = formData.get("userName") as string;
+    const username = formData.get("username") as string;
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    const result = await signup(userName, name, email, password);
+    const result = await signup(username, name, email, password);
 
     if (!result.ok) {
       if (result.details) {
@@ -74,17 +74,17 @@ export default function SignupPage() {
           </div>
           {/* FORM */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* userName */}
+            {/* Username */}
             <div className="space-y-1">
               <Input
-                name="userName"
+                name="username"
                 type="text"
                 placeholder="User Name"
                 required
                 className="h-10"
               />
-              {errors?.userName && (
-                <p className="text-sm text-destructive">{errors.userName[0]}</p>
+              {errors?.username && (
+                <p className="text-sm text-destructive">{errors.username[0]}</p>
               )}
             </div>
             {/* name */}
