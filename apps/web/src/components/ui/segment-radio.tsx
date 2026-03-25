@@ -4,7 +4,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
-import { useId } from "react";
+import { useId, useState } from "react";
 import type { ReactNode } from "react";
 
 type Option<T extends string> = {
@@ -16,6 +16,7 @@ type Option<T extends string> = {
 type SegmentRadioGroupProps<T extends string> = {
   value?: T;
   defaultValue?: T;
+  type?: "default" | "ghost";
   options: Option<T>[];
   onChange: (value: T) => void;
   className?: string;
@@ -27,42 +28,62 @@ export function SegmentRadioGroup<T extends string>({
   options,
   onChange,
   className,
+  type = "default",
 }: SegmentRadioGroupProps<T>) {
-  const layoutId = useId();
+  const groupId = useId();
+  const [internalValue, setInternalValue] = useState<T | undefined>(
+    defaultValue,
+  );
+
+  const isControlled = value !== undefined;
+  const selectedValue = isControlled ? value : internalValue;
+
+  const handleValueChange = (nextValue: string) => {
+    const typedValue = nextValue as T;
+    if (!isControlled) {
+      setInternalValue(typedValue);
+    }
+    onChange(typedValue);
+  };
 
   return (
     <RadioGroup
       value={value}
       defaultValue={defaultValue}
-      onValueChange={(v) => onChange(v as T)}
+      onValueChange={handleValueChange}
       className={cn(
-        "relative inline-flex w-fit rounded-md border border-border bg-muted p-1",
-        className,
+        "relative inline-flex w-fit p-1",
+        type === "default"
+          ? "rounded-md border border-border bg-muted"
+          : "bg-transparent",
       )}
     >
       {options.map((opt) => {
-        const checked = value === opt.value;
+        const checked = selectedValue === opt.value;
         const hasLabel = opt.label !== undefined && opt.label !== null;
         const hasIcon = opt.icon !== undefined && opt.icon !== null;
+        const inputId = `${groupId}-${opt.value}`;
 
         return (
           <Label
             key={opt.value}
-            htmlFor={opt.value}
+            htmlFor={inputId}
             className={cn(
-              "relative z-10 flex cursor-pointer select-none items-center justify-center rounded-sm px-3 py-1.5 text-sm font-medium transition-colors hover:bg-primary/40",
-
+              "relative z-10 flex cursor-pointer select-none items-center justify-center rounded-sm px-3 py-1.5 text-sm font-medium transition-colors",
+              className,
               checked
-                ? "text-primary-foreground "
-                : "text-muted-foreground hover:text-foreground",
+                ? type === "default"
+                  ? "text-primary-foreground"
+                  : "text-primary"
+                : "text-muted-foreground hover:text-foreground hover:bg-primary/40",
             )}
           >
             {checked && (
               <motion.span
-                layoutId={`segment-indicator-${layoutId}`}
+                layoutId={`segment-indicator-${groupId}`}
                 className={cn(
                   "absolute inset-0 z-[-1] rounded-sm transition-colors",
-                  checked ? "bg-primary" : "bg-transparent ",
+                  type === "default" ? "bg-primary" : "bg-transparent",
                 )}
                 transition={{
                   type: "spring",
@@ -73,7 +94,7 @@ export function SegmentRadioGroup<T extends string>({
             )}
 
             <RadioGroupItem
-              id={opt.value}
+              id={inputId}
               value={opt.value}
               className="sr-only"
             />

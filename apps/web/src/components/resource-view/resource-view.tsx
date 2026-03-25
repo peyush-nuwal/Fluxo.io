@@ -29,7 +29,6 @@ const FILTER_OPTIONS: filterOption_array[] = [
   { value: "name_desc", label: "Name Z-A" },
   { value: "public_only", label: "Public Only" },
   { value: "private_only", label: "Private Only" },
-  { value: "active_only", label: "Active Only" },
 ];
 
 type ResourceViewProps = {
@@ -184,9 +183,10 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
 
   return (
     <div className="flex flex-col gap-5 py-5 ">
-      <div className="flex gap-3 items-center justify-end px-6 md:px-8  ">
+      <div className="flex gap-3 items-center justify-between px-6 md:px-8  ">
         {mode === "active" ? (
           <SegmentRadioGroup
+            type="ghost"
             value={accessFilter}
             onChange={(value) =>
               setAccessFilter(value as "all" | "mine" | "shared")
@@ -196,31 +196,34 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
               { value: "mine", label: "Mine" },
               { value: "shared", label: "Shared" },
             ]}
+            className="text-base font-medium"
           />
         ) : null}
-        <Input
-          placeholder="Search..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-62.5"
-        />
-        <DropDownFilter filter={filter} onFilterChange={setFilter} />
-        <SegmentRadioGroup
-          value={layoutMode}
-          onChange={setLayoutMode}
-          options={[
-            {
-              value: "card",
-              icon: <LayoutGrid className="size-4" />,
-              label: <span className="sr-only">Card</span>,
-            },
-            {
-              value: "list",
-              icon: <List className="size-4" />,
-              label: <span className="sr-only">List</span>,
-            },
-          ]}
-        />
+        <div className="flex gap-3 items-center">
+          <Input
+            placeholder="Search..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-62.5"
+          />
+          <DropDownFilter filter={filter} onFilterChange={setFilter} />
+          <SegmentRadioGroup
+            value={layoutMode}
+            onChange={setLayoutMode}
+            options={[
+              {
+                value: "card",
+                icon: <LayoutGrid className="size-4" />,
+                label: <span className="sr-only">Card</span>,
+              },
+              {
+                value: "list",
+                icon: <List className="size-4" />,
+                label: <span className="sr-only">List</span>,
+              },
+            ]}
+          />
+        </div>
       </div>
       {/* 1️⃣ Real empty (should be rare) */}
       {!loading && !hasAnyResources && (
