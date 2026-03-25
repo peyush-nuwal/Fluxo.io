@@ -7,7 +7,7 @@ import {
 } from "../../../../../packages/zod-schemas/index.js";
 import { uploadThumbnail } from "../services/project.service.js";
 import {
-  verifyProjectOwnership,
+  verifyProjectAccess,
   toggleLikes,
   getLikeCount,
   createDiagram,
@@ -17,6 +17,7 @@ import {
   softDeleteDiagram,
   restoreDiagram,
   getDiagramsByUser,
+  getDiagramById,
   getUserDiagramById,
   getSoftDeletedUserDiagramById,
   setDiagramVisibility,
@@ -39,6 +40,7 @@ import { formatZodDetails, sendError, sendSuccess } from "../utils/response.js";
 export const getDiagramsByProjectController = async (req, res) => {
   try {
     const userId = req.user?.id;
+    const userEmail = req.user?.email;
     if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { projectId } = req.params;
@@ -46,12 +48,12 @@ export const getDiagramsByProjectController = async (req, res) => {
       return sendError(res, 400, "Project ID is required");
     }
 
-    const project = await verifyProjectOwnership(projectId, userId);
+    const project = await verifyProjectAccess(projectId, userId, userEmail);
     if (!project) {
       return sendError(res, 404, "Project not found");
     }
 
-    const diagrams = await getDiagramByProject(userId, projectId);
+    const diagrams = await getDiagramByProject(projectId);
     return sendSuccess(res, 200, "Project diagrams fetched successfully", {
       diagrams,
     });
@@ -73,7 +75,7 @@ export const getAllDiagramsByUserController = async (req, res) => {
       ? userEmail.split("@")[0]
       : "unknown-user";
 
-    const diagrams = await getDiagramsByUser(userId, {
+    const diagrams = await getDiagramsByUser(userId, userEmail, {
       owner_name: null,
       owner_username: defaultOwnerUsername,
       owner_avatar_url: null,
@@ -92,13 +94,29 @@ export const getAllDiagramsByUserController = async (req, res) => {
 export const getDiagramByIdController = async (req, res) => {
   try {
     const userId = req.user?.id;
+    const userEmail = req.user?.email;
     if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { diagramId } = req.params;
 
-    const diagram = await getUserDiagramById(userId, diagramId);
+    let diagram = await getUserDiagramById(userId, diagramId);
+
+    // Allow collaborators to open diagrams that belong to projects shared with them.
     if (!diagram) {
-      return sendError(res, 404, "Diagram not found");
+      const candidate = await getDiagramById(diagramId);
+      if (!candidate) {
+        return sendError(res, 404, "Diagram not found");
+      }
+
+      const canAccessSharedProject =
+        candidate.project_id &&
+        (await verifyProjectAccess(candidate.project_id, userId, userEmail));
+
+      if (!canAccessSharedProject) {
+        return sendError(res, 404, "Diagram not found");
+      }
+
+      diagram = candidate;
     }
 
     updateDiagramLastOpened(diagramId).catch(() => {});

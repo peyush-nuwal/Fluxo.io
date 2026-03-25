@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { apiFetch } from "@/lib/api";
 
 type AcceptState = "idle" | "loading" | "success" | "error";
 
@@ -29,26 +30,14 @@ export default function AcceptInvitationPage() {
     const run = async () => {
       setState("loading");
       try {
-        const res = await fetch("/api/v1/invitations/accept", {
+        const data = await apiFetch("/api/v1/diagram/invitations/accept", {
           method: "POST",
+          body: JSON.stringify({ token }),
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ token }),
         });
-
-        const data = await res.json().catch(() => ({}));
         if (!active) return;
-
-        if (!res.ok) {
-          setState("error");
-          setMessage(
-            String(
-              data?.message || data?.error || "Failed to accept invitation.",
-            ),
-          );
-          return;
-        }
 
         setState("success");
         setMessage(

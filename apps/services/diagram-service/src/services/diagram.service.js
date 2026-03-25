@@ -1,10 +1,23 @@
 import { db } from "../config/database.js";
-import { and, count, eq, isNotNull, isNull, not, sql, desc } from "drizzle-orm";
+import {
+  and,
+  count,
+  desc,
+  eq,
+  inArray,
+  isNotNull,
+  isNull,
+  not,
+  sql,
+} from "drizzle-orm";
 import logger from "../config/logger.js";
-import { diagrams, diagram_likes } from "../models/index.model.js";
+import { diagrams, diagram_likes, projects } from "../models/index.model.js";
 import { createDefaultProject } from "./project.service.js";
 
-export { verifyProjectOwnership } from "./project.service.js";
+export {
+  verifyProjectOwnership,
+  verifyProjectAccess,
+} from "./project.service.js";
 
 export const verifyDiagramOwnership = async (diagramId, userId) => {
   try {
@@ -26,36 +39,77 @@ export const verifyDiagramOwnership = async (diagramId, userId) => {
   }
 };
 
-export const getDiagramByProject = async (userId, projectId) => {
+export const getDiagramByProject = async (projectId) => {
   const diagramList = await db
     .select()
     .from(diagrams)
     .where(
-      and(
-        eq(diagrams.project_id, projectId),
-        eq(diagrams.user_id, userId),
-        isNull(diagrams.deleted_at),
-      ),
+      and(eq(diagrams.project_id, projectId), isNull(diagrams.deleted_at)),
     );
 
   return diagramList;
 };
 
-export const getDiagramsByUser = async (userId, defaultOwner = {}) => {
-  let diagramList = await db
+export const getDiagramsByUser = async (
+  userId,
+  userEmail,
+  defaultOwner = {},
+) => {
+  let ownerDiagrams = await db
     .select()
     .from(diagrams)
     .where(and(eq(diagrams.user_id, userId), isNull(diagrams.deleted_at)));
 
-  if (diagramList.length === 0) {
+  if (ownerDiagrams.length === 0) {
     await createDefaultDiagramForUser(userId, null, defaultOwner);
-    diagramList = await db
+    ownerDiagrams = await db
       .select()
       .from(diagrams)
       .where(and(eq(diagrams.user_id, userId), isNull(diagrams.deleted_at)));
   }
 
-  return diagramList;
+  const ownerWithAccess = ownerDiagrams.map((diagram) => ({
+    ...diagram,
+    access_type: "owner",
+  }));
+
+  const normalizedUserEmail = userEmail?.trim().toLowerCase();
+  if (!normalizedUserEmail) {
+    return ownerWithAccess;
+  }
+
+  const sharedProjects = await db
+    .select({ id: projects.id })
+    .from(projects)
+    .where(
+      and(
+        isNull(projects.deleted_at),
+        sql`${projects.collaborators}::jsonb @> ${JSON.stringify([normalizedUserEmail])}::jsonb`,
+      ),
+    );
+
+  const sharedProjectIds = sharedProjects.map((project) => project.id);
+  if (sharedProjectIds.length === 0) {
+    return ownerWithAccess;
+  }
+
+  const sharedDiagrams = await db
+    .select()
+    .from(diagrams)
+    .where(
+      and(
+        inArray(diagrams.project_id, sharedProjectIds),
+        isNull(diagrams.deleted_at),
+        not(eq(diagrams.user_id, userId)),
+      ),
+    );
+
+  const sharedWithAccess = sharedDiagrams.map((diagram) => ({
+    ...diagram,
+    access_type: "shared",
+  }));
+
+  return [...ownerWithAccess, ...sharedWithAccess];
 };
 
 export const getUserDiagramById = async (userId, diagramId) => {
@@ -65,6 +119,12 @@ export const getUserDiagramById = async (userId, diagramId) => {
       eq(diagrams.user_id, userId),
       isNull(diagrams.deleted_at),
     ),
+  });
+};
+
+export const getDiagramById = async (diagramId) => {
+  return db.query.diagrams.findFirst({
+    where: and(eq(diagrams.id, diagramId), isNull(diagrams.deleted_at)),
   });
 };
 

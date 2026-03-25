@@ -1,8 +1,8 @@
 import axios from "axios";
 
-// Always call Next.js API routes from the browser (same-origin).
-// Next route handlers are responsible for proxying to backend services.
-const API_URL = "";
+// Call API gateway directly from browser in development/production.
+// This avoids duplicate proxy route maintenance in Next route handlers.
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000";
 
 export class ApiError extends Error {
   constructor(

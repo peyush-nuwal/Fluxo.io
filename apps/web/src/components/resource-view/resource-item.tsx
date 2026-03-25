@@ -45,7 +45,7 @@ const ResourceItem = ({
   const router = useRouter();
 
   const handleDoubleClick = () => {
-    router.push(`/diagram/${resource.id}`); // open page
+    router.push(`/diagram/${resource.id}`);
   };
 
   const handleEdit = () => {

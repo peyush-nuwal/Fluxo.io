@@ -13,7 +13,6 @@ import { useDiagramStore } from "@/store/diagramsStore";
 import { useDiagramEditorStore } from "@/store/diagramEditorStore";
 import StyleToolbar from "@/components/canves/editor/StyleToolbar";
 import ToolPanel from "@/components/canves/editor/tool-panel";
-
 import NotFoundFlow from "@/app/not-found";
 
 type DiagramPageProps = {
@@ -99,9 +98,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
     };
   }, [diagram, triggerSave]);
 
-  const backHref = diagram?.project_id
-    ? `/home?projectId=${diagram.project_id}`
-    : "/home";
+  const backHref = "/home";
 
   const saveBadge =
     saveStatus === "pending"

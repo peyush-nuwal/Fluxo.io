@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params }: Params) {
     const accessToken = req.cookies.get("access_token")?.value;
 
     const res = await fetch(
-      `${API_BASE_URL}/api/v1/diagram/projects/${projectId}/diagrams`,
+      `${API_BASE_URL}/api/v1/projects/${projectId}/diagrams`,
       {
         method: "GET",
         headers: {

@@ -118,14 +118,22 @@ router.patch(
 
 /* ===================== COLLABORATORS ===================== */
 
+// Preferred project-scoped routes
+router.get("/projects/:projectId/collaborators", getCollaboratorsByProject);
+router.post("/projects/:projectId/collaborators", addCollaborator);
+router.delete("/projects/:projectId/collaborators", removeCollaborator);
+
+// Backward-compatible aliases
 router.get("/diagrams/:projectId/collaborators", getCollaboratorsByProject);
-
 router.post("/diagrams/:projectId/collaborators", addCollaborator);
-
 router.delete("/diagrams/:projectId/collaborators", removeCollaborator);
 
 /* ===================== INVITATIONS ===================== */
 
+// Keep both routes for compatibility with existing email links and clients
 router.post("/invitations/accept", acceptInvitation);
+router.get("/invitations/accept", acceptInvitation);
+router.post("/projects/invitations/accept", acceptInvitation);
+router.get("/projects/invitations/accept", acceptInvitation);
 
 export default router;

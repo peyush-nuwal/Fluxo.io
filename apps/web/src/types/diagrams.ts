@@ -21,6 +21,7 @@ export type DiagramResource = {
   updated_at: string; // ISO timestamp
   deleted_at?: string | null; // nullable
   last_opened_at?: string | null;
+  access_type?: "owner" | "shared";
 };
 
 export type FilterOption =

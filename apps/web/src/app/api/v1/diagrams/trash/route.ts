@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
 
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagram/diagrams/trash`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/diagrams/trash`, {
       method: "GET",
       headers: {
         Cookie: cookie ?? "",

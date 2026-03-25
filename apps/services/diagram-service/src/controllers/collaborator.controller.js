@@ -205,10 +205,14 @@ export const removeCollaborator = async (req, res) => {
 
 export const acceptInvitation = async (req, res) => {
   try {
+    const tokenFromBody = req.body?.token;
+    const tokenFromQuery = req.query?.token;
+    const token = tokenFromBody || tokenFromQuery;
+
     // Validate request body with Zod
     let validatedData;
     try {
-      validatedData = acceptInvitationSchema.parse(req.body);
+      validatedData = acceptInvitationSchema.parse({ token });
     } catch (error) {
       if (error instanceof ZodError) {
         return sendError(res, 400, "Validation error", {
@@ -218,11 +222,11 @@ export const acceptInvitation = async (req, res) => {
       throw error;
     }
 
-    const { token } = validatedData;
+    const { token: invitationToken } = validatedData;
 
     // Accept the invitation (this will add user as collaborator if valid)
     try {
-      const result = await acceptInvitationService(token);
+      const result = await acceptInvitationService(invitationToken);
 
       return sendSuccess(res, 200, "Invitation accepted successfully", {
         project: {
@@ -235,13 +239,13 @@ export const acceptInvitation = async (req, res) => {
       logger.error("Error accepting invitation:", invitationError);
 
       // Handle specific invitation errors
-      if (invitationError.message.includes("not found")) {
+      if (invitationError?.message?.includes("not found")) {
         return sendError(res, 404, "Invitation not found");
       }
-      if (invitationError.message.includes("expired")) {
+      if (invitationError?.message?.includes("expired")) {
         return sendError(res, 400, "Invitation has expired");
       }
-      if (invitationError.message.includes("already")) {
+      if (invitationError?.message?.includes("already")) {
         return sendError(res, 400, invitationError.message);
       }
 

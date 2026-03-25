@@ -7,15 +7,12 @@ import {
   UpdateDiagramPayload,
 } from "@/types";
 
-// TODO: replace these endpoints with your API gateway routes for diagram-service.
-// Example base: "/api/v1"
-
 export async function getDiagramsByUser() {
-  return apiFetch("/api/v1/diagrams");
+  return apiFetch("/api/v1/diagram/diagrams");
 }
 
 export async function getDiagramById(diagramId: string) {
-  return apiFetch(`/api/v1/diagrams/${diagramId}`);
+  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}`);
 }
 
 export async function createDiagram(payload: DiagramPayload | FormData) {
@@ -27,7 +24,7 @@ export async function createDiagram(payload: DiagramPayload | FormData) {
     options.body = JSON.stringify(payload);
   }
 
-  return apiFetch("/api/v1/diagrams", options);
+  return apiFetch("/api/v1/diagram/diagrams", options);
 }
 
 export async function updateDiagram(
@@ -47,7 +44,7 @@ export async function updateDiagram(
     };
   }
 
-  return apiFetch(`/api/v1/diagrams/${diagramId}`, options);
+  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}`, options);
 }
 
 export async function updateDiagramData(
@@ -61,7 +58,7 @@ export async function setDiagramActiveState(
   diagramId: string,
   payload: SetDiagramActivePayload,
 ) {
-  return apiFetch(`/api/v1/diagrams/${diagramId}/active`, {
+  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}/active`, {
     method: "PATCH",
     body: JSON.stringify(payload),
     headers: {
@@ -71,23 +68,23 @@ export async function setDiagramActiveState(
 }
 
 export async function softDeleteDiagram(diagramId: string) {
-  return apiFetch(`/api/v1/diagrams/${diagramId}`, {
+  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}`, {
     method: "DELETE",
   });
 }
 
 export const getSoftDeletedDiagrams = async () => {
-  return apiFetch("/api/v1/diagrams/trash");
+  return apiFetch("/api/v1/diagram/diagrams/trash");
 };
 
 export async function hardDeleteDiagram(diagramId: string) {
-  return apiFetch(`/api/v1/diagrams/trash/${diagramId}`, {
+  return apiFetch(`/api/v1/diagram/admin/diagrams/${diagramId}`, {
     method: "DELETE",
   });
 }
 
 export async function VerifyOwnerOfDiagram(diagramId: string) {
-  return apiFetch(`/api/v1/diagrams/${diagramId}/ownership`, {
+  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}/ownership`, {
     method: "GET",
   });
 }

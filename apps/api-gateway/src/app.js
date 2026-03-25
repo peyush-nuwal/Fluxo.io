@@ -54,7 +54,10 @@ app.use((req, res, next) => {
     "/api/v1/auth/oauth/github",
     "/api/v1/auth/oauth/github/callback",
     "/health",
+    "/api/v1/invitations/accept",
+    "/api/v1/projects/invitations/accept",
     "/api/v1/diagram/invitations/accept",
+    "/api/v1/diagram/projects/invitations/accept",
   ];
 
   const isPublicPath = PUBLIC_AUTH_PATHS.some(
@@ -83,6 +86,8 @@ app.use(
 );
 
 app.use("/api/v1/diagram", diagramRoutes);
+// Backward-compatible aliases for clients using /api/v1/projects|diagrams|invitations
+app.use("/api/v1", diagramRoutes);
 
 app.use(
   "/api/v1/ai",

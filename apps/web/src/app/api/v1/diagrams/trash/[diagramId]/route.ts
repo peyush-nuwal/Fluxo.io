@@ -13,7 +13,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     const accessToken = req.cookies.get("access_token")?.value;
 
     const res = await fetch(
-      `${API_BASE_URL}/api/v1/diagram/admin/diagrams/${diagramId}`,
+      `${API_BASE_URL}/api/v1/admin/diagrams/${diagramId}`,
       {
         method: "DELETE",
         headers: {

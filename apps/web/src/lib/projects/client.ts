@@ -2,7 +2,7 @@ import { apiFetch } from "../api";
 import { ProjectPayload, UpdateProjectPayload } from "@/types/project";
 
 export async function getProjects() {
-  return apiFetch("/api/v1/projects");
+  return apiFetch("/api/v1/diagram/projects");
 }
 
 export async function createProject(payload: ProjectPayload | FormData) {
@@ -14,7 +14,7 @@ export async function createProject(payload: ProjectPayload | FormData) {
     options.body = JSON.stringify(payload);
   }
 
-  return apiFetch("/api/v1/projects", options);
+  return apiFetch("/api/v1/diagram/projects", options);
 }
 
 export async function updateProject(
@@ -29,19 +29,19 @@ export async function updateProject(
     options.body = JSON.stringify(payload);
   }
 
-  return apiFetch(`/api/v1/projects/${projectId}`, options);
+  return apiFetch(`/api/v1/diagram/projects/${projectId}`, options);
 }
 
 export async function deleteProject(projectId: string) {
-  return apiFetch(`/api/v1/projects/${projectId}`, {
+  return apiFetch(`/api/v1/diagram/projects/${projectId}`, {
     method: "DELETE",
   });
 }
 
 export async function getProjectById(projectId: string) {
-  return apiFetch(`/api/v1/projects/${projectId}`);
+  return apiFetch(`/api/v1/diagram/projects/${projectId}`);
 }
 
 export async function getProjectDiagrams(projectId: string) {
-  return apiFetch(`/api/v1/projects/${projectId}/diagrams`);
+  return apiFetch(`/api/v1/diagram/projects/${projectId}/diagrams`);
 }

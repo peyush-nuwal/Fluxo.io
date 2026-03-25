@@ -12,18 +12,15 @@ export async function GET(req: NextRequest, { params }: Params) {
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
 
-    const res = await fetch(
-      `${API_BASE_URL}/api/v1/diagram/projects/${projectId}`,
-      {
-        method: "GET",
-        headers: {
-          Cookie: cookie ?? "",
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        },
-        credentials: "include",
-        cache: "no-store",
+    const res = await fetch(`${API_BASE_URL}/api/v1/projects/${projectId}`, {
+      method: "GET",
+      headers: {
+        Cookie: cookie ?? "",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
-    );
+      credentials: "include",
+      cache: "no-store",
+    });
 
     const text = await res.text();
     let data: any = null;
@@ -71,15 +68,12 @@ export async function PUT(req: NextRequest, { params }: Params) {
       body = JSON.stringify(json);
     }
 
-    const res = await fetch(
-      `${API_BASE_URL}/api/v1/diagram/projects/${projectId}`,
-      {
-        method: "PUT",
-        headers,
-        body,
-        cache: "no-store",
-      },
-    );
+    const res = await fetch(`${API_BASE_URL}/api/v1/projects/${projectId}`, {
+      method: "PUT",
+      headers,
+      body,
+      cache: "no-store",
+    });
 
     const text = await res.text();
     let data: any = null;
@@ -111,18 +105,15 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
 
-    const res = await fetch(
-      `${API_BASE_URL}/api/v1/diagram/projects/${projectId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Cookie: cookie ?? "",
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        },
-        credentials: "include",
-        cache: "no-store",
+    const res = await fetch(`${API_BASE_URL}/api/v1/projects/${projectId}`, {
+      method: "DELETE",
+      headers: {
+        Cookie: cookie ?? "",
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
-    );
+      credentials: "include",
+      cache: "no-store",
+    });
 
     const text = await res.text();
     let data: any = null;

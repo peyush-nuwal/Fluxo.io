@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
       ...(cookie && { Cookie: cookie }),
       ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     };
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagram/diagrams`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/diagrams`, {
       method: "GET",
       headers,
       credentials: "include",
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       body = JSON.stringify(json);
     }
 
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagram/diagrams`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/diagrams`, {
       method: "POST",
       headers,
       body,

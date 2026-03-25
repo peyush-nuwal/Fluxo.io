@@ -175,6 +175,39 @@ export const verifyProjectOwnership = async (projectId, userId) => {
   }
 };
 
+export const verifyProjectAccess = async (projectId, userId, userEmail) => {
+  try {
+    const [project] = await db
+      .select()
+      .from(projects)
+      .where(and(eq(projects.id, projectId), isNull(projects.deleted_at)));
+
+    if (!project) {
+      return null;
+    }
+
+    const isOwner = project.user_id === userId;
+    const normalizedUserEmail = userEmail?.trim().toLowerCase();
+    const collaborators = Array.isArray(project.collaborators)
+      ? project.collaborators
+      : [];
+    const isCollaborator = normalizedUserEmail
+      ? collaborators.some(
+          (email) => String(email).toLowerCase() === normalizedUserEmail,
+        )
+      : false;
+
+    if (!isOwner && !isCollaborator) {
+      return null;
+    }
+
+    return project;
+  } catch (error) {
+    logger.error("Error verifying project access:", error);
+    return null;
+  }
+};
+
 export const addCollaboratorToProject = async (
   projectId,
   collaboratorEmail,

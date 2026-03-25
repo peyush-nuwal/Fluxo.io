@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ProjectNavItem } from "@/types/sidebar";
 import { useEffect, useMemo, useState } from "react";
 import { useProjectStore } from "@/store/projectsStore";
@@ -53,7 +53,6 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
   const { isMobile } = useSidebar();
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const {
     projects: resources,
     loading,
@@ -62,8 +61,10 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
   } = useProjectStore();
   const createProjectOpen = useModalStore((s) => s.open);
   const showLoadingState = loading && resources.length === 0;
-  const activeProjectId =
-    pathname === "/home" ? searchParams.get("projectId") : null;
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null,
+  );
+  const activeProjectId = pathname === "/home" ? selectedProjectId : null;
   const [pendingDeleteProjectId, setPendingDeleteProjectId] = useState<
     string | null
   >(null);
@@ -117,9 +118,10 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
     createProjectOpen("ProjectForm", { mode: "edit", project });
   };
 
-  const getProjectHref = (projectId: string) => `/home?projectId=${projectId}`;
+  const getProjectHref = (_projectId: string) => "/home";
 
   const handleOpenProject = (projectId: string) => {
+    setSelectedProjectId(projectId);
     router.push(getProjectHref(projectId));
   };
 
@@ -199,6 +201,7 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
                       >
                         <Link
                           href={getProjectHref(item.id)}
+                          onClick={() => setSelectedProjectId(item.id)}
                           onKeyDown={(event) => {
                             if (
                               event.key === "Delete" ||

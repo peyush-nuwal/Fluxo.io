@@ -19,7 +19,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     };
 
     const res = await fetch(
-      `${API_BASE_URL}/api/v1/diagram/diagrams/${diagramId}/active`,
+      `${API_BASE_URL}/api/v1/diagrams/${diagramId}/active`,
       {
         method: "PATCH",
         headers,

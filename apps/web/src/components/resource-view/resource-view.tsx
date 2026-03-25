@@ -1,6 +1,5 @@
 "use client";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import ResourceListView from "./resource-list-view";
 import ResourceCardView from "./resource-card-view";
 import { SegmentRadioGroup } from "../ui/segment-radio";
@@ -42,11 +41,12 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
     diagrams: resources,
     loading,
     fetchDiagrams,
-    fetchProjectDiagrams,
     fetchTrashDiagrams,
   } = useDiagramStore();
-  const searchParams = useSearchParams();
   const [layoutMode, setLayoutMode] = useState<"list" | "card">("card");
+  const [accessFilter, setAccessFilter] = useState<"all" | "mine" | "shared">(
+    "all",
+  );
   const [filter, setFilter] = useState<FilterOption>("last_viewed");
   const [query, setQuery] = useState("");
   const [selectedDiagramId, setSelectedDiagramId] = useState<string | null>(
@@ -54,35 +54,33 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
   );
   const [confirmPermanentDeleteOpen, setConfirmPermanentDeleteOpen] =
     useState(false);
-  const projectId = mode === "active" ? searchParams.get("projectId") : null;
 
   useEffect(() => {
     if (mode === "trash") {
       fetchTrashDiagrams();
       return;
     }
-    if (projectId) {
-      fetchProjectDiagrams(projectId);
-      return;
-    }
     fetchDiagrams();
-  }, [
-    fetchDiagrams,
-    fetchProjectDiagrams,
-    fetchTrashDiagrams,
-    mode,
-    projectId,
-  ]);
+  }, [fetchDiagrams, fetchTrashDiagrams, mode]);
+
+  const accessFilteredResources = useMemo(() => {
+    if (mode !== "active") return resources;
+    if (accessFilter === "all") return resources;
+    if (accessFilter === "mine") {
+      return resources.filter((r) => (r.access_type ?? "owner") === "owner");
+    }
+    return resources.filter((r) => r.access_type === "shared");
+  }, [accessFilter, mode, resources]);
 
   const searchFilteredResources = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return resources;
-    return resources.filter((r) => {
+    if (!q) return accessFilteredResources;
+    return accessFilteredResources.filter((r) => {
       const name = r.name?.toLowerCase() ?? "";
       const desc = r.description?.toLowerCase() ?? "";
       return name.includes(q) || desc.includes(q);
     });
-  }, [query, resources]);
+  }, [accessFilteredResources, query]);
 
   const filteredResources = useMemo(() => {
     const copy = [...searchFilteredResources];
@@ -139,24 +137,13 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
         await fetchTrashDiagrams();
       } else {
         await softDeleteDiagram(selectedDiagramId);
-        if (projectId) {
-          await fetchProjectDiagrams(projectId);
-        } else {
-          await fetchDiagrams();
-        }
+        await fetchDiagrams();
       }
       setSelectedDiagramId(null);
     } catch {
       // Ignore and keep selection so user can retry.
     }
-  }, [
-    fetchDiagrams,
-    fetchProjectDiagrams,
-    fetchTrashDiagrams,
-    mode,
-    projectId,
-    selectedDiagramId,
-  ]);
+  }, [fetchDiagrams, fetchTrashDiagrams, mode, selectedDiagramId]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -198,6 +185,19 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
   return (
     <div className="flex flex-col gap-5 py-5 ">
       <div className="flex gap-3 items-center justify-end px-6 md:px-8  ">
+        {mode === "active" ? (
+          <SegmentRadioGroup
+            value={accessFilter}
+            onChange={(value) =>
+              setAccessFilter(value as "all" | "mine" | "shared")
+            }
+            options={[
+              { value: "all", label: "All" },
+              { value: "mine", label: "Mine" },
+              { value: "shared", label: "Shared" },
+            ]}
+          />
+        ) : null}
         <Input
           placeholder="Search..."
           value={query}

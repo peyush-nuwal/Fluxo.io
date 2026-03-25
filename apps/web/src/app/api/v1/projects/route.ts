@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
 
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagram/projects`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/projects`, {
       method: "GET",
       headers: {
         Cookie: cookie ?? "",
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       body = JSON.stringify(json);
     }
 
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagram/projects`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/projects`, {
       method: "POST",
       headers,
       body,
