@@ -1,7 +1,11 @@
 import { API_BASE_URL } from "@/config/server-env";
 import { NextResponse } from "next/server";
+import {
+  buildProxySuccessPayload,
+  buildProxyErrorPayload,
+} from "@/lib/proxy-response";
 
-export async function GET(req: Request) {
+export async function GET(req: Request): Promise<Response> {
   try {
     const cookie = req.headers.get("cookie");
 
@@ -15,7 +19,7 @@ export async function GET(req: Request) {
     });
 
     const text = await res.text();
-    let data: any = null;
+    let data: unknown = null;
 
     try {
       data = text ? JSON.parse(text) : null;
@@ -24,16 +28,17 @@ export async function GET(req: Request) {
     }
 
     if (!res.ok) {
-      return NextResponse.json(
-        { message: data?.message ?? "Unauthorized " },
-        { status: res.status },
-      );
+      return NextResponse.json(buildProxyErrorPayload(data, "Unauthorized"), {
+        status: res.status,
+      });
     }
 
-    return NextResponse.json(data, { status: 200 });
+    return NextResponse.json(buildProxySuccessPayload(data, true), {
+      status: 200,
+    });
   } catch (error) {
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }

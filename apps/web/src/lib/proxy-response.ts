@@ -1,3 +1,5 @@
+import type { ApiResponse } from "@/types/api";
+
 export function getProxyResponseMessage(
   data: unknown,
   fallback = "Request failed",
@@ -21,14 +23,51 @@ export function getProxyResponseMessage(
   return fallback;
 }
 
+type UnknownRecord = Record<string, unknown>;
+
+const isRecord = (value: unknown): value is UnknownRecord =>
+  !!value && typeof value === "object" && !Array.isArray(value);
+
+const hasApiResponseShape = (value: unknown): value is ApiResponse<unknown> => {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.success === "boolean" &&
+    typeof value.message === "string" &&
+    "data" in value
+  );
+};
+
+export function buildProxySuccessPayload(
+  data: unknown,
+  success = true,
+  fallback = "Request successful",
+): ApiResponse<unknown> {
+  if (hasApiResponseShape(data)) {
+    return data;
+  }
+
+  return {
+    success,
+    message: getProxyResponseMessage(data, fallback),
+    data,
+  };
+}
+
 export function buildProxyErrorPayload(
   data: unknown,
   fallback = "Request failed",
-) {
+): ApiResponse<unknown> {
+  if (hasApiResponseShape(data)) {
+    return {
+      ...data,
+      success: false,
+      message: getProxyResponseMessage(data, fallback),
+    };
+  }
+
   return {
-    ...(data && typeof data === "object"
-      ? (data as Record<string, unknown>)
-      : {}),
+    success: false,
     message: getProxyResponseMessage(data, fallback),
+    data,
   };
 }

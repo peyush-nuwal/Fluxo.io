@@ -36,6 +36,11 @@ export default [
       "no-console": "warn",
       "react/react-in-jsx-scope": "off", // Not needed with new JSX transform
       "react/prop-types": "off", // Using TypeScript instead
+    },
+  },
+  {
+    files: ["apps/web/**/*.{js,jsx,ts,tsx}", "apps/docs/**/*.{js,jsx,ts,tsx}"],
+    rules: {
       ...pluginNext.configs.recommended.rules,
       ...pluginNext.configs["core-web-vitals"].rules,
     },

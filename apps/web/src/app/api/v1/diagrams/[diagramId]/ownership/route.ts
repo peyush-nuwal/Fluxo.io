@@ -1,12 +1,18 @@
 import { API_BASE_URL } from "@/config/server-env";
-import { buildProxyErrorPayload } from "@/lib/proxy-response";
+import {
+  buildProxyErrorPayload,
+  buildProxySuccessPayload,
+} from "@/lib/proxy-response";
 import { NextRequest, NextResponse } from "next/server";
 
 type Params = {
   params: Promise<{ diagramId: string }>;
 };
 
-export async function GET(req: NextRequest, { params }: Params) {
+export async function GET(
+  req: NextRequest,
+  { params }: Params,
+): Promise<Response> {
   try {
     const { diagramId } = await params;
     const cookie = req.headers.get("cookie");
@@ -42,10 +48,12 @@ export async function GET(req: NextRequest, { params }: Params) {
       });
     }
 
-    return NextResponse.json(data, { status: res.status });
+    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
   } catch {
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }

@@ -1,5 +1,8 @@
 import { API_BASE_URL } from "@/config/server-env";
-import { buildProxyErrorPayload } from "@/lib/proxy-response";
+import {
+  buildProxyErrorPayload,
+  buildProxySuccessPayload,
+} from "@/lib/proxy-response";
 import { NextRequest, NextResponse } from "next/server";
 
 type Params = {
@@ -8,7 +11,10 @@ type Params = {
 
 type ProxyBody = string | FormData | undefined;
 
-export async function GET(req: NextRequest, { params }: Params) {
+export async function GET(
+  req: NextRequest,
+  { params }: Params,
+): Promise<Response> {
   try {
     const { diagramId } = await params;
     const cookie = req.headers.get("cookie");
@@ -26,7 +32,7 @@ export async function GET(req: NextRequest, { params }: Params) {
     });
 
     const text = await res.text();
-    let data: any = null;
+    let data: unknown = null;
 
     try {
       data = text ? JSON.parse(text) : null;
@@ -40,16 +46,21 @@ export async function GET(req: NextRequest, { params }: Params) {
       });
     }
 
-    return NextResponse.json(data, { status: res.status });
+    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
   } catch (_error) {
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: Params) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: Params,
+): Promise<Response> {
   try {
     const { diagramId } = await params;
     const cookie = req.headers.get("cookie");
@@ -68,7 +79,7 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     });
 
     const text = await res.text();
-    let data: any = null;
+    let data: unknown = null;
 
     try {
       data = text ? JSON.parse(text) : null;
@@ -86,15 +97,20 @@ export async function DELETE(req: NextRequest, { params }: Params) {
       return new NextResponse(null, { status: 204 });
     }
 
-    return NextResponse.json(data, { status: res.status });
+    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
   } catch (_error) {
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }
 }
-export async function PUT(req: NextRequest, { params }: Params) {
+export async function PUT(
+  req: NextRequest,
+  { params }: Params,
+): Promise<Response> {
   try {
     const { diagramId } = await params;
     const cookie = req.headers.get("cookie");
@@ -125,7 +141,7 @@ export async function PUT(req: NextRequest, { params }: Params) {
     });
 
     const text = await res.text();
-    let data: any = null;
+    let data: unknown = null;
 
     try {
       data = text ? JSON.parse(text) : null;
@@ -143,10 +159,12 @@ export async function PUT(req: NextRequest, { params }: Params) {
       return new NextResponse(null, { status: 204 });
     }
 
-    return NextResponse.json(data, { status: res.status });
+    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
   } catch {
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }

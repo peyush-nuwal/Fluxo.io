@@ -1,7 +1,11 @@
 import { API_BASE_URL } from "@/config/server-env";
 import { NextRequest, NextResponse } from "next/server";
+import {
+  buildProxySuccessPayload,
+  buildProxyErrorPayload,
+} from "@/lib/proxy-response";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
   try {
     const body = await req.json();
 
@@ -17,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     const text = await res.text();
 
-    let data: any = {};
+    let data: unknown = {};
     try {
       data = text ? JSON.parse(text) : {};
     } catch {
@@ -25,10 +29,12 @@ export async function POST(req: NextRequest) {
     }
 
     if (!res.ok) {
-      return NextResponse.json(data, { status: res.status });
+      return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+        status: res.status,
+      });
     }
 
-    const response = NextResponse.json(data);
+    const response = NextResponse.json(buildProxySuccessPayload(data, true));
 
     // Forward Set-Cookie headers (email verified / session upgraded)
     const setCookies = res.headers.getSetCookie?.() ?? [];
@@ -40,7 +46,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Verify OTP route error:", error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }

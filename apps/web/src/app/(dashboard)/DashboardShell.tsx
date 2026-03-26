@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/toaster";
-import CommandMenu from "@/components/command-menu";
 import Topbar from "@/components/topbar";
 
 const AppSidebar = dynamic(

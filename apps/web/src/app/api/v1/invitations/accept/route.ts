@@ -1,7 +1,11 @@
 import { API_BASE_URL } from "@/config/server-env";
 import { NextRequest, NextResponse } from "next/server";
+import {
+  buildProxySuccessPayload,
+  buildProxyErrorPayload,
+} from "@/lib/proxy-response";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
   try {
     const body = await req.json();
 
@@ -24,16 +28,18 @@ export async function POST(req: NextRequest) {
       data = { message: text || "Failed to accept invitation" };
     }
 
-    return NextResponse.json(data, { status: res.status });
+    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
   } catch {
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<Response> {
   try {
     const token = req.nextUrl.searchParams.get("token");
 
@@ -59,10 +65,12 @@ export async function GET(req: NextRequest) {
       data = { message: text || "Failed to accept invitation" };
     }
 
-    return NextResponse.json(data, { status: res.status });
+    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
   } catch {
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }

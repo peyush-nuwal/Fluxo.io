@@ -1,7 +1,11 @@
 import { API_BASE_URL } from "@/config/server-env";
 import { NextRequest, NextResponse } from "next/server";
+import {
+  buildProxySuccessPayload,
+  buildProxyErrorPayload,
+} from "@/lib/proxy-response";
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<Response> {
   try {
     const res = await fetch(`${API_BASE_URL}/api/v1/auth/refresh`, {
       method: "GET",
@@ -13,7 +17,7 @@ export async function GET(req: NextRequest) {
     });
 
     const text = await res.text();
-    let data: any = null;
+    let data: unknown = null;
 
     try {
       data = text ? JSON.parse(text) : null;
@@ -21,7 +25,9 @@ export async function GET(req: NextRequest) {
       data = null;
     }
 
-    const response = NextResponse.json(data, { status: res.status });
+    const response = NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
 
     const setCookies = res.headers.getSetCookie?.() ?? [];
     setCookies.forEach((cookie) =>
@@ -31,7 +37,7 @@ export async function GET(req: NextRequest) {
     return response;
   } catch (_error) {
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }

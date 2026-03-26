@@ -24,9 +24,3 @@ export const sendError = (res, status, message, payload = {}) =>
     data: getData(payload),
     ...(isObject(payload) ? payload : {}),
   });
-
-export const formatZodDetails = (error) =>
-  error.errors.map((issue) => ({
-    field: issue.path.join("."),
-    message: issue.message,
-  }));

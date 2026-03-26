@@ -1,11 +1,18 @@
 import { API_BASE_URL } from "@/config/server-env";
 import { NextRequest, NextResponse } from "next/server";
+import {
+  buildProxySuccessPayload,
+  buildProxyErrorPayload,
+} from "@/lib/proxy-response";
 
 type Params = {
   params: Promise<{ diagramId: string }>;
 };
 
-export async function PATCH(req: NextRequest, { params }: Params) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: Params,
+): Promise<Response> {
   try {
     const { diagramId } = await params;
     const cookie = req.headers.get("cookie");
@@ -40,13 +47,17 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     if (!res.ok) {
       const message =
         data && typeof data.error === "string" ? data.error : "Request failed";
-      return NextResponse.json({ message }, { status: res.status });
+      return NextResponse.json(buildProxyErrorPayload(data, message), {
+        status: res.status,
+      });
     }
 
-    return NextResponse.json(data, { status: res.status });
+    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
   } catch {
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }

@@ -1,5 +1,6 @@
 import logger from "../../../diagram-service/src/config/logger.js";
 import { generateDiagramJSON } from "../services/ai.service.js";
+import { sendError, sendSuccess } from "../utils/response.js";
 
 import {
   aiPromptSchema,
@@ -9,15 +10,15 @@ import {
 export const generateDiagram = async (req, res) => {
   try {
     const userId = req.user?.id || "sadfsa";
-    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { prompt } = aiPromptSchema.parse(req.body);
     console.log(prompt);
 
     const data = await generateDiagramJSON(prompt);
-    res.status(200).json({ success: true, data });
+    return sendSuccess(res, 200, "Diagram generated successfully", { data });
   } catch (error) {
     logger.error("Error generate Diagram", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return sendError(res, 500, "Internal server error");
   }
 };

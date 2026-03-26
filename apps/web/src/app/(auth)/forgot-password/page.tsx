@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const page = () => {
+const ForgotPasswordpage = () => {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [email, setEmail] = useState("");
@@ -351,4 +351,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ForgotPasswordpage;

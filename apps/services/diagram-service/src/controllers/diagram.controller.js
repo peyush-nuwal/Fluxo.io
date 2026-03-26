@@ -432,48 +432,56 @@ export const updateDiagramActiveStatusController = async (req, res) => {
   try {
     const userId = req.user?.id;
     const userEmail = req.user?.email;
+
     if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { diagramId } = req.params;
 
-    const diagram = await getUserDiagramById(userId, diagramId);
-    let updatedDiagram;
+    // ✅ Validate first
+    const parsed = setDiagramActiveSchema.parse({
+      is_active: normalizeOptionalBoolean(req.body?.is_active),
+    });
+
+    // ✅ Try direct ownership
+    let diagram = await getUserDiagramById(userId, diagramId);
+
+    // ✅ If not owner, check shared access
     if (!diagram) {
       const candidate = await getDiagramById(diagramId);
       if (!candidate) {
         return sendError(res, 404, "Diagram not found");
       }
 
-      const canAccessSharedProject =
+      const hasAccess =
         candidate.project_id &&
         (await verifyProjectAccess(candidate.project_id, userId, userEmail));
 
-      if (!canAccessSharedProject) {
-        return sendError(res, 404, "Diagram not found");
+      if (!hasAccess) {
+        return sendError(res, 403, "Forbidden");
       }
-
-      const parsed = setDiagramActiveSchema.parse({
-        is_active: normalizeOptionalBoolean(req.body?.is_active),
-      });
-
-      updatedDiagram = await updateDiagram(diagramId, {
-        is_active: parsed.is_active,
-      });
     }
+
+    // ✅ Update after access confirmed
+    const updatedDiagram = await updateDiagram(diagramId, {
+      is_active: parsed.is_active,
+    });
 
     if (!updatedDiagram) {
       return sendError(res, 404, "Diagram not found");
     }
+
     return sendSuccess(res, 200, "Diagram active state updated successfully", {
       diagram: updatedDiagram,
     });
   } catch (error) {
     logger.error("Error updating diagram active state:", error);
+
     if (error instanceof ZodError) {
       return sendError(res, 400, "Validation error", {
         details: formatZodDetails(error),
       });
     }
+
     return sendError(res, 500, "Failed to update diagram active state");
   }
 };

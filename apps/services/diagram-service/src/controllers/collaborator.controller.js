@@ -156,12 +156,16 @@ export const getCollaboratorsByProject = async (req, res) => {
   try {
     const userId = req.user?.id;
     const requesterEmail = req.user?.email;
-    if (!userId || !requesterEmail) return sendError(res, 401, "Unauthorized");
+
+    if (!userId || !requesterEmail) {
+      return sendError(res, 401, "Unauthorized");
+    }
 
     const { projectId } = req.params;
-    if (!projectId) return sendError(res, 400, "Project ID is required");
+    if (!projectId) {
+      return sendError(res, 400, "Project ID is required");
+    }
 
-    // Allow both owner and collaborator to view member list.
     const project = await verifyProjectAccess(
       projectId,
       userId,
@@ -172,60 +176,35 @@ export const getCollaboratorsByProject = async (req, res) => {
       return sendError(res, 404, "Project not found");
     }
 
-    const collaboratorEmails = Array.isArray(project.collaborators)
-      ? project.collaborators
-          .map((email) => normalizeEmail(email))
-          .filter(Boolean)
-      : [];
+    const ownerEmail = normalizeEmail(project.owner_email);
+    const collaboratorEmails = (project.collaborators || [])
+      .map(normalizeEmail)
+      .filter((e) => e && e !== ownerEmail);
 
-    const isRequesterOwner = project.user_id === userId;
-    let ownerEmail = normalizeEmail(project.owner_email);
+    const uniqueEmails = [...new Set([ownerEmail, ...collaboratorEmails])];
 
-    // Backfill missing owner_email for legacy projects when owner is requesting.
-    if (!ownerEmail && isRequesterOwner) {
-      ownerEmail = normalizeEmail(requesterEmail);
-      await updateProjectById(userId, projectId, { owner_email: ownerEmail });
-    }
-
-    const filteredCollaboratorEmails = collaboratorEmails.filter(
-      (email) => email && email !== ownerEmail,
-    );
-
-    const uniqueEmails = [
-      ...new Set([ownerEmail, ...filteredCollaboratorEmails]),
-    ];
     const users = await getUsersByEmails(uniqueEmails, userId);
 
-    const userMap = new Map(
-      users.map((user) => [normalizeEmail(user?.email), user]),
-    );
+    const userMap = new Map(users.map((u) => [normalizeEmail(u.email), u]));
 
-    const members = [];
-    const ownerUser = ownerEmail ? userMap.get(ownerEmail) : null;
-    members.push({
-      email: ownerEmail || null,
-      user_name: ownerUser?.user_name ?? project.owner_username ?? null,
-      avatar_url: ownerUser?.avatar_url ?? project.owner_avatar_url ?? null,
-      role: "owner",
+    const members = uniqueEmails.map((email) => {
+      const user = userMap.get(email);
+      return {
+        email,
+        user_name: user?.user_name ?? null,
+        avatar_url: user?.avatar_url ?? null,
+        role: email === ownerEmail ? "owner" : "collaborator",
+      };
     });
 
-    filteredCollaboratorEmails.forEach((email) => {
-      const collaborator = userMap.get(email);
-      members.push({
-        email: null,
-        user_name: collaborator?.user_name ?? null,
-        avatar_url: collaborator?.avatar_url ?? null,
-        role: "collaborator",
-      });
-    });
+    const isOwner = project.user_id === userId;
 
     return sendSuccess(res, 200, "Project collaborators fetched successfully", {
       members,
-      collaborators: isRequesterOwner ? filteredCollaboratorEmails : [],
-      viewerRole: isRequesterOwner ? "owner" : "collaborator",
+      viewerRole: isOwner ? "owner" : "collaborator",
     });
   } catch (error) {
-    logger.error("Error getting collaborators by project:", error);
+    logger.error("Error getting collaborators:", error);
     return sendError(res, 500, "Failed to fetch project collaborators");
   }
 };

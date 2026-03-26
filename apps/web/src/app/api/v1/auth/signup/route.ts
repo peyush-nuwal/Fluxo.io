@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  buildProxySuccessPayload,
+  buildProxyErrorPayload,
+} from "@/lib/proxy-response";
 import { API_BASE_URL } from "@/config/server-env";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
   try {
     const body = await req.json();
 
@@ -15,7 +19,7 @@ export async function POST(req: NextRequest) {
     });
 
     const text = await res.text();
-    let data: any = {};
+    let data: unknown = {};
 
     try {
       data = text ? JSON.parse(text) : {};
@@ -23,7 +27,9 @@ export async function POST(req: NextRequest) {
       data = { message: text };
     }
 
-    const response = NextResponse.json(data, { status: res.status });
+    const response = NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
 
     const setCookies = res.headers.getSetCookie?.() ?? [];
     setCookies.forEach((c) => response.headers.append("Set-Cookie", c));
@@ -32,7 +38,7 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error("Signup route error:", err);
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }

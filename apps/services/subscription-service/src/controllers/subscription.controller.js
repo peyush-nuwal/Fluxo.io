@@ -1,12 +1,13 @@
 import * as subscriptionService from "../services/subscription.service.js";
 import logger from "../config/logger.js";
+import { sendError, sendSuccess } from "../utils/response.js";
 
 export const createOrder = async (req, res) => {
   try {
     const { userId } = req.body;
 
     if (!userId) {
-      return res.status(400).json({ message: "userId is required" });
+      return sendError(res, 400, "userId is required");
     }
 
     const order = await subscriptionService.createOrder(userId);
@@ -15,15 +16,15 @@ export const createOrder = async (req, res) => {
       orderId: order.id,
     });
 
-    return res.status(201).json(order);
+    return sendSuccess(res, 201, "Subscription order created successfully", {
+      order,
+    });
   } catch (error) {
     logger.error("Error while creating subscription order", {
       error: error.message,
     });
     console.error("Error while creating subscription order:", error);
-    return res
-      .status(500)
-      .json({ message: "Failed to create subscription order" });
+    return sendError(res, 500, "Failed to create subscription order");
   }
 };
 
@@ -32,11 +33,11 @@ export const verifyPayment = async (req, res) => {
     const { orderId, paymentId, signature, userId } = req.body;
 
     if (!orderId || !paymentId || !signature || !userId) {
-      return res
-        .status(400)
-        .json({
-          message: "orderId, paymentId, signature and userId are required",
-        });
+      return sendError(
+        res,
+        400,
+        "orderId, paymentId, signature and userId are required",
+      );
     }
 
     await subscriptionService.verifyPayment({
@@ -51,12 +52,12 @@ export const verifyPayment = async (req, res) => {
       paymentId,
       userId,
     });
-    return res.status(200).json({ success: true });
+    return sendSuccess(res, 200, "Subscription payment verified successfully");
   } catch (error) {
     logger.error("Error while verifying subscription payment", {
       error: error.message,
     });
     console.error("Error while verifying subscription payment:", error);
-    return res.status(500).json({ message: "Failed to verify payment" });
+    return sendError(res, 500, "Failed to verify payment");
   }
 };

@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  buildProxySuccessPayload,
+  buildProxyErrorPayload,
+} from "@/lib/proxy-response";
 import { API_BASE_URL } from "@/config/server-env";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
   try {
     const res = await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
       method: "POST",
@@ -13,7 +17,9 @@ export async function POST(req: NextRequest) {
 
     const data = await res.json().catch(() => ({}));
 
-    const response = NextResponse.json(data, { status: res.status });
+    const response = NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
 
     // 🔑 forward Set-Cookie so browser deletes auth cookie
     const setCookies = res.headers.getSetCookie?.() ?? [];
@@ -23,7 +29,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("logout route error:", error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }

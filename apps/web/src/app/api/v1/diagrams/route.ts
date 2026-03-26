@@ -1,10 +1,10 @@
 import { API_BASE_URL } from "@/config/server-env";
-import { buildProxyErrorPayload } from "@/lib/proxy-response";
+import type { ApiResponse } from "@/types/api";
 import { NextRequest, NextResponse } from "next/server";
 
 type ProxyBody = string | FormData | undefined;
 
-export async function GET(req: NextRequest) {
+export async function GET(req: NextRequest): Promise<Response> {
   try {
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
@@ -20,31 +20,28 @@ export async function GET(req: NextRequest) {
       cache: "no-store",
     });
 
-    const text = await res.text();
-    let data: any = null;
+    const raw = await res.json().catch(() => null);
 
-    try {
-      data = text ? JSON.parse(text) : null;
-    } catch {
-      data = null;
-    }
+    const response: ApiResponse<{ email?: string }> = {
+      success: raw?.success ?? false,
+      message: raw?.message ?? "Something went wrong",
+      data: raw?.email ? { email: raw.email } : null,
+    };
 
-    if (!res.ok) {
-      return NextResponse.json(buildProxyErrorPayload(data), {
-        status: res.status,
-      });
-    }
-
-    return NextResponse.json(data, { status: 200 });
+    return NextResponse.json(response, { status: res.status });
   } catch {
-    return NextResponse.json(
-      { message: "Internal server error next js route " },
+    return NextResponse.json<ApiResponse>(
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+      },
       { status: 500 },
     );
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<Response> {
   try {
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
@@ -73,25 +70,22 @@ export async function POST(req: NextRequest) {
       cache: "no-store",
     });
 
-    const text = await res.text();
-    let data = null;
+    const raw = await res.json().catch(() => null);
 
-    try {
-      data = text ? JSON.parse(text) : null;
-    } catch {
-      data = null;
-    }
+    const response: ApiResponse<{ email?: string }> = {
+      success: raw?.success ?? false,
+      message: raw?.message ?? "Something went wrong",
+      data: raw?.email ? { email: raw.email } : null,
+    };
 
-    if (!res.ok) {
-      return NextResponse.json(buildProxyErrorPayload(data), {
-        status: res.status,
-      });
-    }
-
-    return NextResponse.json(data, { status: res.status });
+    return NextResponse.json(response, { status: res.status });
   } catch {
-    return NextResponse.json(
-      { message: "Internal server error" },
+    return NextResponse.json<ApiResponse>(
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+      },
       { status: 500 },
     );
   }

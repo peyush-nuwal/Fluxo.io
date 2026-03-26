@@ -8,6 +8,42 @@ import subscriptionRoutes from "./routes/index.route.js";
 
 const app = express();
 
+app.use((req, res, next) => {
+  const originalJson = res.json.bind(res);
+  res.json = (payload) => {
+    if (
+      payload &&
+      typeof payload === "object" &&
+      "success" in payload &&
+      "message" in payload &&
+      "data" in payload
+    ) {
+      return originalJson(payload);
+    }
+
+    const status = res.statusCode || 200;
+    const success = status < 400;
+    const hasObjectPayload =
+      payload !== null &&
+      typeof payload === "object" &&
+      !Array.isArray(payload);
+    const message =
+      hasObjectPayload && typeof payload.message === "string"
+        ? payload.message
+        : success
+          ? "Request successful"
+          : "Request failed";
+
+    return originalJson({
+      success,
+      message,
+      data: payload ?? null,
+      ...(hasObjectPayload ? payload : {}),
+    });
+  };
+  next();
+});
+
 // ---------------------------------------------
 // Core Middleware
 // ---------------------------------------------
