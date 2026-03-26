@@ -431,27 +431,39 @@ export const getDiagramLikesCount = async (req, res) => {
 export const updateDiagramActiveStatusController = async (req, res) => {
   try {
     const userId = req.user?.id;
+    const userEmail = req.user?.email;
     if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { diagramId } = req.params;
 
     const diagram = await getUserDiagramById(userId, diagramId);
+    let updatedDiagram;
     if (!diagram) {
-      return sendError(res, 404, "Diagram not found");
+      const candidate = await getDiagramById(diagramId);
+      if (!candidate) {
+        return sendError(res, 404, "Diagram not found");
+      }
+
+      const canAccessSharedProject =
+        candidate.project_id &&
+        (await verifyProjectAccess(candidate.project_id, userId, userEmail));
+
+      if (!canAccessSharedProject) {
+        return sendError(res, 404, "Diagram not found");
+      }
+
+      const parsed = setDiagramActiveSchema.parse({
+        is_active: normalizeOptionalBoolean(req.body?.is_active),
+      });
+
+      updatedDiagram = await updateDiagram(diagramId, {
+        is_active: parsed.is_active,
+      });
     }
-
-    const parsed = setDiagramActiveSchema.parse({
-      is_active: normalizeOptionalBoolean(req.body?.is_active),
-    });
-
-    const updatedDiagram = await updateDiagram(diagramId, {
-      is_active: parsed.is_active,
-    });
 
     if (!updatedDiagram) {
       return sendError(res, 404, "Diagram not found");
     }
-
     return sendSuccess(res, 200, "Diagram active state updated successfully", {
       diagram: updatedDiagram,
     });
