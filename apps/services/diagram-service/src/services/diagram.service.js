@@ -150,6 +150,7 @@ export const getPublicDiagramById = async (diagramId) => {
 
 export const createDiagram = async ({
   userId,
+  owner_email,
   projectId,
   name,
   data,
@@ -170,6 +171,7 @@ export const createDiagram = async ({
   if (!projectId) {
     const defaultProject = await createDefaultProject({
       userId,
+      owner_email: owner_email,
       owner_name: owner_name,
       owner_username: owner_username,
       owner_avatar_url: owner_avatar_url,

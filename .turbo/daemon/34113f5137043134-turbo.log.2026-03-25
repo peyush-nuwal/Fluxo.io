@@ -6,3 +6,5 @@
 2026-03-25T07:06:53.781177Z  WARN turborepo_filewatch::package_watcher: lagged behind 66 processing file watching events
 2026-03-25T07:36:03.952366Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
 2026-03-25T08:06:12.897341Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-03-25T11:17:48.714313Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running
+2026-03-25T18:11:51.272201Z  WARN daemon_server: turborepo_lib::commands::daemon: daemon already running

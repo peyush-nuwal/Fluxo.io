@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ComponentType } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+  type ComponentType,
+} from "react";
 import {
   ArrowRight,
   Circle,
@@ -25,9 +32,12 @@ import { getNodesBounds, getViewportForBounds } from "@xyflow/react";
 import DownloadDiagramForm from "@/components/download-diagram-form";
 import { toast } from "sonner";
 import { useDiagramStore } from "@/store/diagramsStore";
+import { useModalStore } from "@/store/useModalStore";
+import CollabForm from "@/components/collab-form";
 
 type ToolPanelProps = {
   diagramId: string;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const TOOL_ICONS: Record<
@@ -52,14 +62,13 @@ function triggerDownload(dataUrl: string, fileName: string, extension: string) {
   anchor.click();
 }
 
-export default function ToolPanel({ diagramId }: ToolPanelProps) {
+export default function ToolPanel({ diagramId, setOpen }: ToolPanelProps) {
   const activeTool = useDiagramEditorStore((state) => state.activeTool);
   const setActiveTool = useDiagramEditorStore((state) => state.setActiveTool);
   const nodes = useDiagramEditorStore((state) => state.nodes);
   const { verifyDiagramOwnership } = useDiagramStore();
-  const [isInviteBtnVisible, setIsInviteBtnVisible] = useState<boolean>(false);
-  const [isDownloadOpen, setIsDownloadOpen] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [isDownloadOpen, setIsDownloadOpen] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -161,23 +170,10 @@ export default function ToolPanel({ diagramId }: ToolPanelProps) {
     [nodes],
   );
 
-  useEffect(() => {
-    if (!diagramId) return;
-
-    let mounted = true;
-
-    const run = async () => {
-      const isOwner = await verifyDiagramOwnership(diagramId);
-      if (!mounted) return;
-      setIsInviteBtnVisible(isOwner);
-    };
-
-    void run();
-
-    return () => {
-      mounted = false;
-    };
-  }, [diagramId, verifyDiagramOwnership]);
+  const onClickOpenCollabForm = () => {
+    console.log("clicket");
+    setOpen(true);
+  };
 
   return (
     <aside className="flex h-18 w-fit items-center justify-center gap-2 rounded-2xl border border-border/70 bg-background/95 px-6 py-2 shadow-lg backdrop-blur">
@@ -214,16 +210,15 @@ export default function ToolPanel({ diagramId }: ToolPanelProps) {
 
       <Separator orientation="vertical" />
 
-      {isInviteBtnVisible && (
-        <CustomTooltip content="Share">
-          <Button
-            variant="ghost"
-            className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
-          >
-            <Share2 className="size-5" />
-          </Button>
-        </CustomTooltip>
-      )}
+      <CustomTooltip content="Share">
+        <Button
+          onClick={onClickOpenCollabForm}
+          variant="ghost"
+          className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
+        >
+          <Share2 className="size-5" />
+        </Button>
+      </CustomTooltip>
 
       <CustomTooltip content="Download">
         <Button

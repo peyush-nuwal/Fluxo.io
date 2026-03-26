@@ -202,6 +202,7 @@ export const createDiagramController = async (req, res) => {
 
     const diagram = await createDiagram({
       userId,
+      owner_email: req.user?.email ?? null,
       projectId: projectId ?? null,
       name: normalizedName,
       data: data ?? {
@@ -469,11 +470,19 @@ export const updateDiagramActiveStatusController = async (req, res) => {
 
 export const updateDiagramVisibilityController = async (req, res) => {
   try {
+    const userId = req.user?.id;
+    if (!userId) return sendError(res, 401, "Unauthorized");
+
     const { diagramId } = req.params;
     const { isPublic } = req.body;
 
     if (typeof isPublic !== "boolean") {
       return sendError(res, 400, "isPublic must be boolean");
+    }
+
+    const ownedDiagram = await getUserDiagramById(userId, diagramId);
+    if (!ownedDiagram) {
+      return sendError(res, 403, "Forbidden");
     }
 
     const diagram = await setDiagramVisibility(diagramId, isPublic);

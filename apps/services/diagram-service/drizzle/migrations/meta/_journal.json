@@ -36,6 +36,13 @@
       "when": 1774370670357,
       "tag": "0004_puzzling_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1774483200000,
+      "tag": "0005_owner_email_on_projects",
+      "breakpoints": true
     }
   ]
 }

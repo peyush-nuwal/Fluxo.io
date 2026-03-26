@@ -7,6 +7,10 @@ export const createProjectSchema = z.object({
     .union([z.string().url(), z.literal("")])
     .optional()
     .nullable(),
+  owner_email: z
+    .union([z.string().email(), z.literal("")])
+    .optional()
+    .nullable(),
   owner_name: z.string().optional().nullable(),
   owner_username: z.string().optional().nullable(),
   owner_avatar_url: z
@@ -24,6 +28,10 @@ export const updateProjectSchema = z.object({
     .nullable(),
   is_public: z.boolean().optional(),
   collaborators: z.array(z.string()).optional(),
+  owner_email: z
+    .union([z.string().email(), z.literal("")])
+    .optional()
+    .nullable(),
   owner_name: z.string().optional().nullable(),
   owner_username: z.string().optional().nullable(),
   owner_avatar_url: z

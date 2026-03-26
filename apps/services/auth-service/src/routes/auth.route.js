@@ -27,6 +27,7 @@ import multer from "multer";
 import {
   uploadAvatarController,
   changeProfileVisibilityController,
+  getUsersByEmailsController,
   getUserProfile,
   getUserPublicProfile,
   updateUserProfileController,
@@ -172,6 +173,7 @@ console.log("upload file route file", upload);
 router.get("/users/me", getUserProfile);
 router.patch("/users/me", upload.single("avatar"), updateUserProfileController);
 router.get("/users/:id/profile", getUserPublicProfile);
+router.post("/users/bulk-by-email", getUsersByEmailsController);
 
 router.post(
   "/users/me/upload-avatar",

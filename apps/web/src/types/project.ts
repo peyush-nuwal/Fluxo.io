@@ -6,6 +6,7 @@ export type ProjectType = {
   thumbnail_url: string | null;
   is_public: boolean;
   collaborators: string[];
+  owner_email: string | null;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -18,6 +19,7 @@ export type ProjectPayload = {
   title?: string | null;
   description?: string | null;
   thumbnail_url?: string | null;
+  owner_email?: string | null;
   owner_name?: string | null;
   owner_username?: string | null;
   owner_avatar_url?: string | null;

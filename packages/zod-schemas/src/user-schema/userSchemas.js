@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+export const getUsersByEmailsSchema = z.object({
+  emails: z.array(z.string().email()).min(1).max(200),
+});
+
 export const updateUserProfileSchema = z
   .object({
     name: z

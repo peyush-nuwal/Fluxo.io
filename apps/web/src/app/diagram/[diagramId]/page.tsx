@@ -14,6 +14,7 @@ import { useDiagramEditorStore } from "@/store/diagramEditorStore";
 import StyleToolbar from "@/components/canves/editor/StyleToolbar";
 import ToolPanel from "@/components/canves/editor/tool-panel";
 import NotFoundFlow from "@/app/not-found";
+import CollabForm from "@/components/collab-form";
 
 type DiagramPageProps = {
   params: Promise<{
@@ -36,6 +37,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
 
   const resetEditor = useDiagramEditorStore((state) => state.reset);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const [isCollabFormOpen, setIsCollabFormOpen] = useState<boolean>(false);
   const hasInitializedEditorRef = useRef(false);
 
   useEffect(() => {
@@ -152,9 +154,8 @@ export default function DiagramPage({ params }: DiagramPageProps) {
           </div>
 
           <div className="absolute left-1/2  top-4 -translate-x-1/2 z-20">
-            <ToolPanel diagramId={diagramId} />
+            <ToolPanel diagramId={diagramId} setOpen={setIsCollabFormOpen} />
           </div>
-
           <div className="absolute left-4 top-20 z-20 ">
             <StyleToolbar />
           </div>
@@ -163,6 +164,11 @@ export default function DiagramPage({ params }: DiagramPageProps) {
               <FlowCanves key={diagramId} />
             </div>
           </ReactFlowProvider>
+          <CollabForm
+            open={isCollabFormOpen}
+            setOpen={setIsCollabFormOpen}
+            projectId={diagram.project_id}
+          />
         </>
       ) : null}
     </div>

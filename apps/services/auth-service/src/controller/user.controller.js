@@ -2,6 +2,7 @@ import logger from "../config/logger.js";
 
 import {
   changeProfileVisibility,
+  getUsersByEmails,
   getPublicUserProfileById,
   getUserProfileById,
   updateUserProfile,
@@ -10,7 +11,10 @@ import { users } from "../models/index.model.js";
 import { eq } from "drizzle-orm";
 import { db } from "../config/database.js";
 import { uploadAvatar } from "../service/avatar.service.js";
-import { updateUserProfileSchema } from "../../../../../packages/zod-schemas/index.js";
+import {
+  getUsersByEmailsSchema,
+  updateUserProfileSchema,
+} from "../../../../../packages/zod-schemas/index.js";
 import { isUsernameExist } from "../service/auth.service.js";
 import { formatValidationsError } from "../utils/format.js";
 
@@ -182,6 +186,43 @@ export const updateUserProfileController = async (req, res) => {
 
     return res.status(500).json({
       message: "Failed updating user profile",
+    });
+  }
+};
+
+export const getUsersByEmailsController = async (req, res) => {
+  try {
+    const expectedToken = process.env.INTERNAL_SERVICE_TOKEN;
+    const incomingToken = req.headers["x-internal-service-token"];
+    if (
+      !expectedToken ||
+      typeof incomingToken !== "string" ||
+      incomingToken !== expectedToken
+    ) {
+      return res.status(403).json({
+        message: "Forbidden",
+      });
+    }
+
+    const parsed = getUsersByEmailsSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return res.status(400).json({
+        message: "Invalid request body",
+        errors: formatValidationsError(parsed.error),
+      });
+    }
+
+    const users = await getUsersByEmails(parsed.data.emails);
+
+    return res.status(200).json({
+      message: "Users fetched successfully",
+      users,
+    });
+  } catch (error) {
+    logger.error({ err: error }, "Failed fetching users by emails");
+    return res.status(500).json({
+      message: "Failed to fetch users",
     });
   }
 };

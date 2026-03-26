@@ -15,6 +15,7 @@ const projectSelectFields = {
   thumbnail_url: projects.thumbnail_url,
   is_public: projects.is_public,
   collaborators: projects.collaborators,
+  owner_email: projects.owner_email,
   owner_name: projects.owner_name,
   owner_username: projects.owner_username,
   owner_avatar_url: projects.owner_avatar_url,
@@ -45,6 +46,7 @@ export const getProjectsByUser = async (userId, userEmail) => {
   if (rows.length === 0) {
     await createDefaultProject({
       userId,
+      owner_email: userEmail?.trim().toLowerCase() ?? null,
       owner_name: null,
       owner_username: userEmail ? userEmail.split("@")[0] : null,
       owner_avatar_url: null,
@@ -58,6 +60,7 @@ export const getProjectsByUser = async (userId, userEmail) => {
 
 export async function createDefaultProject({
   userId,
+  owner_email,
   owner_name,
   owner_username,
   owner_avatar_url,
@@ -81,6 +84,7 @@ export async function createDefaultProject({
     description: null,
     thumbnail_url: null,
     is_default: true,
+    owner_email: owner_email ?? null,
     owner_name: owner_name ?? null,
     owner_username: owner_username ?? null,
     owner_avatar_url: owner_avatar_url ?? null,
@@ -93,6 +97,7 @@ export const createProject = async ({
   description,
   thumbnail_url,
   is_default,
+  owner_email,
   owner_name,
   owner_username,
   owner_avatar_url,
@@ -107,6 +112,7 @@ export const createProject = async ({
       is_default,
       is_public: false,
       collaborators: [],
+      owner_email: owner_email ?? null,
       owner_name,
       owner_username,
       owner_avatar_url,

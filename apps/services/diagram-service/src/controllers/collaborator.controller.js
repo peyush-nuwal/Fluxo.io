@@ -6,35 +6,223 @@ import {
   ZodError,
 } from "../../../../../packages/zod-schemas/index.js";
 import {
+  verifyProjectAccess,
   verifyProjectOwnership,
   removeCollaboratorFromProject,
+  updateProjectById,
 } from "../services/project.service.js";
 import { sendProjectInvitation } from "../services/email.service.js";
 import {
   createInvitation,
+  getInvitationByToken,
   acceptInvitation as acceptInvitationService,
 } from "../services/invitation.service.js";
 import { formatZodDetails, sendSuccess, sendError } from "../utils/response.js";
+import { redisClient } from "../services/redis.service.js";
+
+const AUTH_SERVICE_URL =
+  process.env.AUTH_SERVICE_URL || "http://localhost:4001";
+const INTERNAL_SERVICE_TOKEN = process.env.INTERNAL_SERVICE_TOKEN || "";
+const AUTH_USERS_TIMEOUT_MS = Number(process.env.AUTH_USERS_TIMEOUT_MS || 1500);
+const USER_PROFILE_CACHE_TTL_SECONDS = Number(
+  process.env.USER_PROFILE_CACHE_TTL_SECONDS || 600,
+);
+const USER_PROFILE_CACHE_PREFIX = "user_profile_by_email:";
+
+const normalizeEmail = (value) =>
+  typeof value === "string" ? value.trim().toLowerCase() : "";
+
+const getProfileCacheKey = (email) => `${USER_PROFILE_CACHE_PREFIX}${email}`;
+
+const getCachedUsersByEmails = async (emails) => {
+  if (!emails.length || !redisClient?.isOpen) return [];
+
+  const cachedUsers = [];
+  try {
+    const keys = emails.map((email) => getProfileCacheKey(email));
+    const values = await redisClient.mGet(keys);
+
+    values.forEach((rawValue) => {
+      if (!rawValue) return;
+      try {
+        const parsed = JSON.parse(rawValue);
+        const email = normalizeEmail(parsed?.email);
+        if (!email) return;
+        cachedUsers.push({
+          email,
+          user_name: parsed?.user_name ?? null,
+          avatar_url: parsed?.avatar_url ?? null,
+        });
+      } catch (_error) {
+        // Ignore corrupt cache entries and continue.
+      }
+    });
+  } catch (error) {
+    logger.error("Error reading user profile cache:", error);
+  }
+
+  return cachedUsers;
+};
+
+const setCachedUsers = async (users) => {
+  if (!users.length || !redisClient?.isOpen) return;
+
+  try {
+    await Promise.all(
+      users.map((user) =>
+        redisClient.set(
+          getProfileCacheKey(normalizeEmail(user.email)),
+          JSON.stringify({
+            email: normalizeEmail(user.email),
+            user_name: user.user_name ?? null,
+            avatar_url: user.avatar_url ?? null,
+          }),
+          { EX: USER_PROFILE_CACHE_TTL_SECONDS },
+        ),
+      ),
+    );
+  } catch (error) {
+    logger.error("Error writing user profile cache:", error);
+  }
+};
+
+const fetchUsersByEmailsFromAuth = async (emails, requesterUserId) => {
+  if (!emails.length) return [];
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), AUTH_USERS_TIMEOUT_MS);
+  try {
+    const response = await fetch(
+      `${AUTH_SERVICE_URL}/api/v1/auth/users/bulk-by-email`,
+      {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json",
+          "X-User-Id": requesterUserId,
+          "X-Internal-Service-Token": INTERNAL_SERVICE_TOKEN,
+        },
+        body: JSON.stringify({ emails }),
+      },
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      logger.error("Failed fetching users by emails from auth-service", {
+        status: response.status,
+        body: text,
+      });
+      return [];
+    }
+
+    const data = await response.json();
+    const users = Array.isArray(data?.users) ? data.users : [];
+    await setCachedUsers(users);
+    return users;
+  } catch (error) {
+    logger.error("Error calling auth-service users bulk endpoint:", error);
+    return [];
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
+
+const getUsersByEmails = async (emails, requesterUserId) => {
+  if (!emails.length) return [];
+
+  const normalizedEmails = [
+    ...new Set(emails.map((email) => normalizeEmail(email)).filter(Boolean)),
+  ];
+  const cachedUsers = await getCachedUsersByEmails(normalizedEmails);
+  const cachedEmailSet = new Set(
+    cachedUsers.map((user) => normalizeEmail(user.email)),
+  );
+  const missingEmails = normalizedEmails.filter(
+    (email) => !cachedEmailSet.has(email),
+  );
+
+  if (!missingEmails.length) {
+    return cachedUsers;
+  }
+
+  const fetchedUsers = await fetchUsersByEmailsFromAuth(
+    missingEmails,
+    requesterUserId,
+  );
+
+  return [...cachedUsers, ...fetchedUsers];
+};
 export const getCollaboratorsByProject = async (req, res) => {
   try {
     const userId = req.user?.id;
-    if (!userId) return sendError(res, 401, "Unauthorized");
+    const requesterEmail = req.user?.email;
+    if (!userId || !requesterEmail) return sendError(res, 401, "Unauthorized");
 
     const { projectId } = req.params;
     if (!projectId) return sendError(res, 400, "Project ID is required");
 
-    // Verify project ownership (only owner can view collaborators)
-    const project = await verifyProjectOwnership(projectId, userId);
+    // Allow both owner and collaborator to view member list.
+    const project = await verifyProjectAccess(
+      projectId,
+      userId,
+      requesterEmail,
+    );
 
     if (!project) {
       return sendError(res, 404, "Project not found");
     }
 
-    // Get collaborators directly from project (returns emails array)
-    const collaborators = project.collaborators || [];
+    const collaboratorEmails = Array.isArray(project.collaborators)
+      ? project.collaborators
+          .map((email) => normalizeEmail(email))
+          .filter(Boolean)
+      : [];
+
+    const isRequesterOwner = project.user_id === userId;
+    let ownerEmail = normalizeEmail(project.owner_email);
+
+    // Backfill missing owner_email for legacy projects when owner is requesting.
+    if (!ownerEmail && isRequesterOwner) {
+      ownerEmail = normalizeEmail(requesterEmail);
+      await updateProjectById(userId, projectId, { owner_email: ownerEmail });
+    }
+
+    const filteredCollaboratorEmails = collaboratorEmails.filter(
+      (email) => email && email !== ownerEmail,
+    );
+
+    const uniqueEmails = [
+      ...new Set([ownerEmail, ...filteredCollaboratorEmails]),
+    ];
+    const users = await getUsersByEmails(uniqueEmails, userId);
+
+    const userMap = new Map(
+      users.map((user) => [normalizeEmail(user?.email), user]),
+    );
+
+    const members = [];
+    const ownerUser = ownerEmail ? userMap.get(ownerEmail) : null;
+    members.push({
+      email: ownerEmail || null,
+      user_name: ownerUser?.user_name ?? project.owner_username ?? null,
+      avatar_url: ownerUser?.avatar_url ?? project.owner_avatar_url ?? null,
+      role: "owner",
+    });
+
+    filteredCollaboratorEmails.forEach((email) => {
+      const collaborator = userMap.get(email);
+      members.push({
+        email: null,
+        user_name: collaborator?.user_name ?? null,
+        avatar_url: collaborator?.avatar_url ?? null,
+        role: "collaborator",
+      });
+    });
 
     return sendSuccess(res, 200, "Project collaborators fetched successfully", {
-      collaborators,
+      members,
+      collaborators: isRequesterOwner ? filteredCollaboratorEmails : [],
+      viewerRole: isRequesterOwner ? "owner" : "collaborator",
     });
   } catch (error) {
     logger.error("Error getting collaborators by project:", error);
@@ -205,6 +393,10 @@ export const removeCollaborator = async (req, res) => {
 
 export const acceptInvitation = async (req, res) => {
   try {
+    const userId = req.user?.id;
+    const userEmail = req.user?.email;
+    if (!userId || !userEmail) return sendError(res, 401, "Unauthorized");
+
     const tokenFromBody = req.body?.token;
     const tokenFromQuery = req.query?.token;
     const token = tokenFromBody || tokenFromQuery;
@@ -223,6 +415,22 @@ export const acceptInvitation = async (req, res) => {
     }
 
     const { token: invitationToken } = validatedData;
+
+    const invitation = await getInvitationByToken(invitationToken);
+    if (!invitation) {
+      return sendError(res, 404, "Invitation not found");
+    }
+
+    const normalizedInvitationEmail = normalizeEmail(invitation.email);
+    const normalizedUserEmail = normalizeEmail(userEmail);
+
+    if (normalizedInvitationEmail !== normalizedUserEmail) {
+      return sendError(
+        res,
+        403,
+        "This invitation belongs to another email account",
+      );
+    }
 
     // Accept the invitation (this will add user as collaborator if valid)
     try {

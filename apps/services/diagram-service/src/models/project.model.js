@@ -4,6 +4,7 @@ import { pgTable, text, timestamp, uuid, boolean } from "drizzle-orm/pg-core";
 export const projects = pgTable("projects", {
   id: uuid("id").primaryKey().defaultRandom(),
   user_id: uuid("user_id").notNull(),
+  owner_email: text("owner_email"),
   owner_name: text("owner_name"),
   owner_username: text("owner_username"),
   owner_avatar_url: text("owner_avatar_url"),

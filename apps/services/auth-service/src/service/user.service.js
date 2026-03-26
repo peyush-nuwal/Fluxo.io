@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "../config/database.js";
 import { users } from "../models/index.model.js";
 
@@ -86,6 +86,29 @@ export const updateUserProfile = async (userId, payload) => {
       user_name: users.user_name,
       avatar_url: users.avatar_url,
     });
+};
+
+export const getUsersByEmails = async (emails = []) => {
+  const normalizedEmails = [
+    ...new Set(
+      emails
+        .filter((email) => typeof email === "string" && email.trim())
+        .map((email) => email.trim().toLowerCase()),
+    ),
+  ];
+
+  if (normalizedEmails.length === 0) {
+    return [];
+  }
+
+  return db
+    .select({
+      email: users.email,
+      user_name: users.user_name,
+      avatar_url: users.avatar_url,
+    })
+    .from(users)
+    .where(inArray(users.email, normalizedEmails));
 };
 
 // export const updateUserProfile = async (userId, payload) => {

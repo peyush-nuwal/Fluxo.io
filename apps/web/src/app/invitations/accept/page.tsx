@@ -43,10 +43,30 @@ export default function AcceptInvitationPage() {
         setMessage(
           String(data?.message || "Invitation accepted successfully."),
         );
-      } catch {
+      } catch (error: any) {
         if (!active) return;
         setState("error");
-        setMessage("Something went wrong while accepting invitation.");
+        const status = error?.status;
+        const apiMessage = String(
+          error?.data?.message || error?.message || "",
+        ).trim();
+
+        if (status === 401) {
+          setMessage("Please login first, then open this invite link again.");
+          return;
+        }
+
+        if (status === 403) {
+          setMessage(
+            apiMessage ||
+              "This invitation belongs to another account. Login with the invited email.",
+          );
+          return;
+        }
+
+        setMessage(
+          apiMessage || "Something went wrong while accepting invitation.",
+        );
       }
     };
 
