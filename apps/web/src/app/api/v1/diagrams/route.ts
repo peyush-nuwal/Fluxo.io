@@ -22,7 +22,7 @@ export async function GET(req: NextRequest): Promise<Response> {
 
     const raw = await res.json().catch(() => null);
 
-    const response: ApiResponse<{ email?: string }> = {
+    const response: ApiResponse<{ email?: string } | null> = {
       success: raw?.success ?? false,
       message: raw?.message ?? "Something went wrong",
       data: raw?.email ? { email: raw.email } : null,
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest): Promise<Response> {
 
     return NextResponse.json(response, { status: res.status });
   } catch {
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse<null>>(
       {
         success: false,
         message: "Internal server error",
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
     const raw = await res.json().catch(() => null);
 
-    const response: ApiResponse<{ email?: string }> = {
+    const response: ApiResponse<{ email?: string } | null> = {
       success: raw?.success ?? false,
       message: raw?.message ?? "Something went wrong",
       data: raw?.email ? { email: raw.email } : null,
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest): Promise<Response> {
 
     return NextResponse.json(response, { status: res.status });
   } catch {
-    return NextResponse.json<ApiResponse>(
+    return NextResponse.json<ApiResponse<null>>(
       {
         success: false,
         message: "Internal server error",

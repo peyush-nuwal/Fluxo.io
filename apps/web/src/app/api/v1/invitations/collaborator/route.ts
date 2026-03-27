@@ -22,9 +22,6 @@ type GetCollaboratorsData = {
   viewerRole: "owner" | "collaborator";
 };
 
-type InviteResponse = {
-  email: string;
-};
 export async function POST(
   req: NextRequest,
   { params }: Params,

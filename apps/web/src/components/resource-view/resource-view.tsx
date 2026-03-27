@@ -42,6 +42,7 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
     fetchDiagrams,
     fetchTrashDiagrams,
   } = useDiagramStore();
+  const diagramResources = Array.isArray(resources) ? resources : [];
   const [layoutMode, setLayoutMode] = useState<"list" | "card">("card");
   const [accessFilter, setAccessFilter] = useState<"all" | "mine" | "shared">(
     "all",
@@ -63,13 +64,15 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
   }, [fetchDiagrams, fetchTrashDiagrams, mode]);
 
   const accessFilteredResources = useMemo(() => {
-    if (mode !== "active") return resources;
-    if (accessFilter === "all") return resources;
+    if (mode !== "active") return diagramResources;
+    if (accessFilter === "all") return diagramResources;
     if (accessFilter === "mine") {
-      return resources.filter((r) => (r.access_type ?? "owner") === "owner");
+      return diagramResources.filter(
+        (r) => (r.access_type ?? "owner") === "owner",
+      );
     }
-    return resources.filter((r) => r.access_type === "shared");
-  }, [accessFilter, mode, resources]);
+    return diagramResources.filter((r) => r.access_type === "shared");
+  }, [accessFilter, mode, diagramResources]);
 
   const searchFilteredResources = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -178,7 +181,7 @@ const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
     return selectedResource?.name ?? "this diagram";
   }, [filteredResources, selectedDiagramId]);
 
-  const hasAnyResources = resources.length > 0;
+  const hasAnyResources = diagramResources.length > 0;
   const hasFilteredResults = filteredResources.length > 0;
 
   return (

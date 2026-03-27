@@ -59,8 +59,9 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
     fetchProject,
     deleteProject,
   } = useProjectStore();
+  const projectResources = Array.isArray(resources) ? resources : [];
   const createProjectOpen = useModalStore((s) => s.open);
-  const showLoadingState = loading && resources.length === 0;
+  const showLoadingState = loading && projectResources.length === 0;
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
     null,
   );
@@ -76,14 +77,14 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
   useEffect(() => {
     const projectIdToTrack = pendingDeleteProjectId ?? activeProjectId;
     if (!projectIdToTrack) return;
-    const stillVisible = resources.some(
+    const stillVisible = projectResources.some(
       (project) => project.id === projectIdToTrack,
     );
     if (!stillVisible) {
       setPendingDeleteProjectId(null);
       setConfirmDeleteOpen(false);
     }
-  }, [activeProjectId, pendingDeleteProjectId, resources]);
+  }, [activeProjectId, pendingDeleteProjectId, projectResources]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -127,8 +128,10 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
 
   const projectIdToDelete = pendingDeleteProjectId ?? activeProjectId;
   const selectedProject = useMemo(
-    () => resources.find((project) => project.id === projectIdToDelete) ?? null,
-    [projectIdToDelete, resources],
+    () =>
+      projectResources.find((project) => project.id === projectIdToDelete) ??
+      null,
+    [projectIdToDelete, projectResources],
   );
 
   const requestDeleteProject = (projectId: string) => {
@@ -185,7 +188,7 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
                     <SidebarMenuSkeleton showIcon />
                   </SidebarMenuItem>
                 ))
-              : resources.map((item) => {
+              : projectResources.map((item) => {
                   const isActive = activeProjectId === item.id;
 
                   return (
@@ -259,7 +262,7 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
                   );
                 })}
 
-            {!showLoadingState && resources && (
+            {!showLoadingState && projectResources.length > 0 && (
               <SidebarMenuItem>
                 <SidebarMenuButton
                   className="text-sidebar-foreground/70  hover:bg-sidebar-accent

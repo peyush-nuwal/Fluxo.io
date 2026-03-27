@@ -23,9 +23,9 @@ import { cn } from "@/lib/utils";
 import { AlertTriangle, Send } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useUser } from "@/hooks/use-user";
-import DiagramLoader from "./ui/diagram-loader";
-import { getCollaborators } from "@/lib/collab/client";
+import { addCollaborators, getCollaborators } from "@/lib/collab/client";
 import { Spinner } from "./ui/spinner";
+import { toast } from "sonner";
 
 type CollabFormProp = {
   open: boolean;
@@ -47,8 +47,12 @@ type CollaboratorMember = {
   role: "owner" | "collaborator";
 };
 type CollaboratorsResponse = {
-  members?: CollaboratorMember[];
-  viewerRole?: "owner" | "collaborator";
+  success?: boolean;
+  message?: string;
+  data?: {
+    members?: CollaboratorMember[];
+    viewerRole?: "owner" | "collaborator";
+  };
 };
 
 const TAG_META: Record<InviteTagType, { className: string }> = {
@@ -84,43 +88,38 @@ const useProjectCollaborators = (projectId: string, open: boolean) => {
     "collaborator",
   );
 
+  const loadCollaborators = async () => {
+    if (!projectId) return;
+    setIsLoadingCollaborators(true);
+    setCollaboratorsError("");
+
+    try {
+      const response = (await getCollaborators(
+        projectId,
+      )) as CollaboratorsResponse;
+      const members = Array.isArray(response?.data?.members)
+        ? response.data.members
+        : [];
+      setCollaborators(members);
+      setViewerRole(
+        response?.data?.viewerRole === "owner" ? "owner" : "collaborator",
+      );
+    } catch (error: any) {
+      setCollaborators([]);
+      setViewerRole("collaborator");
+      setCollaboratorsError(
+        String(
+          error?.data?.message || error?.message || "Failed to load members.",
+        ),
+      );
+    } finally {
+      setIsLoadingCollaborators(false);
+    }
+  };
+
   useEffect(() => {
     if (!open || !projectId) return;
-
-    let cancelled = false;
-
-    const run = async () => {
-      setIsLoadingCollaborators(true);
-      setCollaboratorsError("");
-
-      try {
-        const data = (await getCollaborators(
-          projectId,
-        )) as CollaboratorsResponse;
-        if (cancelled) return;
-
-        const members = Array.isArray(data?.members) ? data.members : [];
-        setCollaborators(members);
-        setViewerRole(data?.viewerRole === "owner" ? "owner" : "collaborator");
-      } catch (error: any) {
-        if (cancelled) return;
-        setCollaborators([]);
-        setViewerRole("collaborator");
-        setCollaboratorsError(
-          String(
-            error?.data?.message || error?.message || "Failed to load members.",
-          ),
-        );
-      } finally {
-        if (!cancelled) setIsLoadingCollaborators(false);
-      }
-    };
-
-    void run();
-
-    return () => {
-      cancelled = true;
-    };
+    void loadCollaborators();
   }, [open, projectId]);
 
   return {
@@ -128,6 +127,7 @@ const useProjectCollaborators = (projectId: string, open: boolean) => {
     isLoadingCollaborators,
     collaboratorsError,
     viewerRole,
+    reloadCollaborators: loadCollaborators,
   };
 };
 
@@ -136,11 +136,13 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
   const [invitees, setInvitees] = useState<Invitee[]>([]);
   const [currentEmail, setCurrentEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
+  const [isSendingInvites, setIsSendingInvites] = useState(false);
   const {
     collaborators,
     isLoadingCollaborators,
     collaboratorsError,
     viewerRole,
+    reloadCollaborators,
   } = useProjectCollaborators(projectId, open);
 
   const pushInvitee = (value: string) => {
@@ -185,6 +187,80 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
     [collaborators, currentUserEmail],
   );
 
+  const sendCollabInvite = async () => {
+    if (!canManageCollaborators || isSendingInvites) return;
+
+    const pending: Invitee[] = [...invitees];
+    const typedEmail = currentEmail.trim();
+
+    if (typedEmail) {
+      if (!EMAIL_REGEX.test(typedEmail)) {
+        setEmailError("Please enter a valid email address.");
+        return;
+      }
+
+      const exists = pending.some(
+        (invitee) => invitee.email.toLowerCase() === typedEmail.toLowerCase(),
+      );
+      if (!exists) {
+        pending.push({ email: typedEmail, tagType: getRandomTagType() });
+      }
+    }
+
+    if (!pending.length) {
+      setEmailError("Add at least one email to send an invite.");
+      return;
+    }
+
+    setIsSendingInvites(true);
+    setEmailError("");
+
+    const successfulEmails = new Set<string>();
+    let failedCount = 0;
+
+    for (const invitee of pending) {
+      try {
+        const res = (await addCollaborators(projectId, invitee.email)) as {
+          success?: boolean;
+          message?: string;
+        };
+
+        if (res?.success === false) {
+          failedCount += 1;
+          continue;
+        }
+
+        successfulEmails.add(invitee.email.toLowerCase());
+      } catch {
+        failedCount += 1;
+      }
+    }
+
+    const successCount = successfulEmails.size;
+
+    if (successCount > 0) {
+      toast.success(
+        `${successCount} invitation${successCount > 1 ? "s" : ""} sent successfully.`,
+      );
+      setInvitees((prev) =>
+        prev.filter(
+          (invitee) => !successfulEmails.has(invitee.email.toLowerCase()),
+        ),
+      );
+      if (typedEmail && successfulEmails.has(typedEmail.toLowerCase())) {
+        setCurrentEmail("");
+      }
+      await reloadCollaborators();
+    }
+
+    if (failedCount > 0) {
+      toast.error(
+        `Failed to send ${failedCount} invitation${failedCount > 1 ? "s" : ""}.`,
+      );
+    }
+
+    setIsSendingInvites(false);
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -213,8 +289,12 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
                   onKeyDown={onInputKeyDown}
                   className="flex-1"
                 />
-                <Button type="button" onClick={() => pushInvitee(currentEmail)}>
-                  <Send /> Send Invite
+                <Button
+                  type="button"
+                  onClick={sendCollabInvite}
+                  disabled={isSendingInvites}
+                >
+                  {isSendingInvites ? <Spinner /> : <Send />} Send Invite
                 </Button>
               </div>
               <FieldError className="mt-1">{emailError}</FieldError>
@@ -286,7 +366,6 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
                   (member.email ? member.email.split("@")[0] : "Owner")
                 }
                 avatarUrl={member.avatar_url ?? ""}
-                email={member.email}
                 role={member.role}
                 isYou={member.isYou}
               />
@@ -303,7 +382,6 @@ export default CollabForm;
 type UserCardProp = {
   userName: string;
   avatarUrl?: string;
-  email: string | null;
   role?: "owner" | "collaborator";
   isYou?: boolean;
 };
@@ -311,7 +389,6 @@ type UserCardProp = {
 const ProjectMemberCard = ({
   userName,
   avatarUrl = "",
-  email,
   role = "collaborator",
   isYou = false,
 }: UserCardProp) => {

@@ -62,7 +62,7 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
       set({ loading: true, error: null });
       try {
         const data = await getProjects();
-        set({ projects: data?.projects ?? data ?? [], loading: false });
+        set({ projects: data?.data?.projects ?? [], loading: false });
       } catch (err: any) {
         set({
           error: err?.message ?? "Failed to fetch projects",
@@ -74,7 +74,7 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
       set({ loading: true, error: null });
       try {
         const data = await getProjectById(projectId);
-        const project = data?.project ?? data ?? null;
+        const project = data?.data?.project ?? null;
         set({ selectedProject: project, loading: false });
       } catch (err: any) {
         set({
@@ -87,7 +87,7 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
       set({ loading: true, error: null });
       try {
         const data = await createProjectRequest(payload);
-        const project = data?.project ?? null;
+        const project = data?.data?.project ?? null;
         const message = data?.message ?? "Project created successfully";
 
         if (!project) {
@@ -112,7 +112,7 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
       set({ loading: true, error: null });
       try {
         const data = await updateProjectRequest(projectId, payload);
-        const project = data?.project ?? null;
+        const project = data?.data?.project ?? null;
         const message = data?.message ?? "Project updated successfully";
 
         if (!project) {
