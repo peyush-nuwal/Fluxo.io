@@ -24,7 +24,7 @@ export async function GET(
     };
 
     const res = await fetch(
-      `${API_BASE_URL}/api/v1/diagrams/${diagramId}/ownership`,
+      `${API_BASE_URL}/api/v1/diagram/diagrams/${diagramId}/ownership`,
       {
         method: "GET",
         headers,

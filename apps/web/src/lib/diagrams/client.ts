@@ -1,6 +1,12 @@
 "use client";
 
-import { apiFetch } from "@/lib/api";
+import {
+  frontendApiDelete,
+  frontendApiGet,
+  frontendApiPatch,
+  frontendApiPost,
+  frontendApiPut,
+} from "@/lib/frontend-api";
 import {
   DiagramPayload,
   SetDiagramActivePayload,
@@ -8,43 +14,22 @@ import {
 } from "@/types";
 
 export async function getDiagramsByUser() {
-  return apiFetch("/api/v1/diagram/diagrams");
+  return frontendApiGet("/api/v1/diagrams");
 }
 
 export async function getDiagramById(diagramId: string) {
-  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}`);
+  return frontendApiGet(`/api/v1/diagrams/${diagramId}`);
 }
 
 export async function createDiagram(payload: DiagramPayload | FormData) {
-  const options: Record<string, unknown> = { method: "POST" };
-
-  if (payload instanceof FormData) {
-    options.data = payload;
-  } else {
-    options.body = JSON.stringify(payload);
-  }
-
-  return apiFetch("/api/v1/diagram/diagrams", options);
+  return frontendApiPost("/api/v1/diagrams", payload);
 }
 
 export async function updateDiagram(
   payload: UpdateDiagramPayload | FormData,
   diagramId: string,
 ) {
-  const options: Record<string, unknown> = {
-    method: "PUT",
-  };
-
-  if (payload instanceof FormData) {
-    options.data = payload;
-  } else {
-    options.body = JSON.stringify(payload);
-    options.headers = {
-      "Content-Type": "application/json",
-    };
-  }
-
-  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}`, options);
+  return frontendApiPut(`/api/v1/diagrams/${diagramId}`, payload);
 }
 
 export async function updateDiagramData(
@@ -58,33 +43,21 @@ export async function setDiagramActiveState(
   diagramId: string,
   payload: SetDiagramActivePayload,
 ) {
-  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}/active`, {
-    method: "PATCH",
-    body: JSON.stringify(payload),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return frontendApiPatch(`/api/v1/diagrams/${diagramId}/active`, payload);
 }
 
 export async function softDeleteDiagram(diagramId: string) {
-  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}`, {
-    method: "DELETE",
-  });
+  return frontendApiDelete(`/api/v1/diagrams/${diagramId}`);
 }
 
 export const getSoftDeletedDiagrams = async () => {
-  return apiFetch("/api/v1/diagram/diagrams/trash");
+  return frontendApiGet("/api/v1/diagrams/trash");
 };
 
 export async function hardDeleteDiagram(diagramId: string) {
-  return apiFetch(`/api/v1/diagram/admin/diagrams/${diagramId}`, {
-    method: "DELETE",
-  });
+  return frontendApiDelete(`/api/v1/diagrams/trash/${diagramId}`);
 }
 
 export async function VerifyOwnerOfDiagram(diagramId: string) {
-  return apiFetch(`/api/v1/diagram/diagrams/${diagramId}/ownership`, {
-    method: "GET",
-  });
+  return frontendApiGet(`/api/v1/diagrams/${diagramId}/ownership`);
 }

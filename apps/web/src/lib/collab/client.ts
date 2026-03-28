@@ -1,15 +1,13 @@
-import { apiFetch } from "../api";
+import { frontendApiGet, frontendApiPost } from "../frontend-api";
 
-export const getCollaborators = async (projectId: string) => {
-  return apiFetch(`/api/v1/diagram/projects/${projectId}/collaborators`);
-};
+const collaboratorsPath = (projectId: string) =>
+  `/api/v1/projects/${encodeURIComponent(projectId)}/collaborators`;
 
-export const addCollaborators = async (projectId: string, email: string) => {
-  return apiFetch(`/api/v1/diagram/projects/${projectId}/collaborators`, {
-    method: "POST",
-    body: JSON.stringify({ email }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-};
+export const getCollaborators = async (projectId: string) =>
+  frontendApiGet(collaboratorsPath(projectId));
+
+export const addCollaborator = async (projectId: string, email: string) =>
+  frontendApiPost(collaboratorsPath(projectId), { email });
+
+// Backward-compatible alias for existing imports.
+export const addCollaborators = addCollaborator;

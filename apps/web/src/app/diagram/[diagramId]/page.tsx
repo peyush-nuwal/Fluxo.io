@@ -86,7 +86,8 @@ export default function DiagramPage({ params }: DiagramPageProps) {
     if (!diagram) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      const key = event.key.toLowerCase();
+      const key = typeof event.key === "string" ? event.key.toLowerCase() : "";
+      if (!key) return;
       const isSaveHotkey = (event.metaKey || event.ctrlKey) && key === "s";
       if (!isSaveHotkey) return;
 

@@ -10,7 +10,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     const cookie = req.headers.get("cookie");
     const accessToken = req.cookies.get("access_token")?.value;
 
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagrams/trash`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/diagram/diagrams/trash`, {
       method: "GET",
       headers: {
         Cookie: cookie ?? "",
@@ -35,8 +35,8 @@ export async function GET(req: NextRequest): Promise<Response> {
       });
     }
 
-    return NextResponse.json(buildProxySuccessPayload(data, true), {
-      status: 200,
+    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
     });
   } catch (error) {
     return NextResponse.json(

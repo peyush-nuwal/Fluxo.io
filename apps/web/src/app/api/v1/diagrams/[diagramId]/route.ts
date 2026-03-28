@@ -24,12 +24,15 @@ export async function GET(
       ...(cookie && { Cookie: cookie }),
       ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     };
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagrams/${diagramId}`, {
-      method: "GET",
-      headers,
-      credentials: "include",
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${API_BASE_URL}/api/v1/diagram/diagrams/${diagramId}`,
+      {
+        method: "GET",
+        headers,
+        credentials: "include",
+        cache: "no-store",
+      },
+    );
 
     const text = await res.text();
     let data: unknown = null;
@@ -71,12 +74,15 @@ export async function DELETE(
       ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     };
 
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagrams/${diagramId}`, {
-      method: "DELETE",
-      headers,
-      credentials: "include",
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${API_BASE_URL}/api/v1/diagram/diagrams/${diagramId}`,
+      {
+        method: "DELETE",
+        headers,
+        credentials: "include",
+        cache: "no-store",
+      },
+    );
 
     const text = await res.text();
     let data: unknown = null;
@@ -133,12 +139,15 @@ export async function PUT(
       body = JSON.stringify(json);
     }
 
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagrams/${diagramId}`, {
-      method: "PUT",
-      headers,
-      body,
-      cache: "no-store",
-    });
+    const res = await fetch(
+      `${API_BASE_URL}/api/v1/diagram/diagrams/${diagramId}`,
+      {
+        method: "PUT",
+        headers,
+        body,
+        cache: "no-store",
+      },
+    );
 
     const text = await res.text();
     let data: unknown = null;

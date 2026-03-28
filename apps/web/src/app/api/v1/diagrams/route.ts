@@ -1,5 +1,8 @@
 import { API_BASE_URL } from "@/config/server-env";
-import type { ApiResponse } from "@/types/api";
+import {
+  buildProxyErrorPayload,
+  buildProxySuccessPayload,
+} from "@/lib/proxy-response";
 import { NextRequest, NextResponse } from "next/server";
 
 type ProxyBody = string | FormData | undefined;
@@ -13,29 +16,34 @@ export async function GET(req: NextRequest): Promise<Response> {
       ...(cookie && { Cookie: cookie }),
       ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
     };
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagrams`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/diagram/diagrams`, {
       method: "GET",
       headers,
       credentials: "include",
       cache: "no-store",
     });
 
-    const raw = await res.json().catch(() => null);
+    const text = await res.text();
+    let data: unknown = null;
 
-    const response: ApiResponse<{ email?: string } | null> = {
-      success: raw?.success ?? false,
-      message: raw?.message ?? "Something went wrong",
-      data: raw?.email ? { email: raw.email } : null,
-    };
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      data = null;
+    }
 
-    return NextResponse.json(response, { status: res.status });
+    if (!res.ok) {
+      return NextResponse.json(buildProxyErrorPayload(data), {
+        status: res.status,
+      });
+    }
+
+    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
   } catch {
-    return NextResponse.json<ApiResponse<null>>(
-      {
-        success: false,
-        message: "Internal server error",
-        data: null,
-      },
+    return NextResponse.json(
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }
@@ -63,29 +71,34 @@ export async function POST(req: NextRequest): Promise<Response> {
       body = JSON.stringify(json);
     }
 
-    const res = await fetch(`${API_BASE_URL}/api/v1/diagrams`, {
+    const res = await fetch(`${API_BASE_URL}/api/v1/diagram/diagrams`, {
       method: "POST",
       headers,
       body,
       cache: "no-store",
     });
 
-    const raw = await res.json().catch(() => null);
+    const text = await res.text();
+    let data: unknown = null;
 
-    const response: ApiResponse<{ email?: string } | null> = {
-      success: raw?.success ?? false,
-      message: raw?.message ?? "Something went wrong",
-      data: raw?.email ? { email: raw.email } : null,
-    };
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      data = null;
+    }
 
-    return NextResponse.json(response, { status: res.status });
+    if (!res.ok) {
+      return NextResponse.json(buildProxyErrorPayload(data), {
+        status: res.status,
+      });
+    }
+
+    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+      status: res.status,
+    });
   } catch {
-    return NextResponse.json<ApiResponse<null>>(
-      {
-        success: false,
-        message: "Internal server error",
-        data: null,
-      },
+    return NextResponse.json(
+      buildProxyErrorPayload(null, "Internal server error"),
       { status: 500 },
     );
   }

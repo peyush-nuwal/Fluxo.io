@@ -1,6 +1,7 @@
 "use client";
 
-import { apiFetch } from "../api";
+import { ApiError } from "../api";
+import { frontendApiGet, frontendApiPost } from "../frontend-api";
 
 export type OAuthProvider = "google" | "github";
 export interface User {
@@ -47,6 +48,12 @@ function sanitizeReturnTo(returnTo?: string | null): string | null {
 }
 
 type FieldErrors = Record<string, string[]>;
+
+function getMessage(value: unknown): string | undefined {
+  if (!value || typeof value !== "object") return undefined;
+  const message = (value as Record<string, unknown>).message;
+  return typeof message === "string" ? message : undefined;
+}
 
 function toErrorList(value: unknown): string[] {
   if (Array.isArray(value)) {
@@ -107,32 +114,31 @@ function normalizeErrorDetails(
 /* ------------------ Auth ------------------ */
 
 export async function login(email: string, password: string) {
-  const res = await fetch("/api/v1/auth/signin", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ email, password }),
-  });
-
-  let data;
   try {
-    data = await res.json();
-  } catch (e) {
+    const data = await frontendApiPost("/api/v1/auth/signin", {
+      email,
+      password,
+    });
+
+    clearUserCache();
+    return data;
+  } catch (error: any) {
+    const data = error instanceof ApiError ? error.data : error;
+    const payload = data && typeof data === "object" ? data : {};
+    const message =
+      typeof (payload as Record<string, unknown>).message === "string"
+        ? ((payload as Record<string, unknown>).message as string)
+        : "Something went wrong. Please try again.";
+
     throw {
-      error: "Failed to parse response",
-      message: "Something went wrong. Please try again.",
+      ...payload,
+      message,
+      details: normalizeErrorDetails(
+        (payload as Record<string, unknown>).details,
+        message,
+      ),
     };
   }
-
-  if (!res.ok) {
-    throw {
-      ...data,
-      details: normalizeErrorDetails(data?.details, data?.message),
-    };
-  }
-
-  clearUserCache();
-  return data;
 }
 
 export async function signup(
@@ -141,52 +147,52 @@ export async function signup(
   email: string,
   password: string,
 ) {
-  const res = await fetch("/api/v1/auth/signup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify({ username, name, email, password }),
-  });
-
-  const text = await res.text();
-  let data: any = {};
-
   try {
-    data = text ? JSON.parse(text) : {};
-  } catch {
-    data = { message: text };
-  }
+    const data = await frontendApiPost("/api/v1/auth/signup", {
+      username,
+      name,
+      email,
+      password,
+    });
 
-  if (!res.ok) {
-    const message = data?.message || "Signup failed";
+    clearUserCache();
+    return { ok: true, data };
+  } catch (error: any) {
+    const data = error instanceof ApiError ? error.data : {};
+    const payload = data && typeof data === "object" ? data : {};
+    const message =
+      typeof (payload as Record<string, unknown>).message === "string"
+        ? ((payload as Record<string, unknown>).message as string)
+        : "Signup failed";
+
     return {
       ok: false,
       message,
-      details: normalizeErrorDetails(data?.details, message),
+      details: normalizeErrorDetails(
+        (payload as Record<string, unknown>).details,
+        message,
+      ),
     };
   }
-
-  clearUserCache();
-  return { ok: true, data };
 }
 
 export async function onLogout() {
-  const res = await fetch("/api/v1/auth/logout", {
-    method: "POST",
-    credentials: "include",
-  });
-
-  const data = await res.json();
-  // 🔥 clear client state
+  // clear client state
   localStorage.clear();
   sessionStorage.clear();
-  clearUserCache(); // client-side state cleanup
+  clearUserCache();
 
-  if (!res.ok) {
-    throw data;
+  try {
+    const data = await frontendApiPost<{ message?: string }>(
+      "/api/v1/auth/logout",
+    );
+    return data?.message;
+  } catch (error: any) {
+    if (error instanceof ApiError) {
+      throw error.data;
+    }
+    throw error;
   }
-
-  return data.message;
 }
 
 export function startOAuth(provider: OAuthProvider) {
@@ -217,38 +223,30 @@ export function consumeAuthReturnTo(): string | null {
 // otp function
 
 export async function verifyOtp(body: VerifyEmailOtpPayload) {
-  const res = await fetch("/api/v1/auth/otp/verify", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(body),
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    return { ok: false, message: data.message };
+  try {
+    await frontendApiPost("/api/v1/auth/otp/verify", body);
+    clearUserCache();
+    return { ok: true };
+  } catch (error: any) {
+    const data = error instanceof ApiError ? error.data : {};
+    return {
+      ok: false,
+      message: getMessage(data),
+    };
   }
-
-  clearUserCache();
-  return { ok: true };
 }
 
 export async function resendEmailOtp(body: ResendOtpToEmailPayload) {
-  const res = await fetch("/api/v1/auth/otp/generate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
-    body: JSON.stringify(body),
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    return { ok: false, message: data.message };
+  try {
+    await frontendApiPost("/api/v1/auth/otp/generate", body);
+    return { ok: true };
+  } catch (error: any) {
+    const data = error instanceof ApiError ? error.data : {};
+    return {
+      ok: false,
+      message: getMessage(data),
+    };
   }
-
-  return { ok: true };
 }
 
 /* ------------------ Cache helpers ------------------ */
@@ -296,7 +294,7 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 
   try {
-    const user = await apiFetch("/api/v1/auth/users/me");
+    const user = await frontendApiGet<User>("/api/v1/auth/users/me");
     writeCache(user);
     return user;
   } catch {

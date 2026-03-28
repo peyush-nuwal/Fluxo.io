@@ -26,7 +26,7 @@ export async function PATCH(
     };
 
     const res = await fetch(
-      `${API_BASE_URL}/api/v1/diagrams/${diagramId}/active`,
+      `${API_BASE_URL}/api/v1/diagram/diagrams/${diagramId}/active`,
       {
         method: "PATCH",
         headers,
