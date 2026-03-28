@@ -11,6 +11,7 @@ export interface User {
 }
 
 const USER_CACHE_KEY = "user_cache";
+const AUTH_RETURN_TO_KEY = "auth_return_to";
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 interface CachedUser {
@@ -34,6 +35,15 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 function isBrowser() {
   return typeof window !== "undefined";
+}
+
+function sanitizeReturnTo(returnTo?: string | null): string | null {
+  if (!returnTo) return null;
+  const value = returnTo.trim();
+  if (!value.startsWith("/") || value.startsWith("//")) {
+    return null;
+  }
+  return value;
 }
 
 type FieldErrors = Record<string, string[]>;
@@ -185,6 +195,23 @@ export function startOAuth(provider: OAuthProvider) {
   }
   console.log("clicked ", provider);
   window.location.href = `${API_BASE_URL}/api/v1/auth/oauth/${provider}`;
+}
+
+export function setAuthReturnTo(returnTo?: string | null) {
+  if (!isBrowser()) return;
+  const safeReturnTo = sanitizeReturnTo(returnTo);
+  if (safeReturnTo) {
+    sessionStorage.setItem(AUTH_RETURN_TO_KEY, safeReturnTo);
+    return;
+  }
+  sessionStorage.removeItem(AUTH_RETURN_TO_KEY);
+}
+
+export function consumeAuthReturnTo(): string | null {
+  if (!isBrowser()) return null;
+  const value = sanitizeReturnTo(sessionStorage.getItem(AUTH_RETURN_TO_KEY));
+  sessionStorage.removeItem(AUTH_RETURN_TO_KEY);
+  return value;
 }
 
 // otp function

@@ -79,18 +79,70 @@ export const sendOTPEmail = async (
     };
 
     const subject = subjectMap[purpose] || "Verification Code";
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const logoUrl = `${frontendUrl}/assets/logo.svg`;
+    const openAppUrl = `${frontendUrl}/login`;
+
+    const purposeDescriptionMap = {
+      email_verification:
+        "Use this secure code to verify your email address and continue.",
+      password_reset:
+        "Use this secure code to reset your password and recover access.",
+      login: "Use this secure code to finish your sign-in.",
+      two_factor: "Use this secure code to complete two-factor authentication.",
+    };
+
+    const purposeDescription =
+      purposeDescriptionMap[purpose] ||
+      "Use this secure code to continue with your request.";
 
     const htmlContent = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #333;">${subject}</h2>
-        <p>Your verification code is:</p>
-        <div style="background-color: #f4f4f4; padding: 20px; text-align: center; margin: 20px 0;">
-          <h1 style="color: #007bff; font-size: 32px; margin: 0; letter-spacing: 5px;">${otpCode}</h1>
-        </div>
-        <p>This code will expire in ${OTP_EXPIRY_MINUTES} minutes.</p>
-        <p style="color: #666; font-size: 14px;">
-          If you didn't request this code, please ignore this email.
-        </p>
+      <div style="margin:0;padding:0;background:#ece8e3;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#ece8e3;padding:24px 12px;">
+          <tr>
+            <td align="center">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;">
+                <tr>
+                  <td style="background:#ffffff;border:1px solid #d8d3cd;border-radius:6px;padding:34px 34px 26px;">
+                    <div style="text-align:center;">
+                      <img src="${logoUrl}" alt="Fluxo" width="28" height="28" style="display:inline-block;vertical-align:middle;" />
+                      <p style="margin:8px 0 0;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#6b6b6b;">Fluxo</p>
+                    </div>
+
+                    <h1 style="margin:30px 0 10px;text-align:center;color:#0f0f0f;font-size:42px;line-height:1.1;font-weight:700;">
+                      ${subject}
+                    </h1>
+
+                    <p style="margin:0 auto;text-align:center;max-width:460px;color:#333333;font-size:17px;line-height:1.6;">
+                      ${purposeDescription}
+                    </p>
+
+                    <div style="margin:26px auto 10px;text-align:center;background:#f7f7f7;border:1px solid #e9e9e9;border-radius:6px;padding:22px 18px;max-width:420px;">
+                      <p style="margin:0 0 6px;color:#646464;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;">Verification code</p>
+                      <p style="margin:0;color:#111111;font-size:42px;line-height:1;letter-spacing:8px;font-weight:700;">${otpCode}</p>
+                    </div>
+
+                    <div style="text-align:center;margin:24px 0 12px;">
+                      <a
+                        href="${openAppUrl}"
+                        style="display:inline-block;background:#111111;color:#ffffff;text-decoration:none;padding:13px 26px;font-size:14px;font-weight:600;border-radius:2px;"
+                      >
+                        Download & Join
+                      </a>
+                    </div>
+
+                    <p style="margin:24px 0 0;text-align:center;color:#4d4d4d;font-size:14px;line-height:1.6;">
+                      This code expires in ${OTP_EXPIRY_MINUTES} minutes.
+                    </p>
+                    <p style="margin:8px 0 0;text-align:center;color:#7a7a7a;font-size:12px;line-height:1.6;">
+                      If you did not request this code, you can safely ignore this email.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
       </div>
     `;
 

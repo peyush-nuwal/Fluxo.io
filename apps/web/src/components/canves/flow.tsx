@@ -51,7 +51,6 @@ function isSameViewport(a: Viewport, b: Viewport) {
 }
 
 const MIN_DISTANCE = 300;
-const DRAG_CREATE_THRESHOLD = 6;
 const INSERTABLE_SHAPES: ShapeKind[] = [
   "text",
   "rectangle",
@@ -61,12 +60,12 @@ const INSERTABLE_SHAPES: ShapeKind[] = [
 const FREEHAND_TOOLS = ["pencil"] as const;
 const FREEHAND_PADDING = 8;
 const MIN_POINT_DISTANCE = 1.5;
+const MIN_SHAPE_DRAG_SIZE = 8;
 
 type DraftCreateNode = {
   id: string;
   shape: ShapeKind;
   startPosition: { x: number; y: number };
-  startClient: { x: number; y: number };
   moved: boolean;
 };
 
@@ -303,6 +302,15 @@ export default function FlowCanves() {
   const draftFreehandRef = useRef<DraftFreehandNode | null>(null);
   const skipPaneClickRef = useRef(false);
   const [isInteractive, setIsInteractive] = useState(true);
+  const isHandToolActive = activeTool === "hand";
+  const canvasCursor =
+    activeTool === "pencil"
+      ? "crosshair"
+      : activeTool === "eraser"
+        ? "cell"
+        : activeTool === "hand"
+          ? "grab"
+          : "default";
 
   const { mode } = useTheme();
 
@@ -396,11 +404,27 @@ export default function FlowCanves() {
 
   const onNodesChange: OnNodesChange<CustomNodeType> = useCallback(
     (changes) => {
-      const hasPersistentChange = changes.some(
+      const draftNodeIds = new Set<string>();
+      if (draftCreateRef.current?.id) {
+        draftNodeIds.add(draftCreateRef.current.id);
+      }
+      if (draftFreehandRef.current?.id) {
+        draftNodeIds.add(draftFreehandRef.current.id);
+      }
+
+      // During draft create/draw, ignore dimensions updates for draft nodes.
+      // React Flow measurements can otherwise override drag-sized dimensions,
+      // which feels choppy and can snap back to default-ish sizes.
+      const sanitizedChanges = changes.filter((change) => {
+        if (change.type !== "dimensions") return true;
+        return !draftNodeIds.has(change.id);
+      });
+
+      const hasPersistentChange = sanitizedChanges.some(
         (change) => change.type !== "select" && change.type !== "dimensions",
       );
 
-      const dimensionChanges = changes.filter(
+      const dimensionChanges = sanitizedChanges.filter(
         (change) => change.type === "dimensions",
       ) as Array<{
         type: "dimensions";
@@ -408,38 +432,40 @@ export default function FlowCanves() {
         dimensions?: { width?: number; height?: number };
       }>;
 
-      const updatedNodes = applyNodeChanges(changes, nodes).map((node) => {
-        if (!isShapeNode(node)) return node;
+      const updatedNodes = applyNodeChanges(sanitizedChanges, nodes).map(
+        (node) => {
+          if (!isShapeNode(node)) return node;
 
-        const dimensionChange = dimensionChanges.find(
-          (change) => change.id === node.id,
-        );
-        if (!dimensionChange) return node;
+          const dimensionChange = dimensionChanges.find(
+            (change) => change.id === node.id,
+          );
+          if (!dimensionChange) return node;
 
-        const width =
-          typeof dimensionChange.dimensions?.width === "number"
-            ? dimensionChange.dimensions.width
-            : undefined;
-        const height =
-          typeof dimensionChange.dimensions?.height === "number"
-            ? dimensionChange.dimensions.height
-            : undefined;
+          const width =
+            typeof dimensionChange.dimensions?.width === "number"
+              ? dimensionChange.dimensions.width
+              : undefined;
+          const height =
+            typeof dimensionChange.dimensions?.height === "number"
+              ? dimensionChange.dimensions.height
+              : undefined;
 
-        if (width === undefined && height === undefined) {
-          return node;
-        }
+          if (width === undefined && height === undefined) {
+            return node;
+          }
 
-        return {
-          ...node,
-          width: width ?? node.width,
-          height: height ?? node.height,
-          style: {
-            ...node.style,
-            ...(width !== undefined ? { width } : {}),
-            ...(height !== undefined ? { height } : {}),
-          },
-        };
-      }) as CustomNodeType[];
+          return {
+            ...node,
+            width: width ?? node.width,
+            height: height ?? node.height,
+            style: {
+              ...node.style,
+              ...(width !== undefined ? { width } : {}),
+              ...(height !== undefined ? { height } : {}),
+            },
+          };
+        },
+      ) as CustomNodeType[];
 
       changes.forEach((change) => {
         if (change.type === "position" && !change.dragging) {
@@ -584,7 +610,6 @@ export default function FlowCanves() {
         id: nodeId,
         shape,
         startPosition,
-        startClient: { x: event.clientX, y: event.clientY },
         moved: false,
       };
       skipPaneClickRef.current = true;
@@ -594,131 +619,186 @@ export default function FlowCanves() {
 
   const onFlowMouseMove = useCallback(
     (event: ReactMouseEvent) => {
+      const buttons = event.buttons ?? 0;
+      const clientX = event.clientX;
+      const clientY = event.clientY;
       const freehandDraft = draftFreehandRef.current;
       const draft = draftCreateRef.current;
 
-      // Some browsers/environments can report `buttons` unreliably on pane mousemove.
-      // If we're in the middle of a draft create/draw interaction, keep processing.
-      if (!freehandDraft && !draft && (event.buttons & 1) !== 1) {
+      if (!freehandDraft && !draft && (buttons & 1) !== 1) {
         return;
       }
 
-      if (freehandDraft) {
-        const instance = reactFlowInstanceRef.current;
-        if (!instance) return;
+      const instance = reactFlowInstanceRef.current;
+      if (!instance) return;
 
-        const nextPoint = instance.screenToFlowPosition({
-          x: event.clientX,
-          y: event.clientY,
-        });
-        const lastPoint = freehandDraft.points[freehandDraft.points.length - 1];
-        const dx = nextPoint.x - lastPoint.x;
-        const dy = nextPoint.y - lastPoint.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+      const processPointerMove = (
+        pointerX: number,
+        pointerY: number,
+        pointerButtons: number,
+      ) => {
+        const activeFreehandDraft = draftFreehandRef.current;
+        const activeDraft = draftCreateRef.current;
 
-        if (distance < MIN_POINT_DISTANCE) {
+        if (
+          !activeFreehandDraft &&
+          !activeDraft &&
+          (pointerButtons & 1) !== 1
+        ) {
           return;
         }
 
-        freehandDraft.moved = true;
-        freehandDraft.points.push(nextPoint);
+        if (activeFreehandDraft) {
+          const nextPoint = instance.screenToFlowPosition({
+            x: pointerX,
+            y: pointerY,
+          });
+          const lastPoint =
+            activeFreehandDraft.points[activeFreehandDraft.points.length - 1];
+          const dx = nextPoint.x - lastPoint.x;
+          const dy = nextPoint.y - lastPoint.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
 
-        const minX = Math.min(...freehandDraft.points.map((point) => point.x));
-        const maxX = Math.max(...freehandDraft.points.map((point) => point.x));
-        const minY = Math.min(...freehandDraft.points.map((point) => point.y));
-        const maxY = Math.max(...freehandDraft.points.map((point) => point.y));
+          if (distance < MIN_POINT_DISTANCE) {
+            return;
+          }
 
-        const x = minX - FREEHAND_PADDING;
-        const y = minY - FREEHAND_PADDING;
+          activeFreehandDraft.moved = true;
+          activeFreehandDraft.points.push(nextPoint);
+
+          const minX = Math.min(
+            ...activeFreehandDraft.points.map((point) => point.x),
+          );
+          const maxX = Math.max(
+            ...activeFreehandDraft.points.map((point) => point.x),
+          );
+          const minY = Math.min(
+            ...activeFreehandDraft.points.map((point) => point.y),
+          );
+          const maxY = Math.max(
+            ...activeFreehandDraft.points.map((point) => point.y),
+          );
+
+          const x = minX - FREEHAND_PADDING;
+          const y = minY - FREEHAND_PADDING;
+          const width = Math.max(
+            maxX - minX + FREEHAND_PADDING * 2,
+            FREEHAND_PADDING * 2,
+          );
+          const height = Math.max(
+            maxY - minY + FREEHAND_PADDING * 2,
+            FREEHAND_PADDING * 2,
+          );
+
+          const relativePoints = activeFreehandDraft.points.map((point) => ({
+            x: point.x - x,
+            y: point.y - y,
+          }));
+
+          setNodes(
+            (prevNodes) =>
+              prevNodes.map((nodeItem) =>
+                nodeItem.id === activeFreehandDraft.id &&
+                isFreehandNode(nodeItem)
+                  ? {
+                      ...nodeItem,
+                      position: { x, y },
+                      style: {
+                        ...nodeItem.style,
+                        width,
+                        height,
+                      },
+                      data: {
+                        ...(nodeItem.data ?? {}),
+                        points: relativePoints,
+                      },
+                    }
+                  : nodeItem,
+              ),
+            { markDirty: false },
+          );
+
+          return;
+        }
+
+        if (!activeDraft) return;
+
+        const currentPosition = instance.screenToFlowPosition({
+          x: pointerX,
+          y: pointerY,
+        });
+        const flowDx = currentPosition.x - activeDraft.startPosition.x;
+        const flowDy = currentPosition.y - activeDraft.startPosition.y;
+        const flowDistance = Math.sqrt(flowDx * flowDx + flowDy * flowDy);
+        const left = Math.min(activeDraft.startPosition.x, currentPosition.x);
+        const top = Math.min(activeDraft.startPosition.y, currentPosition.y);
         const width = Math.max(
-          maxX - minX + FREEHAND_PADDING * 2,
-          FREEHAND_PADDING * 2,
+          Math.abs(currentPosition.x - activeDraft.startPosition.x),
+          MIN_SHAPE_DRAG_SIZE,
         );
         const height = Math.max(
-          maxY - minY + FREEHAND_PADDING * 2,
-          FREEHAND_PADDING * 2,
+          Math.abs(currentPosition.y - activeDraft.startPosition.y),
+          MIN_SHAPE_DRAG_SIZE,
         );
 
-        const relativePoints = freehandDraft.points.map((point) => ({
-          x: point.x - x,
-          y: point.y - y,
-        }));
+        if (flowDistance >= 1.5) {
+          activeDraft.moved = true;
+        }
+
+        if (!activeDraft.moved) return;
 
         setNodes(
           (prevNodes) =>
             prevNodes.map((nodeItem) =>
-              nodeItem.id === freehandDraft.id && isFreehandNode(nodeItem)
+              nodeItem.id === activeDraft.id && isShapeNode(nodeItem)
                 ? {
                     ...nodeItem,
-                    position: { x, y },
+                    position: { x: left, y: top },
                     style: {
                       ...nodeItem.style,
                       width,
                       height,
-                    },
-                    data: {
-                      ...(nodeItem.data ?? {}),
-                      points: relativePoints,
                     },
                   }
                 : nodeItem,
             ),
           { markDirty: false },
         );
+      };
 
-        return;
-      }
-
-      if (!draft) return;
-
-      const instance = reactFlowInstanceRef.current;
-      if (!instance) return;
-
-      const clientDx = event.clientX - draft.startClient.x;
-      const clientDy = event.clientY - draft.startClient.y;
-      const dragDistance = Math.sqrt(clientDx * clientDx + clientDy * clientDy);
-
-      const currentPosition = instance.screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
-      const left = Math.min(draft.startPosition.x, currentPosition.x);
-      const top = Math.min(draft.startPosition.y, currentPosition.y);
-      const width = Math.max(
-        Math.abs(currentPosition.x - draft.startPosition.x),
-        24,
-      );
-      const height = Math.max(
-        Math.abs(currentPosition.y - draft.startPosition.y),
-        24,
-      );
-
-      if (dragDistance >= DRAG_CREATE_THRESHOLD) {
-        draft.moved = true;
-      }
-
-      if (!draft.moved) return;
-
-      setNodes(
-        (prevNodes) =>
-          prevNodes.map((nodeItem) =>
-            nodeItem.id === draft.id && isShapeNode(nodeItem)
-              ? {
-                  ...nodeItem,
-                  position: { x: left, y: top },
-                  style: {
-                    ...nodeItem.style,
-                    width,
-                    height,
-                  },
-                }
-              : nodeItem,
-          ),
-        { markDirty: false },
-      );
+      processPointerMove(clientX, clientY, buttons);
     },
     [setNodes],
   );
+
+  useEffect(() => {
+    const handleWindowMouseMove = (event: MouseEvent) => {
+      const freehandDraft = draftFreehandRef.current;
+      const draft = draftCreateRef.current;
+      if (!freehandDraft && !draft) return;
+
+      const syntheticEvent = {
+        clientX: event.clientX,
+        x: event.clientX,
+        clientY: event.clientY,
+        y: event.clientY,
+        buttons: event.buttons,
+      } as unknown as ReactMouseEvent;
+
+      onFlowMouseMove(syntheticEvent);
+    };
+
+    window.addEventListener("mousemove", handleWindowMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleWindowMouseMove);
+    };
+  }, [onFlowMouseMove]);
+
+  useEffect(() => {
+    if (activeTool !== "select") {
+      clearSelection();
+    }
+  }, [activeTool, clearSelection]);
 
   const onPaneMouseUp = useCallback(() => {
     const freehandDraft = draftFreehandRef.current;
@@ -791,11 +871,15 @@ export default function FlowCanves() {
 
       if (activeTool === "eraser") {
         removeNode(node.id);
-        setActiveTool("select");
+        clearSelection();
         return;
       }
+
+      if (activeTool !== "select") {
+        clearSelection();
+      }
     },
-    [activeTool, removeNode, setActiveTool, isInteractive],
+    [activeTool, removeNode, clearSelection, isInteractive],
   );
 
   const onEdgeClick: EdgeMouseHandler<CustomEdgeType> = useCallback(
@@ -804,11 +888,15 @@ export default function FlowCanves() {
 
       if (activeTool === "eraser") {
         removeEdge(edge.id);
-        setActiveTool("select");
+        clearSelection();
         return;
       }
+
+      if (activeTool !== "select") {
+        clearSelection();
+      }
     },
-    [activeTool, removeEdge, setActiveTool, isInteractive],
+    [activeTool, removeEdge, clearSelection, isInteractive],
   );
 
   const onMoveEnd = useCallback(
@@ -839,7 +927,11 @@ export default function FlowCanves() {
   );
 
   return (
-    <div className="h-full w-full fluxo-flow-theme" onWheel={onCanvasWheel}>
+    <div
+      className="h-full w-full fluxo-flow-theme"
+      onWheel={onCanvasWheel}
+      style={{ cursor: canvasCursor }}
+    >
       <ReactFlow<CustomNodeType, CustomEdgeType>
         onInit={onInit}
         nodes={nodes}
@@ -857,13 +949,14 @@ export default function FlowCanves() {
         onEdgeClick={onEdgeClick}
         onMoveEnd={onMoveEnd}
         defaultViewport={viewport}
-        panOnDrag={activeTool === "hand"}
+        panOnDrag={isInteractive && isHandToolActive ? [0] : false}
         selectionOnDrag={isInteractive && activeTool === "select"}
         nodesDraggable={isInteractive && activeTool === "select"}
         nodesConnectable={isInteractive}
         elementsSelectable={isInteractive && activeTool === "select"}
         fitView={nodes.length === 0}
         colorMode={mode}
+        style={{ cursor: canvasCursor }}
         defaultEdgeOptions={{
           type: "button-edge",
           data: { variant: "bezier", endType: edgeEndType },

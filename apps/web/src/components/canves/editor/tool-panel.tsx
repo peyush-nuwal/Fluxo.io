@@ -71,10 +71,22 @@ export default function ToolPanel({ diagramId, setOpen }: ToolPanelProps) {
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
   useEffect(() => {
+    const keyMap = Object.fromEntries(
+      TOOL_ITEMS.filter(
+        (tool): tool is (typeof TOOL_ITEMS)[number] & { key: string } =>
+          typeof tool.key === "string" && tool.key.length > 0,
+      ).map((tool) => [tool.key, tool.id]),
+    );
+
     const onKeyDown = (event: KeyboardEvent) => {
-      const keyMap = Object.fromEntries(
-        TOOL_ITEMS.map((tool) => [tool.key, tool.id]),
-      );
+      const target = event.target as HTMLElement | null;
+      const isTypingTarget =
+        target instanceof HTMLElement &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable);
+
+      if (isTypingTarget) return;
 
       const tool = keyMap[event.key];
       if (tool) setActiveTool(tool);

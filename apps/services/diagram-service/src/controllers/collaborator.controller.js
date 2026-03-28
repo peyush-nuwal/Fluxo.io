@@ -397,7 +397,31 @@ export const acceptInvitation = async (req, res) => {
 
     const invitation = await getInvitationByToken(invitationToken);
     if (!invitation) {
-      return sendError(res, 404, "Invitation not found");
+      return sendError(
+        res,
+        404,
+        "This invitation link is invalid or no longer available.",
+      );
+    }
+
+    if (invitation.status === "accepted") {
+      return sendError(res, 409, "This invitation has already been accepted.");
+    }
+
+    if (invitation.status === "expired") {
+      return sendError(
+        res,
+        410,
+        "This invitation has expired. Please request a new invitation.",
+      );
+    }
+
+    if (invitation.status !== "pending") {
+      return sendError(
+        res,
+        400,
+        `This invitation cannot be accepted because its status is "${invitation.status}".`,
+      );
     }
 
     const normalizedInvitationEmail = normalizeEmail(invitation.email);
@@ -407,7 +431,7 @@ export const acceptInvitation = async (req, res) => {
       return sendError(
         res,
         403,
-        "This invitation belongs to another email account",
+        "This invitation is assigned to a different email address. Please sign in with the invited account.",
       );
     }
 
@@ -427,16 +451,35 @@ export const acceptInvitation = async (req, res) => {
 
       // Handle specific invitation errors
       if (invitationError?.message?.includes("not found")) {
-        return sendError(res, 404, "Invitation not found");
+        return sendError(
+          res,
+          404,
+          "This invitation link is invalid or no longer available.",
+        );
       }
       if (invitationError?.message?.includes("expired")) {
-        return sendError(res, 400, "Invitation has expired");
+        return sendError(
+          res,
+          410,
+          "This invitation has expired. Please request a new invitation.",
+        );
       }
-      if (invitationError?.message?.includes("already")) {
-        return sendError(res, 400, invitationError.message);
+      if (
+        invitationError?.message?.includes("already") ||
+        invitationError?.message?.includes("accepted")
+      ) {
+        return sendError(
+          res,
+          409,
+          "This invitation has already been accepted.",
+        );
       }
 
-      return sendError(res, 500, "Failed to accept invitation");
+      return sendError(
+        res,
+        500,
+        "Unable to accept invitation right now. Please try again shortly.",
+      );
     }
   } catch (error) {
     logger.error("Error in accept invitation handler:", error);

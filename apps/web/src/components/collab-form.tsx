@@ -79,6 +79,11 @@ const getRandomTagType = (): InviteTagType =>
   TAG_TYPES[Math.floor(Math.random() * TAG_TYPES.length)];
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const splitEmails = (value: string) =>
+  value
+    .split(/[,\n;]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
 
 const useProjectCollaborators = (projectId: string, open: boolean) => {
   const [collaborators, setCollaborators] = useState<CollaboratorMember[]>([]);
@@ -145,33 +150,57 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
     reloadCollaborators,
   } = useProjectCollaborators(projectId, open);
 
-  const pushInvitee = (value: string) => {
-    const email = value.trim().replace(/,$/, "");
-    if (!email) return;
+  const pushInvitees = (value: string) => {
+    const emails = splitEmails(value);
+    if (!emails.length) return 0;
 
-    if (!EMAIL_REGEX.test(email)) {
-      setEmailError("Please enter a valid email address.");
-      return;
-    }
-
-    const hasExisting = invitees.some(
-      (invitee) => invitee.email.toLowerCase() === email.toLowerCase(),
+    const existingEmails = new Set(
+      invitees.map((invitee) => invitee.email.toLowerCase()),
     );
+    const nextInvitees: Invitee[] = [];
+    const invalidEmails: string[] = [];
 
-    if (hasExisting) {
-      setEmailError("This email is already added.");
-      return;
+    for (const email of emails) {
+      if (!EMAIL_REGEX.test(email)) {
+        invalidEmails.push(email);
+        continue;
+      }
+
+      const normalizedEmail = email.toLowerCase();
+      if (existingEmails.has(normalizedEmail)) continue;
+      existingEmails.add(normalizedEmail);
+
+      nextInvitees.push({ email, tagType: getRandomTagType() });
     }
 
-    setInvitees((prev) => [...prev, { email, tagType: getRandomTagType() }]);
-    setCurrentEmail("");
-    setEmailError("");
+    if (nextInvitees.length > 0) {
+      setInvitees((prev) => [...prev, ...nextInvitees]);
+      setCurrentEmail("");
+    }
+
+    if (invalidEmails.length > 0) {
+      setEmailError(`Invalid email: ${invalidEmails[0]}`);
+    } else {
+      setEmailError("");
+    }
+
+    return nextInvitees.length;
   };
 
   const onInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key !== "," && event.key !== "Enter") return;
-    event.preventDefault();
-    pushInvitee(currentEmail);
+    if (event.key === "," || event.key === "Enter" || event.key === "Tab") {
+      event.preventDefault();
+      pushInvitees(currentEmail);
+      return;
+    }
+
+    if (
+      event.key === "Backspace" &&
+      !currentEmail.trim() &&
+      invitees.length > 0
+    ) {
+      setInvitees((prev) => prev.slice(0, -1));
+    }
   };
 
   const canManageCollaborators = viewerRole === "owner";
@@ -190,21 +219,23 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
   const sendCollabInvite = async () => {
     if (!canManageCollaborators || isSendingInvites) return;
 
-    const pending: Invitee[] = [...invitees];
     const typedEmail = currentEmail.trim();
+    const pendingFromInput = typedEmail
+      ? splitEmails(typedEmail)
+          .filter((email) => EMAIL_REGEX.test(email))
+          .map((email) => ({
+            email,
+            tagType: getRandomTagType() as InviteTagType,
+          }))
+      : [];
 
-    if (typedEmail) {
-      if (!EMAIL_REGEX.test(typedEmail)) {
-        setEmailError("Please enter a valid email address.");
-        return;
-      }
-
-      const exists = pending.some(
-        (invitee) => invitee.email.toLowerCase() === typedEmail.toLowerCase(),
-      );
-      if (!exists) {
-        pending.push({ email: typedEmail, tagType: getRandomTagType() });
-      }
+    const pending: Invitee[] = [...invitees];
+    const seen = new Set(pending.map((invitee) => invitee.email.toLowerCase()));
+    for (const invitee of pendingFromInput) {
+      const normalizedEmail = invitee.email.toLowerCase();
+      if (seen.has(normalizedEmail)) continue;
+      seen.add(normalizedEmail);
+      pending.push(invitee);
     }
 
     if (!pending.length) {
@@ -247,7 +278,7 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
           (invitee) => !successfulEmails.has(invitee.email.toLowerCase()),
         ),
       );
-      if (typedEmail && successfulEmails.has(typedEmail.toLowerCase())) {
+      if (typedEmail) {
         setCurrentEmail("");
       }
       await reloadCollaborators();
@@ -276,40 +307,13 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
             <Field>
               <FieldLabel htmlFor="email">Email Address</FieldLabel>
               <div className="flex gap-3">
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={currentEmail}
-                  placeholder="name@company.com"
-                  onChange={(e) => {
-                    setCurrentEmail(e.target.value);
-                    if (emailError) setEmailError("");
-                  }}
-                  onKeyDown={onInputKeyDown}
-                  className="flex-1"
-                />
-                <Button
-                  type="button"
-                  onClick={sendCollabInvite}
-                  disabled={isSendingInvites}
-                >
-                  {isSendingInvites ? <Spinner /> : <Send />} Send Invite
-                </Button>
-              </div>
-              <FieldError className="mt-1">{emailError}</FieldError>
-            </Field>
-
-            {invitees.length > 0 ? (
-              <div className="flex flex-col gap-2">
-                <FieldTitle>Invited Members</FieldTitle>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex min-h-10 w-full flex-wrap items-center gap-2 rounded-md border border-input bg-transparent px-3 py-2">
                   {invitees.map((invitee, index) => (
                     <Badge
                       key={`${invitee.email}-${index}`}
                       variant="outline"
                       className={cn(
-                        "gap-2 border px-3 py-1",
+                        "gap-2 border px-2 py-0.5",
                         TAG_META[invitee.tagType].className,
                       )}
                     >
@@ -330,9 +334,36 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
                       </button>
                     </Badge>
                   ))}
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={currentEmail}
+                    placeholder="name@company.com"
+                    onChange={(e) => {
+                      setCurrentEmail(e.target.value);
+                      if (emailError) setEmailError("");
+                    }}
+                    onPaste={(event) => {
+                      const pastedText = event.clipboardData.getData("text");
+                      if (!pastedText) return;
+                      event.preventDefault();
+                      pushInvitees(pastedText);
+                    }}
+                    onKeyDown={onInputKeyDown}
+                    className="h-8 min-w-44 flex-1 border-0 bg-transparent px-0 py-0 shadow-none focus-visible:ring-0"
+                  />
                 </div>
+                <Button
+                  type="button"
+                  onClick={sendCollabInvite}
+                  disabled={isSendingInvites}
+                >
+                  {isSendingInvites ? <Spinner /> : <Send />} Send Invites
+                </Button>
               </div>
-            ) : null}
+              <FieldError className="mt-1">{emailError}</FieldError>
+            </Field>
           </>
         ) : (
           <div
