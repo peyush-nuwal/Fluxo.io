@@ -1,14 +1,15 @@
 "use client";
 
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, type CSSProperties } from "react";
 import ReactFlow, {
   addEdge,
   Background,
   BackgroundVariant,
-  Controls,
-  MiniMap,
+  Handle,
   Position,
   type ReactFlowInstance,
+  type NodeProps,
+  type NodeTypes,
   useEdgesState,
   useNodesState,
   type Connection,
@@ -49,13 +50,30 @@ const heroStyle = {
   padding: "0",
 };
 
+function SplitHandleNode({ data }: NodeProps<{ label: string }>) {
+  return (
+    <div>
+      <Handle type="source" position={Position.Left} id="source-left" />
+      <Handle type="source" position={Position.Right} id="source-right" />
+      <Handle type="target" position={Position.Left} id="target-left" />
+      <Handle type="target" position={Position.Right} id="target-right" />
+      <Handle type="source" position={Position.Bottom} id="source-bottom" />
+      <Handle type="target" position={Position.Bottom} id="target-bottom" />
+      {data.label}
+    </div>
+  );
+}
+
+const nodeTypes: NodeTypes = {
+  split: SplitHandleNode,
+};
+
 const initialNodes: Node[] = [
   {
     id: "404",
+    type: "split",
     position: { x: -140, y: -95 },
     data: { label: "404" },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
     style: heroStyle,
   },
   {
@@ -70,11 +88,12 @@ const initialNodes: Node[] = [
     id: "home",
     position: { x: -430, y: 8 },
     data: { label: "go home ->" },
-    sourcePosition: Position.Right,
+    sourcePosition: Position.Left,
     targetPosition: Position.Right,
     style: {
       ...baseStyle,
       background: "var(--primary)",
+      color: "var(--primary-foreground) !important",
       cursor: "pointer",
     },
   },
@@ -108,6 +127,7 @@ const initialEdges: Edge[] = [
   {
     id: "e1",
     source: "404",
+    sourceHandle: "source-right",
     target: "lost",
     type: "smoothstep",
     animated: true,
@@ -116,6 +136,7 @@ const initialEdges: Edge[] = [
   {
     id: "e2",
     source: "404",
+    sourceHandle: "source-left",
     target: "home",
     type: "default",
     animated: true,
@@ -132,6 +153,7 @@ const initialEdges: Edge[] = [
   {
     id: "e4",
     source: "404",
+    sourceHandle: "source-bottom",
     target: "vibe1",
     type: "straight",
     animated: true,
@@ -140,6 +162,7 @@ const initialEdges: Edge[] = [
   {
     id: "e5",
     source: "404",
+    sourceHandle: "source-left",
     target: "vibe2",
     type: "step",
     style: { stroke: PRIMARY, opacity: 0.52 },
@@ -147,6 +170,7 @@ const initialEdges: Edge[] = [
   {
     id: "e6",
     source: "404",
+    sourceHandle: "source-right",
     target: "vibe3",
     type: "default",
     style: { stroke: PRIMARY, opacity: 0.52 },
@@ -203,6 +227,7 @@ export default function NotFoundFlow() {
           {
             id: `auto-${id}`,
             source: "404",
+            sourceHandle: Math.random() > 0.5 ? "source-right" : "source-left",
             target: id,
             type: ["smoothstep", "step", "default", "straight"][
               Math.floor(Math.random() * 4)
@@ -257,6 +282,7 @@ export default function NotFoundFlow() {
         }}
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onPaneClick={onPaneClick}

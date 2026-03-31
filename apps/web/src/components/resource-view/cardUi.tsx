@@ -88,11 +88,11 @@ const CardUI = ({
           <h5 className="truncate text-sm font-medium">{resource.name}</h5>
           <p className="mt-1 flex min-w-0 items-center gap-2 text-xs">
             <span className="min-w-0 truncate">By {ownerName}</span>
-            <span className="text-muted-foreground">.</span>
+            {/* <span className="text-muted-foreground">.</span>
             <span className="flex shrink-0 items-center gap-1.5">
               <Star className="size-4 text-foreground" />
               {resource.views}
-            </span>
+            </span> */}
           </p>
         </div>
         <DropdownEllipsisMenu
