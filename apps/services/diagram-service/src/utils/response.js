@@ -1,6 +1,3 @@
-const isObject = (value) =>
-  value !== null && typeof value === "object" && !Array.isArray(value);
-
 export const sendSuccess = (res, status, message, payload = null) =>
   res.status(status).json({
     success: true,
@@ -16,8 +13,15 @@ export const sendError = (res, status, message, payload = null) =>
     data: payload,
   });
 
-export const formatZodDetails = (error) =>
-  error.errors.map((issue) => ({
-    field: issue.path.join("."),
-    message: issue.message,
+export const formatZodDetails = (error) => {
+  const issues = Array.isArray(error?.issues)
+    ? error.issues
+    : Array.isArray(error?.errors)
+      ? error.errors
+      : [];
+
+  return issues.map((issue) => ({
+    field: Array.isArray(issue?.path) ? issue.path.join(".") : "",
+    message: issue?.message || "Invalid value",
   }));
+};

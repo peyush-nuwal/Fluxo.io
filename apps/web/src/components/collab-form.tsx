@@ -8,6 +8,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Dispatch,
   KeyboardEvent,
   SetStateAction,
@@ -20,10 +28,14 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
-import { AlertTriangle, Send } from "lucide-react";
+import { AlertTriangle, Send, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useUser } from "@/hooks/use-user";
-import { addCollaborators, getCollaborators } from "@/lib/collab/client";
+import {
+  addCollaborators,
+  deleteCollaborator,
+  getCollaborators,
+} from "@/lib/collab/client";
 import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
 
@@ -142,6 +154,9 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
   const [currentEmail, setCurrentEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
   const [isSendingInvites, setIsSendingInvites] = useState(false);
+  const [pendingRemoval, setPendingRemoval] =
+    useState<CollaboratorMember | null>(null);
+  const [removingEmail, setRemovingEmail] = useState<string | null>(null);
   const {
     collaborators,
     isLoadingCollaborators,
@@ -292,6 +307,53 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
 
     setIsSendingInvites(false);
   };
+
+  const requestCollaboratorRemoval = (member: CollaboratorMember) => {
+    if (!canManageCollaborators || member.role === "owner") return;
+    setPendingRemoval(member);
+  };
+
+  const handleCollaboratorRemoval = async () => {
+    if (!pendingRemoval?.email || pendingRemoval.role === "owner") {
+      setPendingRemoval(null);
+      return;
+    }
+
+    const email = pendingRemoval.email;
+
+    setRemovingEmail(email.toLowerCase());
+
+    try {
+      const res = (await deleteCollaborator(projectId, email)) as {
+        success?: boolean;
+        message?: string;
+      };
+
+      if (res?.success === false) {
+        throw new Error(res?.message || "Failed to remove collaborator.");
+      }
+
+      toast.success(`${email} removed from this project.`);
+
+      try {
+        await reloadCollaborators();
+      } catch {
+        // Deletion succeeded; keep UX successful even if immediate refresh fails.
+      }
+    } catch (error: any) {
+      toast.error(
+        String(
+          error?.data?.message ||
+            error?.message ||
+            "Failed to remove collaborator.",
+        ),
+      );
+    } finally {
+      setPendingRemoval(null);
+      setRemovingEmail(null);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
@@ -388,10 +450,16 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
             </div>
           ) : collaboratorsError ? (
             <p className="text-sm text-destructive">{collaboratorsError}</p>
+          ) : collaboratorsWithYouFlag.length === 0 ? (
+            <p className="rounded-lg border border-dashed border-border/70 bg-muted/30 px-3 py-4 text-sm text-muted-foreground">
+              No collaborators yet.
+            </p>
           ) : (
             collaboratorsWithYouFlag.map((member) => (
               <ProjectMemberCard
                 key={`${member.role}-${member.email ?? member.user_name ?? "owner"}`}
+                email={member.email}
+                displayEmail={member.email}
                 userName={
                   member.user_name ??
                   (member.email ? member.email.split("@")[0] : "Owner")
@@ -399,11 +467,55 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
                 avatarUrl={member.avatar_url ?? ""}
                 role={member.role}
                 isYou={member.isYou}
+                canManageCollaborators={canManageCollaborators}
+                isRemoving={
+                  Boolean(member.email) &&
+                  removingEmail === member.email?.toLowerCase()
+                }
+                onRequestRemove={() => requestCollaboratorRemoval(member)}
               />
             ))
           )}
         </div>
       </DialogContent>
+
+      <AlertDialog
+        open={Boolean(pendingRemoval)}
+        onOpenChange={(nextOpen) => {
+          if (!nextOpen && !removingEmail) {
+            setPendingRemoval(null);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Remove collaborator?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingRemoval?.email
+                ? `This will immediately remove ${pendingRemoval.email} from this project.`
+                : "This will immediately remove this collaborator from this project."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setPendingRemoval(null)}
+              disabled={Boolean(removingEmail)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleCollaboratorRemoval}
+              disabled={Boolean(removingEmail)}
+            >
+              {removingEmail ? <Spinner /> : "Remove"}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 };
@@ -411,34 +523,78 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
 export default CollabForm;
 
 type UserCardProp = {
+  email?: string | null;
+  displayEmail?: string | null;
   userName: string;
   avatarUrl?: string;
   role?: "owner" | "collaborator";
   isYou?: boolean;
+  canManageCollaborators?: boolean;
+  isRemoving?: boolean;
+  onRequestRemove?: () => void;
 };
 
 const ProjectMemberCard = ({
+  email,
+  displayEmail,
   userName,
   avatarUrl = "",
   role = "collaborator",
   isYou = false,
+  canManageCollaborators = false,
+  isRemoving = false,
+  onRequestRemove,
 }: UserCardProp) => {
+  const canDelete =
+    canManageCollaborators && role !== "owner" && Boolean(email) && !isYou;
+
   return (
-    <div className="flex items-center justify-center gap-3 px-2 py-2">
-      <Avatar className="h-8 w-8 items-center rounded-lg">
+    <div className="group flex items-center gap-3  px-3 py-2.5 transition-colors hover:bg-muted/40">
+      <Avatar className="h-9 w-9 items-center rounded-lg">
         <AvatarImage src={avatarUrl ?? ""} alt={userName} />
         <AvatarFallback className="rounded-lg">
           {userName?.[0] ?? "U"}
         </AvatarFallback>
       </Avatar>
-      <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-        <span className="truncate font-medium">{userName ?? ""}</span>
+      <div className="min-w-0 flex-1 text-left group-data-[collapsible=icon]:hidden">
+        <p className="truncate text-sm font-semibold leading-tight">
+          {userName ?? ""}
+        </p>
+        <p className="truncate text-xs text-muted-foreground">
+          {displayEmail || "No email available"}
+        </p>
       </div>
-      <div className="flex items-center gap-2">
-        {isYou ? <span className="text-primary text-xs">You</span> : null}
-        <span className="rounded-lg border border-border border-solid bg-secondary px-2 py-1 text-sm">
+      <div className="flex shrink-0 items-center gap-2">
+        {isYou ? (
+          <span className="rounded-sm border border-primary/20 bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
+            You
+          </span>
+        ) : null}
+        <span
+          className={cn(
+            "rounded-sm border px-2 py-0.5 text-[11px] font-medium",
+            role === "owner"
+              ? "border-amber-200 bg-amber-50 text-amber-800"
+              : "border-sky-200 bg-sky-50 text-sky-800",
+          )}
+        >
           {role === "owner" ? "Owner" : "Collaborator"}
         </span>
+        <div className="ml-1 w-8">
+          {canDelete ? (
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={onRequestRemove}
+              disabled={isRemoving}
+              className="h-8 w-8 rounded-md text-muted-foreground opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 focus-visible:opacity-100"
+              aria-label={`Remove ${email}`}
+            >
+              {isRemoving ? <Spinner /> : <Trash2 className="size-4" />}
+            </Button>
+          ) : null}
+        </div>
       </div>
     </div>
   );

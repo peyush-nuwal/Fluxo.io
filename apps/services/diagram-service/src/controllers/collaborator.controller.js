@@ -314,10 +314,18 @@ export const removeCollaborator = async (req, res) => {
     const { projectId } = req.params;
     if (!projectId) return sendError(res, 400, "Project ID is required");
 
-    // Validate request body with Zod (email)
+    // Validate input (support body + query to be resilient across proxies).
+    logger.info("removeCollaborator payload", {
+      body: req.body,
+      query: req.query,
+    });
+    const emailCandidate =
+      (typeof req.body?.email === "string" ? req.body.email : "") ||
+      (typeof req.query?.email === "string" ? req.query.email : "");
+
     let validatedData;
     try {
-      validatedData = removeCollaboratorSchema.parse(req.body);
+      validatedData = removeCollaboratorSchema.parse({ email: emailCandidate });
     } catch (error) {
       if (error instanceof ZodError) {
         return sendError(res, 400, "Validation error", {

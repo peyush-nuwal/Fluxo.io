@@ -46,7 +46,7 @@ export const sendProjectInvitation = async (
 
     const subject = `You've been invited to collaborate on "${projectTitle}"`;
 
-    const invitationLink = `${frontendUrl}/invitations/accept?token=${encodeURIComponent(invitationToken)}`;
+    const invitationLink = `${frontendUrl}/invitation/accept?token=${encodeURIComponent(invitationToken)}`;
     const logoUrl = `${frontendUrl}/assets/logo.svg`;
 
     const htmlContent = `
