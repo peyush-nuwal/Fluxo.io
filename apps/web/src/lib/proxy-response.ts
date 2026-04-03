@@ -53,21 +53,26 @@ export function buildProxySuccessPayload(
   };
 }
 
-export function buildProxyErrorPayload(
-  data: unknown,
-  fallback = "Request failed",
-): ApiResponse<unknown> {
+export function buildProxyErrorPayload(data: unknown): ApiResponse<unknown> {
   if (hasApiResponseShape(data)) {
     return {
       ...data,
       success: false,
-      message: getProxyResponseMessage(data, fallback),
+      message: getProxyResponseMessage(data, data.message),
     };
   }
 
+  const message =
+    typeof data === "object" &&
+    data !== null &&
+    "message" in data &&
+    typeof (data as any).message === "string"
+      ? (data as any).message
+      : undefined;
+
   return {
     success: false,
-    message: getProxyResponseMessage(data, fallback),
+    message: getProxyResponseMessage(data, message),
     data,
   };
 }

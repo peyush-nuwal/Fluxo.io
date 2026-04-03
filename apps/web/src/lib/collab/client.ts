@@ -16,7 +16,6 @@ export const addCollaborator = async (projectId: string, email: string) =>
 export const deleteCollaborator = async (projectId: string, email: string) =>
   frontendApiDelete(
     `${collaboratorsPath(projectId)}?email=${encodeURIComponent(email)}`,
-    { email },
   );
 
 // Backward-compatible alias for existing imports.

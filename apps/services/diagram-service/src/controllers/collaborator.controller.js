@@ -319,9 +319,19 @@ export const removeCollaborator = async (req, res) => {
       body: req.body,
       query: req.query,
     });
-    const emailCandidate =
-      (typeof req.body?.email === "string" ? req.body.email : "") ||
-      (typeof req.query?.email === "string" ? req.query.email : "");
+    const bodyEmail =
+      typeof req.body?.email === "string"
+        ? req.body.email.trim()
+        : Array.isArray(req.body?.email)
+          ? String(req.body.email[0] || "").trim()
+          : "";
+    const queryEmail =
+      typeof req.query?.email === "string"
+        ? req.query.email.trim()
+        : Array.isArray(req.query?.email)
+          ? String(req.query.email[0] || "").trim()
+          : "";
+    const emailCandidate = bodyEmail || queryEmail;
 
     let validatedData;
     try {
