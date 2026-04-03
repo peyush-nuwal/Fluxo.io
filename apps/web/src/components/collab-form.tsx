@@ -16,6 +16,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Dispatch,
   KeyboardEvent,
   SetStateAction,
@@ -28,7 +36,13 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
-import { AlertTriangle, Send, Trash2 } from "lucide-react";
+import {
+  AlertTriangle,
+  ChevronDown,
+  MoreHorizontal,
+  Send,
+  Trash2,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useUser } from "@/hooks/use-user";
 import {
@@ -38,6 +52,7 @@ import {
 } from "@/lib/collab/client";
 import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
+import { Span } from "next/dist/trace";
 
 type CollabFormProp = {
   open: boolean;
@@ -535,19 +550,14 @@ type UserCardProp = {
 };
 
 const ProjectMemberCard = ({
-  email,
   displayEmail,
   userName,
   avatarUrl = "",
   role = "collaborator",
   isYou = false,
-  canManageCollaborators = false,
   isRemoving = false,
   onRequestRemove,
 }: UserCardProp) => {
-  const canDelete =
-    canManageCollaborators && role !== "owner" && Boolean(email) && !isYou;
-
   return (
     <div className="group flex items-center gap-3  px-3 py-2.5 transition-colors hover:bg-muted/40">
       <Avatar className="h-9 w-9 items-center rounded-lg">
@@ -570,31 +580,40 @@ const ProjectMemberCard = ({
             You
           </span>
         ) : null}
-        <span
-          className={cn(
-            "rounded-sm border px-2 py-0.5 text-[11px] font-medium",
-            role === "owner"
-              ? "border-amber-200 bg-amber-50 text-amber-800"
-              : "border-sky-200 bg-sky-50 text-sky-800",
-          )}
-        >
-          {role === "owner" ? "Owner" : "Collaborator"}
-        </span>
-        <div className="ml-1 w-8">
-          {canDelete ? (
-            <Button
-              type="button"
-              size="icon"
-              variant="ghost"
-              onClick={onRequestRemove}
-              disabled={isRemoving}
-              className="h-8 w-8 rounded-md text-muted-foreground opacity-0 transition-all hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100 focus-visible:opacity-100"
-              aria-label={`Remove ${email}`}
-            >
-              {isRemoving ? <Spinner /> : <Trash2 className="size-4" />}
-            </Button>
-          ) : null}
-        </div>
+        {role === "owner" ? (
+          <span
+            className={cn(
+              "rounded-sm border px-2 py-0.5 text-[11px] font-medium border-amber-200 bg-amber-50 text-amber-800",
+            )}
+          >
+            Owner
+          </span>
+        ) : (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div className=" rounded-sm border px-2 py-0.5 text-[11px] font-medium  border-sky-200 bg-sky-50 text-sky-800 ">
+                {isRemoving ? (
+                  <Spinner />
+                ) : (
+                  <span className="flex items-center gap-2">
+                    Collaborator <ChevronDown strokeWidth={1} />
+                  </span>
+                )}
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-48">
+              <DropdownMenuItem>
+                <span>Collaborator </span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={onRequestRemove}>
+                <Trash2 className="text-muted-foreground" />
+                <span>Remove </span>
+                <DropdownMenuShortcut>Del</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     </div>
   );
