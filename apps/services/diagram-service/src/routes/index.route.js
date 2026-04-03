@@ -30,6 +30,7 @@ import {
   addCollaborator,
   removeCollaborator,
   acceptInvitation,
+  getPendingInviteUsers,
 } from "../controllers/collaborator.controller.js";
 import multer from "multer";
 
@@ -122,6 +123,7 @@ router.patch(
 router.get("/projects/:projectId/collaborators", getCollaboratorsByProject);
 router.post("/projects/:projectId/collaborators", addCollaborator);
 router.delete("/projects/:projectId/collaborators", removeCollaborator);
+router.get("/projects/:projectId/collaborators/pending", getPendingInviteUsers);
 
 // Backward-compatible aliases
 router.get("/diagrams/:projectId/collaborators", getCollaboratorsByProject);

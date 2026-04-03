@@ -27,8 +27,8 @@ import {
   Dispatch,
   KeyboardEvent,
   SetStateAction,
-  useMemo,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { Field, FieldError, FieldLabel, FieldTitle } from "./ui/field";
@@ -36,23 +36,17 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { cn } from "@/lib/utils";
-import {
-  AlertTriangle,
-  ChevronDown,
-  MoreHorizontal,
-  Send,
-  Trash2,
-} from "lucide-react";
+import { AlertTriangle, ChevronDown, Send, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useUser } from "@/hooks/use-user";
 import {
   addCollaborators,
   deleteCollaborator,
   getCollaborators,
+  getPendingInvites,
 } from "@/lib/collab/client";
 import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
-import { Span } from "next/dist/trace";
 
 type CollabFormProp = {
   open: boolean;
@@ -73,12 +67,25 @@ type CollaboratorMember = {
   avatar_url: string | null;
   role: "owner" | "collaborator";
 };
+
+type PendingInviteMember = {
+  email: string;
+};
+
 type CollaboratorsResponse = {
   success?: boolean;
   message?: string;
   data?: {
     members?: CollaboratorMember[];
     viewerRole?: "owner" | "collaborator";
+  };
+};
+
+type PendingInvitesResponse = {
+  success?: boolean;
+  message?: string;
+  data?: {
+    pendingUsers?: PendingInviteMember[];
   };
 };
 
@@ -113,71 +120,93 @@ const splitEmails = (value: string) =>
     .filter(Boolean);
 
 const useProjectCollaborators = (projectId: string, open: boolean) => {
-  const [collaborators, setCollaborators] = useState<CollaboratorMember[]>([]);
-  const [isLoadingCollaborators, setIsLoadingCollaborators] = useState(false);
-  const [collaboratorsError, setCollaboratorsError] = useState<string>("");
+  const [collaboratorMembers, setCollaboratorMembers] = useState<
+    CollaboratorMember[]
+  >([]);
+  const [pendingInviteMembers, setPendingInviteMembers] = useState<
+    PendingInviteMember[]
+  >([]);
+  const [isLoadingMembers, setIsLoadingMembers] = useState(false);
+  const [membersError, setMembersError] = useState<string>("");
   const [viewerRole, setViewerRole] = useState<"owner" | "collaborator">(
     "collaborator",
   );
 
-  const loadCollaborators = async () => {
+  const loadMembersAndInvites = async () => {
     if (!projectId) return;
-    setIsLoadingCollaborators(true);
-    setCollaboratorsError("");
+    setIsLoadingMembers(true);
+    setMembersError("");
 
     try {
-      const response = (await getCollaborators(
-        projectId,
-      )) as CollaboratorsResponse;
-      const members = Array.isArray(response?.data?.members)
-        ? response.data.members
+      const [membersResponse, pendingInvitesResponse] = (await Promise.all([
+        getCollaborators(projectId),
+        getPendingInvites(projectId),
+      ])) as [CollaboratorsResponse, PendingInvitesResponse];
+
+      const members = Array.isArray(membersResponse?.data?.members)
+        ? membersResponse.data.members
         : [];
-      setCollaborators(members);
+      setCollaboratorMembers(members);
       setViewerRole(
-        response?.data?.viewerRole === "owner" ? "owner" : "collaborator",
+        membersResponse?.data?.viewerRole === "owner"
+          ? "owner"
+          : "collaborator",
       );
+
+      const pendingUsers = Array.isArray(
+        pendingInvitesResponse?.data?.pendingUsers,
+      )
+        ? pendingInvitesResponse.data.pendingUsers
+        : [];
+      setPendingInviteMembers(pendingUsers);
     } catch (error: any) {
-      setCollaborators([]);
+      setCollaboratorMembers([]);
+      setPendingInviteMembers([]);
       setViewerRole("collaborator");
-      setCollaboratorsError(
+      setMembersError(
         String(
           error?.data?.message || error?.message || "Failed to load members.",
         ),
       );
     } finally {
-      setIsLoadingCollaborators(false);
+      setIsLoadingMembers(false);
     }
   };
 
   useEffect(() => {
     if (!open || !projectId) return;
-    void loadCollaborators();
+    void loadMembersAndInvites();
   }, [open, projectId]);
 
   return {
-    collaborators,
-    isLoadingCollaborators,
-    collaboratorsError,
+    collaboratorMembers,
+    pendingInviteMembers,
+    isLoadingMembers,
+    membersError,
     viewerRole,
-    reloadCollaborators: loadCollaborators,
+    reloadMembersAndInvites: loadMembersAndInvites,
   };
 };
 
 const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
   const { user, loading } = useUser();
-  const [invitees, setInvitees] = useState<Invitee[]>([]);
-  const [currentEmail, setCurrentEmail] = useState<string>("");
-  const [emailError, setEmailError] = useState<string>("");
+  const [draftInvitees, setDraftInvitees] = useState<Invitee[]>([]);
+  const [inviteInputValue, setInviteInputValue] = useState<string>("");
+  const [inviteInputError, setInviteInputError] = useState<string>("");
   const [isSendingInvites, setIsSendingInvites] = useState(false);
-  const [pendingRemoval, setPendingRemoval] =
+  const [collaboratorPendingRemoval, setCollaboratorPendingRemoval] =
     useState<CollaboratorMember | null>(null);
-  const [removingEmail, setRemovingEmail] = useState<string | null>(null);
+  const [activeRemovalEmail, setActiveRemovalEmail] = useState<string | null>(
+    null,
+  );
+
   const {
-    collaborators,
-    isLoadingCollaborators,
-    collaboratorsError,
+    collaboratorMembers,
+    pendingInviteMembers,
+    isLoadingMembers,
+    membersError,
     viewerRole,
-    reloadCollaborators,
+    reloadMembersAndInvites,
   } = useProjectCollaborators(projectId, open);
 
   const pushInvitees = (value: string) => {
@@ -185,7 +214,7 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
     if (!emails.length) return 0;
 
     const existingEmails = new Set(
-      invitees.map((invitee) => invitee.email.toLowerCase()),
+      draftInvitees.map((invitee) => invitee.email.toLowerCase()),
     );
     const nextInvitees: Invitee[] = [];
     const invalidEmails: string[] = [];
@@ -204,14 +233,14 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
     }
 
     if (nextInvitees.length > 0) {
-      setInvitees((prev) => [...prev, ...nextInvitees]);
-      setCurrentEmail("");
+      setDraftInvitees((prev) => [...prev, ...nextInvitees]);
+      setInviteInputValue("");
     }
 
     if (invalidEmails.length > 0) {
-      setEmailError(`Invalid email: ${invalidEmails[0]}`);
+      setInviteInputError(`Invalid email: ${invalidEmails[0]}`);
     } else {
-      setEmailError("");
+      setInviteInputError("");
     }
 
     return nextInvitees.length;
@@ -220,36 +249,37 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
   const onInputKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "," || event.key === "Enter" || event.key === "Tab") {
       event.preventDefault();
-      pushInvitees(currentEmail);
+      pushInvitees(inviteInputValue);
       return;
     }
 
     if (
       event.key === "Backspace" &&
-      !currentEmail.trim() &&
-      invitees.length > 0
+      !inviteInputValue.trim() &&
+      draftInvitees.length > 0
     ) {
-      setInvitees((prev) => prev.slice(0, -1));
+      setDraftInvitees((prev) => prev.slice(0, -1));
     }
   };
 
   const canManageCollaborators = viewerRole === "owner";
   const currentUserEmail = (user?.email || "").trim().toLowerCase();
+
   const collaboratorsWithYouFlag = useMemo(
     () =>
-      collaborators.map((member) => ({
+      collaboratorMembers.map((member) => ({
         ...member,
         isYou:
           typeof member.email === "string" &&
           member.email.toLowerCase() === currentUserEmail,
       })),
-    [collaborators, currentUserEmail],
+    [collaboratorMembers, currentUserEmail],
   );
 
-  const sendCollabInvite = async () => {
+  const sendInvites = async () => {
     if (!canManageCollaborators || isSendingInvites) return;
 
-    const typedEmail = currentEmail.trim();
+    const typedEmail = inviteInputValue.trim();
     const pendingFromInput = typedEmail
       ? splitEmails(typedEmail)
           .filter((email) => EMAIL_REGEX.test(email))
@@ -259,27 +289,30 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
           }))
       : [];
 
-    const pending: Invitee[] = [...invitees];
-    const seen = new Set(pending.map((invitee) => invitee.email.toLowerCase()));
+    const inviteQueue: Invitee[] = [...draftInvitees];
+    const seen = new Set(
+      inviteQueue.map((invitee) => invitee.email.toLowerCase()),
+    );
+
     for (const invitee of pendingFromInput) {
       const normalizedEmail = invitee.email.toLowerCase();
       if (seen.has(normalizedEmail)) continue;
       seen.add(normalizedEmail);
-      pending.push(invitee);
+      inviteQueue.push(invitee);
     }
 
-    if (!pending.length) {
-      setEmailError("Add at least one email to send an invite.");
+    if (!inviteQueue.length) {
+      setInviteInputError("Add at least one email to send an invite.");
       return;
     }
 
     setIsSendingInvites(true);
-    setEmailError("");
+    setInviteInputError("");
 
     const successfulEmails = new Set<string>();
     let failedCount = 0;
 
-    for (const invitee of pending) {
+    for (const invitee of inviteQueue) {
       try {
         const res = (await addCollaborators(projectId, invitee.email)) as {
           success?: boolean;
@@ -303,15 +336,15 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
       toast.success(
         `${successCount} invitation${successCount > 1 ? "s" : ""} sent successfully.`,
       );
-      setInvitees((prev) =>
+      setDraftInvitees((prev) =>
         prev.filter(
           (invitee) => !successfulEmails.has(invitee.email.toLowerCase()),
         ),
       );
       if (typedEmail) {
-        setCurrentEmail("");
+        setInviteInputValue("");
       }
-      await reloadCollaborators();
+      await reloadMembersAndInvites();
     }
 
     if (failedCount > 0) {
@@ -325,18 +358,21 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
 
   const requestCollaboratorRemoval = (member: CollaboratorMember) => {
     if (!canManageCollaborators || member.role === "owner") return;
-    setPendingRemoval(member);
+    setCollaboratorPendingRemoval(member);
   };
 
   const handleCollaboratorRemoval = async () => {
-    if (!pendingRemoval?.email || pendingRemoval.role === "owner") {
-      setPendingRemoval(null);
+    if (
+      !collaboratorPendingRemoval?.email ||
+      collaboratorPendingRemoval.role === "owner"
+    ) {
+      setCollaboratorPendingRemoval(null);
       return;
     }
 
-    const email = pendingRemoval.email;
+    const email = collaboratorPendingRemoval.email;
 
-    setRemovingEmail(email.toLowerCase());
+    setActiveRemovalEmail(email.toLowerCase());
 
     try {
       const res = (await deleteCollaborator(projectId, email)) as {
@@ -349,12 +385,7 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
       }
 
       toast.success(`${email} removed from this project.`);
-
-      try {
-        await reloadCollaborators();
-      } catch {
-        // Deletion succeeded; keep UX successful even if immediate refresh fails.
-      }
+      await reloadMembersAndInvites();
     } catch (error: any) {
       toast.error(
         String(
@@ -364,8 +395,8 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
         ),
       );
     } finally {
-      setPendingRemoval(null);
-      setRemovingEmail(null);
+      setCollaboratorPendingRemoval(null);
+      setActiveRemovalEmail(null);
     }
   };
 
@@ -380,68 +411,64 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
         </DialogHeader>
 
         {canManageCollaborators ? (
-          <>
-            <Field>
-              <FieldLabel htmlFor="email">Email Address</FieldLabel>
-              <div className="flex gap-3">
-                <div className="flex min-h-10 w-full flex-wrap items-center gap-2 rounded-md border border-input bg-transparent px-3 py-2">
-                  {invitees.map((invitee, index) => (
-                    <Badge
-                      key={`${invitee.email}-${index}`}
-                      variant="outline"
-                      className={cn(
-                        "gap-2 border px-2 py-0.5",
-                        TAG_META[invitee.tagType].className,
-                      )}
+          <Field>
+            <FieldLabel htmlFor="email">Email Address</FieldLabel>
+            <div className="flex gap-3">
+              <div className="flex min-h-10 w-full flex-wrap items-center gap-2 rounded-md border border-input bg-transparent px-3 py-2">
+                {draftInvitees.map((invitee, index) => (
+                  <Badge
+                    key={`${invitee.email}-${index}`}
+                    variant="outline"
+                    className={cn(
+                      "gap-2 border px-2 py-0.5",
+                      TAG_META[invitee.tagType].className,
+                    )}
+                  >
+                    <span className="text-sm font-medium">{invitee.email}</span>
+                    <button
+                      type="button"
+                      aria-label={`Remove ${invitee.email}`}
+                      onClick={() =>
+                        setDraftInvitees((prev) =>
+                          prev.filter((_, i) => i !== index),
+                        )
+                      }
+                      className="rounded px-1 text-sm hover:bg-black/10"
                     >
-                      <span className="text-sm font-medium">
-                        {invitee.email}
-                      </span>
-                      <button
-                        type="button"
-                        aria-label={`Remove ${invitee.email}`}
-                        onClick={() =>
-                          setInvitees((prev) =>
-                            prev.filter((_, i) => i !== index),
-                          )
-                        }
-                        className="rounded px-1 text-sm hover:bg-black/10"
-                      >
-                        x
-                      </button>
-                    </Badge>
-                  ))}
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={currentEmail}
-                    placeholder="name@company.com"
-                    onChange={(e) => {
-                      setCurrentEmail(e.target.value);
-                      if (emailError) setEmailError("");
-                    }}
-                    onPaste={(event) => {
-                      const pastedText = event.clipboardData.getData("text");
-                      if (!pastedText) return;
-                      event.preventDefault();
-                      pushInvitees(pastedText);
-                    }}
-                    onKeyDown={onInputKeyDown}
-                    className="h-8 min-w-44 flex-1 border-0 bg-transparent px-0 py-0 shadow-none focus-visible:ring-0"
-                  />
-                </div>
-                <Button
-                  type="button"
-                  onClick={sendCollabInvite}
-                  disabled={isSendingInvites}
-                >
-                  {isSendingInvites ? <Spinner /> : <Send />} Send Invites
-                </Button>
+                      x
+                    </button>
+                  </Badge>
+                ))}
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={inviteInputValue}
+                  placeholder="name@company.com"
+                  onChange={(e) => {
+                    setInviteInputValue(e.target.value);
+                    if (inviteInputError) setInviteInputError("");
+                  }}
+                  onPaste={(event) => {
+                    const pastedText = event.clipboardData.getData("text");
+                    if (!pastedText) return;
+                    event.preventDefault();
+                    pushInvitees(pastedText);
+                  }}
+                  onKeyDown={onInputKeyDown}
+                  className="h-8 min-w-44 flex-1 border-0 bg-transparent px-0 py-0 shadow-none focus-visible:ring-0"
+                />
               </div>
-              <FieldError className="mt-1">{emailError}</FieldError>
-            </Field>
-          </>
+              <Button
+                type="button"
+                onClick={sendInvites}
+                disabled={isSendingInvites}
+              >
+                {isSendingInvites ? <Spinner /> : <Send />} Send Invites
+              </Button>
+            </div>
+            <FieldError className="mt-1">{inviteInputError}</FieldError>
+          </Field>
         ) : (
           <div
             role="alert"
@@ -454,51 +481,83 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
           </div>
         )}
 
-        <div>
-          <FieldTitle className="mb-3 mt-5 text-base">
-            Project Members
-          </FieldTitle>
+        {loading || isLoadingMembers ? (
+          <div className="flex items-center justify-center gap-2">
+            <Spinner />
+          </div>
+        ) : (
+          <>
+            <div>
+              <FieldTitle className="mb-3 mt-5 text-base">
+                Project Members
+              </FieldTitle>
 
-          {loading || isLoadingCollaborators ? (
-            <div className="flex justify-center items-center gap-2">
-              Loading Members <Spinner />
+              {membersError ? (
+                <p className="text-sm text-destructive">{membersError}</p>
+              ) : collaboratorsWithYouFlag.length === 0 ? (
+                <p className="rounded-lg border border-dashed border-border/70 bg-muted/30 px-3 py-4 text-sm text-muted-foreground">
+                  No collaborators yet.
+                </p>
+              ) : (
+                collaboratorsWithYouFlag.map((member) => (
+                  <ProjectMemberCard
+                    key={`${member.role}-${member.email ?? member.user_name ?? "owner"}`}
+                    email={member.email}
+                    displayEmail={member.email}
+                    userName={
+                      member.user_name ??
+                      (member.email ? member.email.split("@")[0] : "Owner")
+                    }
+                    avatarUrl={member.avatar_url ?? ""}
+                    role={member.role}
+                    isYou={member.isYou}
+                    canRemove={
+                      canManageCollaborators &&
+                      member.role !== "owner" &&
+                      Boolean(member.email) &&
+                      !member.isYou
+                    }
+                    isRemoving={
+                      Boolean(member.email) &&
+                      activeRemovalEmail === member.email?.toLowerCase()
+                    }
+                    onRequestRemove={() => requestCollaboratorRemoval(member)}
+                  />
+                ))
+              )}
             </div>
-          ) : collaboratorsError ? (
-            <p className="text-sm text-destructive">{collaboratorsError}</p>
-          ) : collaboratorsWithYouFlag.length === 0 ? (
-            <p className="rounded-lg border border-dashed border-border/70 bg-muted/30 px-3 py-4 text-sm text-muted-foreground">
-              No collaborators yet.
-            </p>
-          ) : (
-            collaboratorsWithYouFlag.map((member) => (
-              <ProjectMemberCard
-                key={`${member.role}-${member.email ?? member.user_name ?? "owner"}`}
-                email={member.email}
-                displayEmail={member.email}
-                userName={
-                  member.user_name ??
-                  (member.email ? member.email.split("@")[0] : "Owner")
-                }
-                avatarUrl={member.avatar_url ?? ""}
-                role={member.role}
-                isYou={member.isYou}
-                canManageCollaborators={canManageCollaborators}
-                isRemoving={
-                  Boolean(member.email) &&
-                  removingEmail === member.email?.toLowerCase()
-                }
-                onRequestRemove={() => requestCollaboratorRemoval(member)}
-              />
-            ))
-          )}
-        </div>
+            <div>
+              <FieldTitle className="mb-3 mt-5 text-base">
+                Invited Members
+              </FieldTitle>
+
+              {membersError ? (
+                <p className="text-sm text-destructive">{membersError}</p>
+              ) : pendingInviteMembers.length === 0 ? (
+                <p className="rounded-lg border border-dashed border-border/70 bg-muted/30 px-3 py-4 text-sm text-muted-foreground">
+                  No pending users yet.
+                </p>
+              ) : (
+                pendingInviteMembers.map((invite) => (
+                  <ProjectMemberCard
+                    key={`pending-${invite.email}`}
+                    email={invite.email}
+                    displayEmail={invite.email}
+                    userName={invite.email.split("@")[0]}
+                    statusLabel="Pending"
+                  />
+                ))
+              )}
+            </div>
+          </>
+        )}
       </DialogContent>
 
       <AlertDialog
-        open={Boolean(pendingRemoval)}
+        open={Boolean(collaboratorPendingRemoval)}
         onOpenChange={(nextOpen) => {
-          if (!nextOpen && !removingEmail) {
-            setPendingRemoval(null);
+          if (!nextOpen && !activeRemovalEmail) {
+            setCollaboratorPendingRemoval(null);
           }
         }}
       >
@@ -506,8 +565,8 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove collaborator?</AlertDialogTitle>
             <AlertDialogDescription>
-              {pendingRemoval?.email
-                ? `This will immediately remove ${pendingRemoval.email} from this project.`
+              {collaboratorPendingRemoval?.email
+                ? `This will immediately remove ${collaboratorPendingRemoval.email} from this project.`
                 : "This will immediately remove this collaborator from this project."}
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -515,8 +574,8 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
             <Button
               type="button"
               variant="outline"
-              onClick={() => setPendingRemoval(null)}
-              disabled={Boolean(removingEmail)}
+              onClick={() => setCollaboratorPendingRemoval(null)}
+              disabled={Boolean(activeRemovalEmail)}
             >
               Cancel
             </Button>
@@ -524,9 +583,9 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
               type="button"
               variant="destructive"
               onClick={handleCollaboratorRemoval}
-              disabled={Boolean(removingEmail)}
+              disabled={Boolean(activeRemovalEmail)}
             >
-              {removingEmail ? <Spinner /> : "Remove"}
+              {activeRemovalEmail ? <Spinner /> : "Remove"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -543,8 +602,9 @@ type UserCardProp = {
   userName: string;
   avatarUrl?: string;
   role?: "owner" | "collaborator";
+  statusLabel?: string;
   isYou?: boolean;
-  canManageCollaborators?: boolean;
+  canRemove?: boolean;
   isRemoving?: boolean;
   onRequestRemove?: () => void;
 };
@@ -554,12 +614,17 @@ const ProjectMemberCard = ({
   userName,
   avatarUrl = "",
   role = "collaborator",
+  statusLabel,
   isYou = false,
+  canRemove = false,
   isRemoving = false,
   onRequestRemove,
 }: UserCardProp) => {
+  const memberLabel =
+    statusLabel ?? (role === "owner" ? "Owner" : "Collaborator");
+
   return (
-    <div className="group flex items-center gap-3  px-3 py-2.5 transition-colors hover:bg-muted/40">
+    <div className="group flex items-center gap-3 px-3 py-2.5 transition-colors hover:bg-muted/40">
       <Avatar className="h-9 w-9 items-center rounded-lg">
         <AvatarImage src={avatarUrl ?? ""} alt={userName} />
         <AvatarFallback className="rounded-lg">
@@ -580,39 +645,43 @@ const ProjectMemberCard = ({
             You
           </span>
         ) : null}
-        {role === "owner" ? (
-          <span
-            className={cn(
-              "rounded-sm border px-2 py-0.5 text-[11px] font-medium border-amber-200 bg-amber-50 text-amber-800",
-            )}
-          >
-            Owner
-          </span>
-        ) : (
+
+        {canRemove ? (
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <div className=" rounded-sm border px-2 py-0.5 text-[11px] font-medium  border-sky-200 bg-sky-50 text-sky-800 ">
+              <div className="rounded-sm border border-sky-200 bg-sky-50 px-2 py-0.5 text-[11px] font-medium text-sky-800">
                 {isRemoving ? (
                   <Spinner />
                 ) : (
                   <span className="flex items-center gap-2">
-                    Collaborator <ChevronDown strokeWidth={1} />
+                    {memberLabel} <ChevronDown strokeWidth={1} />
                   </span>
                 )}
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-48">
               <DropdownMenuItem>
-                <span>Collaborator </span>
+                <span>{memberLabel}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onClick={onRequestRemove}>
                 <Trash2 className="text-muted-foreground" />
-                <span>Remove </span>
+                <span>Remove</span>
                 <DropdownMenuShortcut>Del</DropdownMenuShortcut>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        ) : (
+          <span
+            className={cn(
+              "rounded-sm border px-2 py-0.5 text-[11px] font-medium",
+              memberLabel === "Owner"
+                ? "border-amber-200 bg-amber-50 text-amber-800"
+                : "border-sky-200 bg-sky-50 text-sky-800",
+            )}
+          >
+            {memberLabel}
+          </span>
         )}
       </div>
     </div>

@@ -1,9 +1,9 @@
 import { db } from "../config/database.js";
-import { and, eq, isNull, or, sql } from "drizzle-orm";
+import { and, eq, isNull, or, sql, gt } from "drizzle-orm";
 import logger from "../config/logger.js";
 import { supabase } from "../config/supabase.js";
 
-import { projects } from "../models/index.model.js";
+import { project_invitations, projects } from "../models/index.model.js";
 import crypto from "crypto";
 
 const THUMBNAIL_BUCKET = process.env.SUPABASE_THUMBNAIL_BUCKET || "thumbnail";
@@ -324,4 +324,20 @@ export const uploadThumbnail = async (userId, file) => {
     url: publicData.publicUrl,
     path: filePath,
   };
+};
+
+export const getPendingInvites = async (projectId) => {
+  const now = new Date();
+
+  return await db
+    .select()
+    .from(project_invitations)
+    .where(
+      and(
+        eq(project_invitations.project_id, projectId),
+        eq(project_invitations.status, "pending"),
+        gt(project_invitations.expires_at, now), // not expired
+      ),
+    )
+    .orderBy(project_invitations.created_at);
 };

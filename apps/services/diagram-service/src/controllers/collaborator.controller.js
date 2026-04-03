@@ -9,7 +9,7 @@ import {
   verifyProjectAccess,
   verifyProjectOwnership,
   removeCollaboratorFromProject,
-  updateProjectById,
+  getPendingInvites,
 } from "../services/project.service.js";
 import { sendProjectInvitation } from "../services/email.service.js";
 import {
@@ -507,5 +507,37 @@ export const acceptInvitation = async (req, res) => {
       });
     }
     return sendError(res, 500, "Internal server error");
+  }
+};
+
+export const getPendingInviteUsers = async (req, res) => {
+  const userId = req.user?.id;
+  const requesterEmail = req.user?.email;
+
+  if (!userId || !requesterEmail) {
+    return sendError(res, 401, "Unauthorized");
+  }
+
+  try {
+    const { projectId } = req.params;
+
+    if (!projectId) {
+      return sendError(res, 400, "Project ID is required");
+    }
+    const project = await verifyProjectAccess(
+      projectId,
+      userId,
+      requesterEmail,
+    );
+
+    if (!project) {
+      return sendError(res, 404, "Project not found");
+    }
+    const pendingUsers = await getPendingInvites(projectId);
+    console.log("pending users", pendingUsers);
+    return sendSuccess(res, 200, "all Pending users", { pendingUsers });
+  } catch (error) {
+    logger.error("Error getting pending collaborators:", error);
+    return sendError(res, 500, "Failed to fetch pending collaborators");
   }
 };

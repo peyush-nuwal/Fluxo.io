@@ -18,5 +18,8 @@ export const deleteCollaborator = async (projectId: string, email: string) =>
     `${collaboratorsPath(projectId)}?email=${encodeURIComponent(email)}`,
   );
 
+export const getPendingInvites = async (projectId: string) =>
+  frontendApiGet(`${collaboratorsPath(projectId)}/pending`);
+
 // Backward-compatible alias for existing imports.
 export const addCollaborators = addCollaborator;
