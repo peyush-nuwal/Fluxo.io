@@ -6,13 +6,57 @@ export const generateDiagramJSON = async (prompt) => {
     if (!prompt) throw new Error("Missing prompt");
 
     const fullPrompt = `
-You are a diagram generator. Respond ONLY with valid JSON following this structure:
+You are generating data for a React Flow canvas.
+
+Return ONLY valid JSON (no markdown, no explanation) with this exact top-level shape:
 {
-  "nodes": [{ "id": string, "label": string, "type": string }],
-  "edges": [{ "from": string, "to": string }]
+  "nodes": [
+    {
+      "id": "string",
+      "type": "shape-node",
+      "position": { "x": 0, "y": 0 },
+      "data": {
+        "label": "string",
+        "shape": "text | rectangle | diamond | circle",
+        "style": {
+          "borderStyle": "solid | dashed | dotted",
+          "borderWidth": 2,
+          "borderRadius": 16,
+          "borderColor": "hsl(var(--border))",
+          "backgroundColor": "hsl(var(--background))",
+          "fontSize": 14
+        }
+      },
+      "style": { "width": 200, "height": 100 }
+    }
+  ],
+  "edges": [
+    {
+      "id": "string",
+      "source": "node-id",
+      "target": "node-id",
+      "type": "button-edge",
+      "animated": false,
+      "data": {
+        "variant": "bezier | straight | smoothstep",
+        "endType": "arrowclosed | arrow | none",
+        "label": "string"
+      }
+    }
+  ]
 }
-Do not include explanations, markdown, or extra text.
-Now, create a system design for: ${prompt}
+
+Rules:
+- IDs must be unique.
+- Every edge source/target must exist in nodes.
+- Do not create self-loops unless explicitly requested.
+- Keep layout readable: place nodes left-to-right in layers, with spacing (x gap ~260, y gap ~160).
+- Use "rectangle" for services/components, "diamond" for decisions, "circle" for start/end, "text" for notes.
+- Keep node labels short (2-5 words).
+- Return only JSON.
+
+Generate a system design diagram for:
+ ${prompt}
 `;
 
     const response = await genai.models.generateContent({
