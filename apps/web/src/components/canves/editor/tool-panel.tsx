@@ -18,6 +18,7 @@ import {
   MousePointer2,
   Pencil,
   Share2,
+  Sparkles,
   Square,
   Type,
 } from "lucide-react";
@@ -31,13 +32,13 @@ import { toJpeg, toPng, toSvg } from "html-to-image";
 import { getNodesBounds, getViewportForBounds } from "@xyflow/react";
 import DownloadDiagramForm from "@/components/download-diagram-form";
 import { toast } from "sonner";
-import { useDiagramStore } from "@/store/diagramsStore";
+
 import { useModalStore } from "@/store/useModalStore";
-import CollabForm from "@/components/collab-form";
 
 type ToolPanelProps = {
   diagramId: string;
-  setOpen: Dispatch<SetStateAction<boolean>>;
+  setCollabFormOpen: Dispatch<SetStateAction<boolean>>;
+  setGenAiFormOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const TOOL_ICONS: Record<
@@ -62,14 +63,18 @@ function triggerDownload(dataUrl: string, fileName: string, extension: string) {
   anchor.click();
 }
 
-export default function ToolPanel({ diagramId, setOpen }: ToolPanelProps) {
+export default function ToolPanel({
+  diagramId,
+  setCollabFormOpen,
+  setGenAiFormOpen,
+}: ToolPanelProps) {
   const activeTool = useDiagramEditorStore((state) => state.activeTool);
   const setActiveTool = useDiagramEditorStore((state) => state.setActiveTool);
   const nodes = useDiagramEditorStore((state) => state.nodes);
-  const { verifyDiagramOwnership } = useDiagramStore();
   const [isDownloadOpen, setIsDownloadOpen] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
 
+  const openGenAiForm = useModalStore((mod) => mod.open);
   useEffect(() => {
     const keyMap = Object.fromEntries(
       TOOL_ITEMS.filter(
@@ -184,73 +189,81 @@ export default function ToolPanel({ diagramId, setOpen }: ToolPanelProps) {
 
   const onClickOpenCollabForm = () => {
     console.log("clicket");
-    setOpen(true);
+    setCollabFormOpen(true);
   };
 
   return (
-    <aside className="flex h-18 w-fit items-center justify-center gap-2 rounded-2xl border border-border/70 bg-background/95 px-6 py-2 shadow-lg backdrop-blur">
-      {TOOL_ITEMS.map((tool) => {
-        const Icon = TOOL_ICONS[tool.id];
-        const isActive = activeTool === tool.id;
+    <div className="flex items-center gap-3">
+      <aside className="flex h-18 w-fit items-center justify-center gap-2 rounded-2xl border border-border/70 bg-background/95 px-6 py-2 shadow-lg backdrop-blur">
+        {TOOL_ITEMS.map((tool) => {
+          const Icon = TOOL_ICONS[tool.id];
+          const isActive = activeTool === tool.id;
 
-        return (
-          <CustomTooltip key={tool.id} content={tool.label}>
-            <Button
-              type="button"
-              variant={isActive ? "default" : "ghost"}
-              size="icon"
-              className={cn(
-                "relative h-14 w-14 rounded-xl",
-                isActive && "shadow-sm",
-              )}
-              onClick={() => setActiveTool(tool.id)}
-            >
-              <Icon className="size-5" />
-              <span className="sr-only">{tool.label}</span>
-              <div
+          return (
+            <CustomTooltip key={tool.id} content={tool.label}>
+              <Button
+                type="button"
+                variant={isActive ? "default" : "ghost"}
+                size="icon"
                 className={cn(
-                  "absolute bottom-1 right-2 text-xs",
-                  isActive ? "text-black" : " text-muted-foreground",
+                  "relative h-14 w-14 rounded-xl",
+                  isActive && "shadow-sm",
                 )}
+                onClick={() => setActiveTool(tool.id)}
               >
-                {tool.key}
-              </div>
-            </Button>
-          </CustomTooltip>
-        );
-      })}
+                <Icon className="size-5" />
+                <span className="sr-only">{tool.label}</span>
+                <div
+                  className={cn(
+                    "absolute bottom-1 right-2 text-xs",
+                    isActive ? "text-black" : " text-muted-foreground",
+                  )}
+                >
+                  {tool.key}
+                </div>
+              </Button>
+            </CustomTooltip>
+          );
+        })}
 
-      <Separator orientation="vertical" />
+        <Separator orientation="vertical" />
 
-      <CustomTooltip content="Share">
-        <Button
-          onClick={onClickOpenCollabForm}
-          variant="ghost"
-          className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
-        >
-          <Share2 className="size-5" />
-        </Button>
-      </CustomTooltip>
+        <CustomTooltip content="Share">
+          <Button
+            onClick={onClickOpenCollabForm}
+            variant="ghost"
+            className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
+          >
+            <Share2 className="size-5" />
+          </Button>
+        </CustomTooltip>
 
-      <CustomTooltip content="Download">
-        <Button
-          variant="ghost"
-          className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
-          onClick={() => setIsDownloadOpen(true)}
-        >
-          <Download className="size-5" />
-        </Button>
-      </CustomTooltip>
+        <CustomTooltip content="Download">
+          <Button
+            variant="ghost"
+            className="relative bg-none! h-14 w-14 rounded-xl hover:bg-primary hover:text-primary-foreground transition-colors ease-in-out duration-200"
+            onClick={() => setIsDownloadOpen(true)}
+          >
+            <Download className="size-5" />
+          </Button>
+        </CustomTooltip>
 
-      <DownloadDiagramForm
-        isOpen={isDownloadOpen}
-        close={() => {
-          if (isDownloading) return;
-          setIsDownloadOpen(false);
-        }}
-        onDownload={handleDownload}
-        isDownloading={isDownloading}
-      />
-    </aside>
+        <DownloadDiagramForm
+          isOpen={isDownloadOpen}
+          close={() => {
+            if (isDownloading) return;
+            setIsDownloadOpen(false);
+          }}
+          onDownload={handleDownload}
+          isDownloading={isDownloading}
+        />
+      </aside>
+      <Button
+        onClick={() => setGenAiFormOpen(true)}
+        className="size-18 rounded-2xl border border-border/70 bg-background/95 p-3  shadow-lg backdrop-blur"
+      >
+        <Sparkles className="text-foreground size-5 " />
+      </Button>{" "}
+    </div>
   );
 }

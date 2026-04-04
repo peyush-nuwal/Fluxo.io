@@ -2,7 +2,7 @@
 
 import { use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DiagramLoader from "@/components/ui/diagram-loader";
@@ -15,6 +15,7 @@ import StyleToolbar from "@/components/canves/editor/StyleToolbar";
 import ToolPanel from "@/components/canves/editor/tool-panel";
 import NotFoundFlow from "@/app/not-found";
 import CollabForm from "@/components/collab-form";
+import GenAiForm from "@/components/gen-ai-form";
 
 type DiagramPageProps = {
   params: Promise<{
@@ -38,6 +39,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
   const resetEditor = useDiagramEditorStore((state) => state.reset);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [isCollabFormOpen, setIsCollabFormOpen] = useState<boolean>(false);
+  const [isGenAiFormOpen, setIsGenAiFormOpen] = useState<boolean>(false);
   const hasInitializedEditorRef = useRef(false);
 
   useEffect(() => {
@@ -155,8 +157,13 @@ export default function DiagramPage({ params }: DiagramPageProps) {
           </div>
 
           <div className="absolute left-1/2  top-4 -translate-x-1/2 z-20">
-            <ToolPanel diagramId={diagramId} setOpen={setIsCollabFormOpen} />
+            <ToolPanel
+              diagramId={diagramId}
+              setCollabFormOpen={setIsCollabFormOpen}
+              setGenAiFormOpen={setIsGenAiFormOpen}
+            />
           </div>
+
           <div className="absolute left-4 top-20 z-20 ">
             <StyleToolbar />
           </div>
@@ -165,6 +172,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
               <FlowCanves key={diagramId} />
             </div>
           </ReactFlowProvider>
+          <GenAiForm open={isGenAiFormOpen} setOpen={setIsGenAiFormOpen} />
           <CollabForm
             open={isCollabFormOpen}
             setOpen={setIsCollabFormOpen}
