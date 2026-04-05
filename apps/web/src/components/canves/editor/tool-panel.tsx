@@ -33,8 +33,6 @@ import { getNodesBounds, getViewportForBounds } from "@xyflow/react";
 import DownloadDiagramForm from "@/components/download-diagram-form";
 import { toast } from "sonner";
 
-import { useModalStore } from "@/store/useModalStore";
-
 type ToolPanelProps = {
   diagramId: string;
   setCollabFormOpen: Dispatch<SetStateAction<boolean>>;
@@ -73,8 +71,6 @@ export default function ToolPanel({
   const nodes = useDiagramEditorStore((state) => state.nodes);
   const [isDownloadOpen, setIsDownloadOpen] = useState<boolean>(false);
   const [isDownloading, setIsDownloading] = useState<boolean>(false);
-
-  const openGenAiForm = useModalStore((mod) => mod.open);
   useEffect(() => {
     const keyMap = Object.fromEntries(
       TOOL_ITEMS.filter(
