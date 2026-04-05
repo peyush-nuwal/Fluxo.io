@@ -2,13 +2,20 @@
 import React, { useState } from "react";
 import ResourceItem from "./resource-item";
 import CardUI from "./cardUi";
-import type { DiagramResource } from "@/types/diagrams";
+import type { Resource } from "./types";
 
 type Props = {
-  resource: DiagramResource;
+  resource: Resource;
   mode?: "active" | "trash";
   selected?: boolean;
   onSelect?: () => void;
+  onOpenResource?: (resource: Resource) => void;
+  onEditResource?: (resource: Resource) => void;
+  onDeleteResource?: (
+    resource: Resource,
+    mode: "active" | "trash",
+  ) => Promise<void>;
+  resourceLabel?: string;
 };
 
 const ResourceCard = ({
@@ -16,6 +23,10 @@ const ResourceCard = ({
   mode = "active",
   selected = false,
   onSelect,
+  onOpenResource,
+  onEditResource,
+  onDeleteResource,
+  resourceLabel,
 }: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -26,6 +37,10 @@ const ResourceCard = ({
       selected={selected}
       onSelect={onSelect}
       onContextMenu={() => setMenuOpen(true)}
+      onOpenResource={onOpenResource}
+      onEditResource={onEditResource}
+      onDeleteResource={onDeleteResource}
+      resourceLabel={resourceLabel}
     >
       {(r, actions) => (
         <CardUI

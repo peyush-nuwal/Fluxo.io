@@ -1,14 +1,21 @@
 import React from "react";
 import ResourceCard from "./resource-card";
-import type { DiagramResource } from "@/types/diagrams";
+import type { Resource } from "./types";
 import CardSkeleton from "./resource-card-skeleton";
 
 type Props = {
-  resources: DiagramResource[];
+  resources: Resource[];
   loading: boolean;
   mode?: "active" | "trash";
   selectedResourceId?: string | null;
   onSelectResource?: (resourceId: string) => void;
+  onOpenResource?: (resource: Resource) => void;
+  onEditResource?: (resource: Resource) => void;
+  onDeleteResource?: (
+    resource: Resource,
+    mode: "active" | "trash",
+  ) => Promise<void>;
+  resourceLabel?: string;
 };
 
 const ResourceCardView = ({
@@ -17,6 +24,10 @@ const ResourceCardView = ({
   mode = "active",
   selectedResourceId,
   onSelectResource,
+  onOpenResource,
+  onEditResource,
+  onDeleteResource,
+  resourceLabel,
 }: Props) => {
   if (loading) {
     return (
@@ -37,6 +48,10 @@ const ResourceCardView = ({
             mode={mode}
             selected={selectedResourceId === r.id}
             onSelect={() => onSelectResource?.(r.id)}
+            onOpenResource={onOpenResource}
+            onEditResource={onEditResource}
+            onDeleteResource={onDeleteResource}
+            resourceLabel={resourceLabel}
           />
         ))}
     </div>

@@ -1,6 +1,6 @@
 import React from "react";
 import ResourceRow from "./resource-row";
-import type { DiagramResource } from "@/types/diagrams";
+import type { Resource } from "./types";
 import {
   Table,
   TableBody,
@@ -11,11 +11,18 @@ import {
 import { cn } from "@/lib/utils";
 import RowSkeleton from "./resource-row-skeleton";
 type Props = {
-  resources: DiagramResource[];
+  resources: Resource[];
   loading?: boolean;
   mode?: "active" | "trash";
   selectedResourceId?: string | null;
   onSelectResource?: (resourceId: string) => void;
+  onOpenResource?: (resource: Resource) => void;
+  onEditResource?: (resource: Resource) => void;
+  onDeleteResource?: (
+    resource: Resource,
+    mode: "active" | "trash",
+  ) => Promise<void>;
+  resourceLabel?: string;
 };
 
 const ResourceListView = ({
@@ -24,6 +31,10 @@ const ResourceListView = ({
   mode = "active",
   selectedResourceId,
   onSelectResource,
+  onOpenResource,
+  onEditResource,
+  onDeleteResource,
+  resourceLabel,
 }: Props) => {
   const tableHeading = ["Name", "Description", "Visibility", "Views", ""];
   return (
@@ -57,6 +68,10 @@ const ResourceListView = ({
                     mode={mode}
                     selected={selectedResourceId === r.id}
                     onSelect={() => onSelectResource?.(r.id)}
+                    onOpenResource={onOpenResource}
+                    onEditResource={onEditResource}
+                    onDeleteResource={onDeleteResource}
+                    resourceLabel={resourceLabel}
                   />
                 ))
               : null}

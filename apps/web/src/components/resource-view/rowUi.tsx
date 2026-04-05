@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import type { DiagramResource } from "@/types/diagrams";
+import type { Resource } from "./types";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,8 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Edit, EllipsisVertical, Trash } from "lucide-react";
-
-export type Resource = DiagramResource;
 
 type Props = {
   resource: Resource;

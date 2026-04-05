@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import RowUI from "./rowUi";
-import type { DiagramResource } from "@/types/diagrams";
+import type { Resource } from "./types";
 import ResourceItem from "./resource-item";
 
 type Props = {
-  resource: DiagramResource;
+  resource: Resource;
   mode?: "active" | "trash";
   selected?: boolean;
   onSelect?: () => void;
+  onOpenResource?: (resource: Resource) => void;
+  onEditResource?: (resource: Resource) => void;
+  onDeleteResource?: (
+    resource: Resource,
+    mode: "active" | "trash",
+  ) => Promise<void>;
+  resourceLabel?: string;
 };
 
 const ResourceRow = ({
@@ -15,6 +22,10 @@ const ResourceRow = ({
   mode = "active",
   selected = false,
   onSelect,
+  onOpenResource,
+  onEditResource,
+  onDeleteResource,
+  resourceLabel,
 }: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -26,6 +37,10 @@ const ResourceRow = ({
       onSelect={onSelect}
       asChild
       onContextMenu={() => setMenuOpen(true)}
+      onOpenResource={onOpenResource}
+      onEditResource={onEditResource}
+      onDeleteResource={onDeleteResource}
+      resourceLabel={resourceLabel}
     >
       {(r, actions) => (
         <RowUI

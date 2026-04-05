@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Slot } from "@radix-ui/react-slot";
-import type { Resource } from "./rowUi";
+import type { Resource } from "./types";
 import { hardDeleteDiagram, softDeleteDiagram } from "@/lib/diagrams/client";
 import { useDiagramStore } from "@/store/diagramsStore";
 import DeleteAlertDialog from "../delete-alert-dialog";
@@ -26,6 +26,13 @@ type Props = {
   onContextMenu?: (event: React.MouseEvent) => void;
   selected?: boolean;
   onSelect?: () => void;
+  onOpenResource?: (resource: Resource) => void;
+  onEditResource?: (resource: Resource) => void;
+  onDeleteResource?: (
+    resource: Resource,
+    mode: "active" | "trash",
+  ) => Promise<void>;
+  resourceLabel?: string;
 };
 const ResourceItem = ({
   resource,
@@ -35,6 +42,10 @@ const ResourceItem = ({
   onContextMenu,
   selected = false,
   onSelect,
+  onOpenResource,
+  onEditResource,
+  onDeleteResource,
+  resourceLabel = "diagram",
 }: Props) => {
   const open = useModalStore((s) => s.open);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -45,11 +56,19 @@ const ResourceItem = ({
   const router = useRouter();
 
   const handleDoubleClick = () => {
+    if (onOpenResource) {
+      onOpenResource(resource);
+      return;
+    }
     router.push(`/diagram/${resource.id}`);
   };
 
   const handleEdit = () => {
     if (!resource.id) return;
+    if (onEditResource) {
+      onEditResource(resource);
+      return;
+    }
     open("DiagramForm", { mode: "edit", diagram: resource });
   };
 
@@ -57,6 +76,10 @@ const ResourceItem = ({
     if (!resource.id) return;
 
     try {
+      if (onDeleteResource) {
+        await onDeleteResource(resource, mode);
+        return;
+      }
       if (mode === "trash") {
         await hardDeleteDiagram(resource.id);
         await fetchTrashDiagrams();
@@ -125,7 +148,7 @@ const ResourceItem = ({
           open={confirmOpen}
           onOpenChange={setConfirmOpen}
           onConfirm={handleConfirmDelete}
-          title="Permanently delete this diagram?"
+          title={`Permanently delete this ${resourceLabel}?`}
           description={`"${resource.name}" will be permanently deleted and cannot be restored.`}
         />
       )}

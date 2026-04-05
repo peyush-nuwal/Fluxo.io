@@ -1,4 +1,4 @@
-import type { DiagramResource } from "@/types/diagrams";
+import type { Resource } from "./types";
 import {
   Edit,
   EllipsisVertical,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 type Props = {
-  resource: DiagramResource;
+  resource: Resource;
   selected?: boolean;
   menuOpen: boolean;
   onMenuOpenChange: (open: boolean) => void;
