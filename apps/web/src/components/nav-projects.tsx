@@ -37,7 +37,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ProjectNavItem } from "@/types/sidebar";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useProjectStore } from "@/store/projectsStore";
 import { Button } from "./ui/button";
 import { useModalStore } from "@/store/useModalStore";
@@ -65,14 +65,33 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
     null,
   );
-  const activeProjectId = pathname === "/home" ? selectedProjectId : null;
+  const routeProjectId = pathname.startsWith("/projects/")
+    ? (pathname.split("/")[2] ?? null)
+    : null;
+  const activeProjectId = selectedProjectId ?? routeProjectId;
   const [pendingDeleteProjectId, setPendingDeleteProjectId] = useState<
     string | null
   >(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const clickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const SINGLE_CLICK_DELAY = 220;
   useEffect(() => {
     fetchProject();
   }, [fetchProject]);
+
+  useEffect(() => {
+    if (routeProjectId) {
+      setSelectedProjectId(routeProjectId);
+    }
+  }, [routeProjectId]);
+
+  useEffect(() => {
+    return () => {
+      if (clickTimeoutRef.current) {
+        clearTimeout(clickTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const projectIdToTrack = pendingDeleteProjectId ?? activeProjectId;
@@ -119,11 +138,40 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
     createProjectOpen("ProjectForm", { mode: "edit", project });
   };
 
-  const getProjectHref = (_projectId: string) => "/home";
+  const getProjectHref = (_projectId: string) => `/projects/${_projectId}`;
 
   const handleOpenProject = (projectId: string) => {
     setSelectedProjectId(projectId);
     router.push(getProjectHref(projectId));
+  };
+
+  const handleProjectSingleClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    projectId: string,
+  ) => {
+    event.preventDefault();
+
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+    }
+
+    clickTimeoutRef.current = setTimeout(() => {
+      setSelectedProjectId(projectId);
+      clickTimeoutRef.current = null;
+    }, SINGLE_CLICK_DELAY);
+  };
+
+  const handleProjectDoubleClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    projectId: string,
+  ) => {
+    event.preventDefault();
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+      clickTimeoutRef.current = null;
+    }
+    setSelectedProjectId(projectId);
+    handleOpenProject(projectId);
   };
 
   const projectIdToDelete = pendingDeleteProjectId ?? activeProjectId;
@@ -149,7 +197,7 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
     }
 
     toast.success(result.message ?? "Project deleted successfully");
-    if (activeProjectId === projectIdToDelete && pathname === "/home") {
+    if (pathname === getProjectHref(projectIdToDelete)) {
       router.replace("/home");
     }
     setConfirmDeleteOpen(false);
@@ -204,7 +252,12 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
                       >
                         <Link
                           href={getProjectHref(item.id)}
-                          onClick={() => setSelectedProjectId(item.id)}
+                          onClick={(event) =>
+                            handleProjectSingleClick(event, item.id)
+                          }
+                          onDoubleClick={(event) =>
+                            handleProjectDoubleClick(event, item.id)
+                          }
                           onKeyDown={(event) => {
                             if (
                               event.key === "Delete" ||

@@ -1,24 +1,11 @@
 "use client";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import ResourceListView from "./resource-list-view";
-import ResourceCardView from "./resource-card-view";
-import { SegmentRadioGroup } from "../ui/segment-radio";
-import type { DropDownFilterProps, filterOption_array } from "@/types/diagrams";
-import { Layers, LayoutGrid, List } from "lucide-react";
-import type { FilterOption } from "@/types/diagrams";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Input } from "../ui/input";
-import EmptyState from "../empty-state";
-import { useDiagramStore } from "@/store/diagramsStore";
+
+import { useEffect, useMemo } from "react";
 import { hardDeleteDiagram, softDeleteDiagram } from "@/lib/diagrams/client";
-import DeleteAlertDialog from "../delete-alert-dialog";
+import { useDiagramStore } from "@/store/diagramsStore";
+import type { filterOption_array } from "@/types/diagrams";
+import ResourceBrowser from "./resource-browser";
+import type { Resource } from "./types";
 
 const FILTER_OPTIONS: filterOption_array[] = [
   { value: "last_viewed", label: "Last Viewed" },
@@ -33,284 +20,92 @@ const FILTER_OPTIONS: filterOption_array[] = [
 
 type ResourceViewProps = {
   mode?: "active" | "trash";
+  projectId?: string;
 };
 
-const ResourceView = ({ mode = "active" }: ResourceViewProps) => {
+const ResourceView = ({ mode = "active", projectId }: ResourceViewProps) => {
   const {
-    diagrams: resources,
+    diagrams,
     loading,
     fetchDiagrams,
+    fetchProjectDiagrams,
     fetchTrashDiagrams,
   } = useDiagramStore();
-  const diagramResources = Array.isArray(resources) ? resources : [];
-  const [layoutMode, setLayoutMode] = useState<"list" | "card">("card");
-  const [accessFilter, setAccessFilter] = useState<"all" | "mine" | "shared">(
-    "all",
-  );
-  const [filter, setFilter] = useState<FilterOption>("last_viewed");
-  const [query, setQuery] = useState("");
-  const [selectedDiagramId, setSelectedDiagramId] = useState<string | null>(
-    null,
-  );
-  const [confirmPermanentDeleteOpen, setConfirmPermanentDeleteOpen] =
-    useState(false);
 
   useEffect(() => {
     if (mode === "trash") {
-      fetchTrashDiagrams();
+      void fetchTrashDiagrams();
       return;
     }
-    fetchDiagrams();
-  }, [fetchDiagrams, fetchTrashDiagrams, mode]);
 
-  const accessFilteredResources = useMemo(() => {
-    if (mode !== "active") return diagramResources;
-    if (accessFilter === "all") return diagramResources;
-    if (accessFilter === "mine") {
-      return diagramResources.filter(
-        (r) => (r.access_type ?? "owner") === "owner",
-      );
+    if (projectId) {
+      void fetchProjectDiagrams(projectId);
+      return;
     }
-    return diagramResources.filter((r) => r.access_type === "shared");
-  }, [accessFilter, mode, diagramResources]);
 
-  const searchFilteredResources = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return accessFilteredResources;
-    return accessFilteredResources.filter((r) => {
-      const name = r.name?.toLowerCase() ?? "";
-      const desc = r.description?.toLowerCase() ?? "";
-      return name.includes(q) || desc.includes(q);
-    });
-  }, [accessFilteredResources, query]);
+    void fetchDiagrams();
+  }, [
+    fetchDiagrams,
+    fetchProjectDiagrams,
+    fetchTrashDiagrams,
+    mode,
+    projectId,
+  ]);
 
-  const filteredResources = useMemo(() => {
-    const copy = [...searchFilteredResources];
+  const resources = useMemo<Resource[]>(
+    () => (Array.isArray(diagrams) ? diagrams : []),
+    [diagrams],
+  );
 
-    const toTime = (value?: string | null) =>
-      value ? new Date(value).getTime() : 0;
+  const handleDeleteDiagram = async (
+    resource: Resource,
+    deleteMode: "active" | "trash",
+  ) => {
+    if (!resource.id) return;
 
-    switch (filter) {
-      case "last_viewed":
-        return copy.sort(
-          (a, b) => toTime(b.last_opened_at) - toTime(a.last_opened_at),
-        );
-      case "most_viewed":
-        return copy.sort((a, b) => b.views - a.views);
-      case "recently_created":
-        return copy.sort((a, b) => toTime(b.created_at) - toTime(a.created_at));
-      case "recently_updated":
-        return copy.sort((a, b) => toTime(b.updated_at) - toTime(a.updated_at));
-      case "name_asc":
-        return copy.sort((a, b) => a.name.localeCompare(b.name));
-      case "name_desc":
-        return copy.sort((a, b) => b.name.localeCompare(a.name));
-      case "public_only":
-        return copy.filter((r) => r.is_public);
-      case "private_only":
-        return copy.filter((r) => !r.is_public);
-      case "active_only":
-        return copy.filter((r) => r.is_active);
-      default:
-        return copy;
+    if (deleteMode === "trash") {
+      await hardDeleteDiagram(resource.id);
+      await fetchTrashDiagrams();
+      return;
     }
-  }, [filter, searchFilteredResources]);
 
-  useEffect(() => {
-    if (!selectedDiagramId) return;
-    const stillVisible = filteredResources.some(
-      (r) => r.id === selectedDiagramId,
-    );
-    if (!stillVisible) setSelectedDiagramId(null);
-  }, [filteredResources, selectedDiagramId]);
+    await softDeleteDiagram(resource.id);
 
-  useEffect(() => {
-    if (!selectedDiagramId) {
-      setConfirmPermanentDeleteOpen(false);
+    if (projectId) {
+      await fetchProjectDiagrams(projectId);
+      return;
     }
-  }, [selectedDiagramId]);
 
-  const deleteSelectedDiagram = useCallback(async () => {
-    if (!selectedDiagramId) return;
-
-    try {
-      if (mode === "trash") {
-        await hardDeleteDiagram(selectedDiagramId);
-        await fetchTrashDiagrams();
-      } else {
-        await softDeleteDiagram(selectedDiagramId);
-        await fetchDiagrams();
-      }
-      setSelectedDiagramId(null);
-    } catch {
-      // Ignore and keep selection so user can retry.
-    }
-  }, [fetchDiagrams, fetchTrashDiagrams, mode, selectedDiagramId]);
-
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (!selectedDiagramId) return;
-      if (event.key !== "Delete" && event.key !== "Backspace") return;
-
-      const target = event.target as HTMLElement | null;
-      const isTypingTarget =
-        target?.isContentEditable ||
-        target?.tagName === "INPUT" ||
-        target?.tagName === "TEXTAREA" ||
-        target?.tagName === "SELECT";
-
-      if (isTypingTarget) return;
-
-      event.preventDefault();
-      if (mode === "trash") {
-        setConfirmPermanentDeleteOpen(true);
-        return;
-      }
-      void deleteSelectedDiagram();
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [deleteSelectedDiagram, mode, selectedDiagramId]);
-
-  const selectedDiagramName = useMemo(() => {
-    if (!selectedDiagramId) return "";
-    const selectedResource = filteredResources.find(
-      (r) => r.id === selectedDiagramId,
-    );
-    return selectedResource?.name ?? "this diagram";
-  }, [filteredResources, selectedDiagramId]);
-
-  const hasAnyResources = diagramResources.length > 0;
-  const hasFilteredResults = filteredResources.length > 0;
+    await fetchDiagrams();
+  };
 
   return (
-    <div className="flex flex-col gap-5 py-5 ">
-      <div className="flex gap-3 items-center justify-between px-6 md:px-8  ">
-        {mode === "active" ? (
-          <SegmentRadioGroup
-            type="ghost"
-            value={accessFilter}
-            onChange={(value) =>
-              setAccessFilter(value as "all" | "mine" | "shared")
-            }
-            options={[
-              { value: "all", label: "All" },
-              { value: "mine", label: "Mine" },
-              { value: "shared", label: "Shared" },
-            ]}
-            className="text-base font-medium"
-          />
-        ) : null}
-        <div className="flex gap-3 items-center">
-          <Input
-            placeholder="Search..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-62.5"
-          />
-          <DropDownFilter filter={filter} onFilterChange={setFilter} />
-          <SegmentRadioGroup
-            value={layoutMode}
-            onChange={setLayoutMode}
-            options={[
-              {
-                value: "card",
-                icon: <LayoutGrid className="size-4" />,
-                label: <span className="sr-only">Card</span>,
-              },
-              {
-                value: "list",
-                icon: <List className="size-4" />,
-                label: <span className="sr-only">List</span>,
-              },
-            ]}
-          />
-        </div>
-      </div>
-      {/* 1️⃣ Real empty (should be rare) */}
-      {!loading && !hasAnyResources && (
-        <EmptyState
-          title="No resources yet"
-          description="Your project is ready. Start by creating your first resource."
-          icon={<Layers className="h-8 w-8 text-muted-foreground" />}
-        />
-      )}
-
-      {/* 2️⃣ Search / filter empty */}
-      {!loading && hasAnyResources && !hasFilteredResults && (
-        <EmptyState
-          title="No results found"
-          description="Try adjusting your search or filters."
-          icon={<LayoutGrid className="h-8 w-8 text-muted-foreground" />}
-        />
-      )}
-
-      {/* 3️⃣ Normal render */}
-      {(loading || hasFilteredResults) &&
-        (layoutMode === "list" ? (
-          <ResourceListView
-            resources={filteredResources}
-            loading={loading}
-            mode={mode}
-            selectedResourceId={selectedDiagramId}
-            onSelectResource={setSelectedDiagramId}
-          />
-        ) : (
-          <ResourceCardView
-            resources={filteredResources}
-            loading={loading}
-            mode={mode}
-            selectedResourceId={selectedDiagramId}
-            onSelectResource={setSelectedDiagramId}
-          />
-        ))}
-      {mode === "trash" && (
-        <DeleteAlertDialog
-          open={confirmPermanentDeleteOpen}
-          onOpenChange={setConfirmPermanentDeleteOpen}
-          onConfirm={deleteSelectedDiagram}
-          title="Permanently delete selected diagram?"
-          description={`"${selectedDiagramName}" will be permanently deleted and cannot be restored.`}
-        />
-      )}
-    </div>
+    <ResourceBrowser
+      resources={resources}
+      loading={loading}
+      mode={mode}
+      filterOptions={FILTER_OPTIONS}
+      defaultFilter="last_viewed"
+      queryPlaceholder="Search diagrams..."
+      showAccessFilter={!projectId}
+      emptyState={{
+        title:
+          mode === "trash"
+            ? "Trash is empty"
+            : projectId
+              ? "No diagrams in this project"
+              : "No diagrams yet",
+        description:
+          mode === "trash"
+            ? "Deleted diagrams will appear here."
+            : projectId
+              ? "Create your first diagram in this project."
+              : "Create your first diagram to get started.",
+      }}
+      onDeleteResource={handleDeleteDiagram}
+      resourceLabel="diagram"
+    />
   );
 };
 
 export default ResourceView;
-
-const DropDownFilter = ({ filter, onFilterChange }: DropDownFilterProps) => {
-  const currentLabel =
-    FILTER_OPTIONS.find((opt) => opt.value === filter)?.label ?? "Filter";
-
-  return (
-    <Select
-      value={filter}
-      onValueChange={(v) => onFilterChange(v as FilterOption)}
-    >
-      <SelectTrigger className="w-full max-w-48">
-        <SelectValue placeholder={currentLabel} />
-      </SelectTrigger>
-      <SelectContent
-        side="bottom"
-        align="end"
-        position="popper"
-        avoidCollisions={false}
-      >
-        <SelectGroup>
-          {FILTER_OPTIONS.map((opt) => (
-            <SelectItem
-              key={opt.value}
-              value={opt.value}
-              className="data-highlighted:bg-sidebar-accent
-  data-highlighted:text-sidebar-primary   data-disabled:pointer-events-none  data-disabled:text-mauve8  "
-            >
-              {opt.label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  );
-};
