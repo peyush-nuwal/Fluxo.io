@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Folder,
   MoreHorizontal,
@@ -9,7 +8,6 @@ import {
   Plus,
   Edit,
 } from "lucide-react";
-
 import {
   DropdownMenu,
   DropdownMenuContent,

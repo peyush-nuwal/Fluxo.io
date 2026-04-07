@@ -21,9 +21,14 @@ const FILTER_OPTIONS: filterOption_array[] = [
 type ResourceViewProps = {
   mode?: "active" | "trash";
   projectId?: string;
+  resourceLabel?: string;
 };
 
-const ResourceView = ({ mode = "active", projectId }: ResourceViewProps) => {
+const ResourceView = ({
+  mode = "active",
+  projectId,
+  resourceLabel,
+}: ResourceViewProps) => {
   const {
     diagrams,
     loading,
@@ -103,7 +108,7 @@ const ResourceView = ({ mode = "active", projectId }: ResourceViewProps) => {
               : "Create your first diagram to get started.",
       }}
       onDeleteResource={handleDeleteDiagram}
-      resourceLabel="diagram"
+      resourceLabel={resourceLabel}
     />
   );
 };

@@ -81,20 +81,22 @@ export default function ProjectResourceView() {
   };
 
   return (
-    <ResourceBrowser
-      resources={resources}
-      loading={loading}
-      filterOptions={FILTER_OPTIONS}
-      defaultFilter="recently_updated"
-      queryPlaceholder="Search projects..."
-      emptyState={{
-        title: "No projects yet",
-        description: "Create your first project to organize diagrams.",
-      }}
-      onOpenResource={handleOpenProject}
-      onEditResource={handleEditProject}
-      onDeleteResource={handleDeleteProject}
-      resourceLabel="project"
-    />
+    <div className="">
+      <ResourceBrowser
+        resources={resources}
+        loading={loading}
+        filterOptions={FILTER_OPTIONS}
+        defaultFilter="recently_updated"
+        queryPlaceholder="Search projects..."
+        emptyState={{
+          title: "No projects yet",
+          description: "Create your first project to organize diagrams.",
+        }}
+        onOpenResource={handleOpenProject}
+        onEditResource={handleEditProject}
+        onDeleteResource={handleDeleteProject}
+        resourceLabel="project"
+      />
+    </div>
   );
 }

@@ -1,11 +1,10 @@
 "use client";
-import React from "react";
 import { SidebarTrigger } from "./ui/sidebar";
 import { Kbd, KbdGroup } from "./ui/kbd";
 import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import TopbarBreadcrumbs from "./TopbarBreadcrumbs";
+
 import { useModalStore } from "@/store/useModalStore";
 
 const Topbar = () => {
@@ -15,7 +14,6 @@ const Topbar = () => {
     <div className="w-full h-16 flex items-center justify-between px-4 bg-card border-b border-b-border border-solid">
       <div className="flex items-center gap-5">
         <SidebarTrigger className="size-10!" />
-        <TopbarBreadcrumbs />
       </div>
       <div className="flex items-center gap-5">
         <div className="relative ">

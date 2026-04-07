@@ -28,7 +28,7 @@ export async function GET(req: Request): Promise<Response> {
     }
 
     if (!res.ok) {
-      return NextResponse.json(buildProxyErrorPayload(data, "Unauthorized"), {
+      return NextResponse.json(buildProxyErrorPayload(data), {
         status: res.status,
       });
     }
@@ -37,9 +37,6 @@ export async function GET(req: Request): Promise<Response> {
       status: 200,
     });
   } catch (error) {
-    return NextResponse.json(
-      buildProxyErrorPayload(null, "Internal server error"),
-      { status: 500 },
-    );
+    return NextResponse.json(buildProxyErrorPayload(error), { status: 500 });
   }
 }

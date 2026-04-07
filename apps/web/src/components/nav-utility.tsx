@@ -2,8 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Send, type LucideIcon } from "lucide-react";
-
+import { Send } from "lucide-react";
 import {
   SidebarGroup,
   SidebarGroupContent,

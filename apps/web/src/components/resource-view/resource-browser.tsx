@@ -96,7 +96,7 @@ const ResourceBrowser = ({
   onOpenResource,
   onEditResource,
   onDeleteResource,
-  resourceLabel = "diagram",
+  resourceLabel,
 }: ResourceBrowserProps) => {
   const [layoutMode, setLayoutMode] = useState<"list" | "card">("card");
   const [accessFilter, setAccessFilter] = useState<"all" | "mine" | "shared">(
@@ -197,6 +197,9 @@ const ResourceBrowser = ({
           />
         </div>
       </div>
+      <h1 className="text-2xl font-semibold  mx-3 lg:mx-6">
+        {resourceLabel && resourceLabel}
+      </h1>
 
       {!loading && !hasAnyResources && (
         <EmptyState
