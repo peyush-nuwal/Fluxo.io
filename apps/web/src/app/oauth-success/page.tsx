@@ -1,11 +1,9 @@
 "use client";
-
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { Check } from "lucide-react";
-
 import { consumeAuthReturnTo, onAuthSuccess } from "@/lib/auth/client";
 
 function resolveSafeReturnTo(returnTo: string | null): string {

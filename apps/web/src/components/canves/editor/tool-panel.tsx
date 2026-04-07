@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Dispatch,
   SetStateAction,
@@ -184,7 +183,6 @@ export default function ToolPanel({
   );
 
   const onClickOpenCollabForm = () => {
-    console.log("clicket");
     setCollabFormOpen(true);
   };
 

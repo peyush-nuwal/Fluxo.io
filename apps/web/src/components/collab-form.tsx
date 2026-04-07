@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Dialog,
   DialogContent,
@@ -47,6 +46,7 @@ import {
 } from "@/lib/collab/client";
 import { Spinner } from "./ui/spinner";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/error-utils";
 
 type CollabFormProp = {
   open: boolean;
@@ -159,15 +159,11 @@ const useProjectCollaborators = (projectId: string, open: boolean) => {
         ? pendingInvitesResponse.data.pendingUsers
         : [];
       setPendingInviteMembers(pendingUsers);
-    } catch (error: any) {
+    } catch (error: unknown) {
       setCollaboratorMembers([]);
       setPendingInviteMembers([]);
       setViewerRole("collaborator");
-      setMembersError(
-        String(
-          error?.data?.message || error?.message || "Failed to load members.",
-        ),
-      );
+      setMembersError(getErrorMessage(error, "Failed to load members."));
     } finally {
       setIsLoadingMembers(false);
     }
@@ -386,14 +382,8 @@ const CollabForm = ({ open, setOpen, projectId }: CollabFormProp) => {
 
       toast.success(`${email} removed from this project.`);
       await reloadMembersAndInvites();
-    } catch (error: any) {
-      toast.error(
-        String(
-          error?.data?.message ||
-            error?.message ||
-            "Failed to remove collaborator.",
-        ),
-      );
+    } catch (error: unknown) {
+      toast.error(getErrorMessage(error, "Failed to remove collaborator."));
     } finally {
       setCollaboratorPendingRemoval(null);
       setActiveRemovalEmail(null);

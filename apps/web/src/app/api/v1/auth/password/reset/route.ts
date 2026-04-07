@@ -31,9 +31,6 @@ export async function POST(req: NextRequest): Promise<Response> {
     return response;
   } catch (error) {
     console.error("resetting password route error:", error);
-    return NextResponse.json(
-      buildProxyErrorPayload(null, "Internal server error"),
-      { status: 500 },
-    );
+    return NextResponse.json(buildProxyErrorPayload(error), { status: 500 });
   }
 }

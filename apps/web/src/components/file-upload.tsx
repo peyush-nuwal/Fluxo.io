@@ -1,7 +1,6 @@
 "use client";
-
 import { Image, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 
 type FileUploadProps = {
@@ -15,22 +14,22 @@ export function FileUpload({
   accept = "image/*",
   initialPreview,
 }: FileUploadProps) {
-  const [preview, setPreview] = useState<string | null>(initialPreview ?? null);
-
-  useEffect(() => {
-    setPreview(initialPreview ?? null);
-  }, [initialPreview]);
+  const [previewOverride, setPreviewOverride] = useState<
+    string | null | undefined
+  >(undefined);
+  const preview =
+    previewOverride === undefined ? (initialPreview ?? null) : previewOverride;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const url = URL.createObjectURL(file);
-    setPreview(url);
+    setPreviewOverride(url);
   };
 
   const removeImage = () => {
-    setPreview(null);
+    setPreviewOverride(null);
 
     const input = document.getElementById(
       `fileInput-${name}`,

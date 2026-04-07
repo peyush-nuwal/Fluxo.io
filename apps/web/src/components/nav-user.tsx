@@ -1,5 +1,4 @@
 "use client";
-
 import {
   BadgeCheck,
   Bell,
@@ -8,7 +7,6 @@ import {
   LogOut,
   Palette,
 } from "lucide-react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -25,7 +23,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-
 import { ThemeDialog } from "@/components/theme-dialog";
 import { onLogout } from "@/lib/auth/client";
 import { toast } from "sonner";
@@ -35,6 +32,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useModalStore } from "@/store/useModalStore";
 import { useEffect } from "react";
+import { getErrorMessage } from "@/lib/error-utils";
 
 export function NavUser() {
   const router = useRouter();
@@ -57,8 +55,8 @@ export function NavUser() {
 
       toast.success(message);
       router.replace("/login");
-    } catch (err: any) {
-      toast.error(err?.message ?? "Logout failed");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Logout failed"));
     }
   };
 

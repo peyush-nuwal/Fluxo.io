@@ -4,10 +4,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
 import { onAuthSuccess, signup, startOAuth } from "@/lib/auth/client";
 import { toast } from "sonner";
 import PasswordInput from "@/components/password-input";

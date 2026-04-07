@@ -35,11 +35,8 @@ export async function POST(req: NextRequest): Promise<Response> {
     setCookies.forEach((c) => response.headers.append("Set-Cookie", c));
 
     return response;
-  } catch (err) {
-    console.error("Signup route error:", err);
-    return NextResponse.json(
-      buildProxyErrorPayload(null, "Internal server error"),
-      { status: 500 },
-    );
+  } catch (error) {
+    console.error("Signup route error:", error);
+    return NextResponse.json(buildProxyErrorPayload(error), { status: 500 });
   }
 }

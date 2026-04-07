@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Dialog,
   DialogContent,
@@ -112,14 +111,19 @@ export default function DiagramForm() {
 
   useEffect(() => {
     if (!formState.success) return;
-
-    setSelectedProjectId("");
-    close();
+    const timer = setTimeout(() => {
+      setSelectedProjectId("");
+      close();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [formState.success, close]);
 
   useEffect(() => {
     if (diagram?.project_id && projects.length) {
-      setSelectedProjectId(diagram.project_id);
+      const timer = setTimeout(() => {
+        setSelectedProjectId(diagram.project_id);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [diagram, projects]);
 

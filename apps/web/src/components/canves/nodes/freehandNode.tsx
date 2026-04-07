@@ -1,7 +1,5 @@
 "use client";
-
 import type { Node, NodeProps, XYPosition } from "@xyflow/react";
-
 export type FreehandNodeData = {
   points: XYPosition[];
   strokeWidth?: number;

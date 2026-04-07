@@ -1,5 +1,4 @@
 "use client";
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Edge, Node, Viewport } from "@xyflow/react";
 import { useDiagramStore } from "@/store/diagramsStore";
@@ -181,8 +180,10 @@ export function useDiagramAutosave(
         saveTimeoutRef.current = null;
       }
       isSavingRef.current = false;
-      setSaveStatus("idle");
-      setSaveMessage(null);
+      queueMicrotask(() => {
+        setSaveStatus("idle");
+        setSaveMessage(null);
+      });
       return;
     }
 
@@ -196,8 +197,10 @@ export function useDiagramAutosave(
       }
 
       if (!result.success) {
-        setSaveStatus("error");
-        setSaveMessage(result.message ?? "Failed to activate editor");
+        queueMicrotask(() => {
+          setSaveStatus("error");
+          setSaveMessage(result.message ?? "Failed to activate editor");
+        });
       }
     })();
 
@@ -244,8 +247,10 @@ export function useDiagramAutosave(
       clearTimeout(saveTimeoutRef.current);
     }
 
-    setSaveStatus("pending");
-    setSaveMessage(null);
+    queueMicrotask(() => {
+      setSaveStatus("pending");
+      setSaveMessage(null);
+    });
 
     saveTimeoutRef.current = setTimeout(() => {
       saveTimeoutRef.current = null;

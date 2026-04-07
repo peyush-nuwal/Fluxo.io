@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Calculator,
   Calendar,
@@ -9,7 +8,6 @@ import {
   Smile,
   User,
 } from "lucide-react";
-
 import {
   Command,
   CommandEmpty,
@@ -94,7 +92,6 @@ const CommandMenu = () => {
                 onSelect={() => {
                   closeModal();
                   openModal("themeDialog");
-                  console.log("clicke");
                 }}
               >
                 <Palette />

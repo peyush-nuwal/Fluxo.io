@@ -15,7 +15,7 @@ export default function EmptyState({
     <div className="relative flex flex-col items-center justify-center py-24 text-center">
       {/* Gradient glow */}
       <div className="absolute inset-0 -z-10 flex justify-center">
-        <div className="h-64 w-64 rounded-full bg-gradient-to-br from-primary/20 via-primary/5 to-transparent blur-3xl" />
+        <div className="h-64 w-64 rounded-full bg-linear-to-b from-primary/20 via-primary/5 to-transparent blur-3xl" />
       </div>
 
       {/* Icon wrapper */}

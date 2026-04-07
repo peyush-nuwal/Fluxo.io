@@ -11,8 +11,8 @@ type ModalType =
 
 type ModalStore = {
   modelType: ModalType;
-  data?: any;
-  open: (type: ModalType, data?: any) => void;
+  data?: unknown;
+  open: (type: ModalType, data?: unknown) => void;
   close: () => void;
 };
 

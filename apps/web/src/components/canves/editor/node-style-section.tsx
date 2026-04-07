@@ -1,5 +1,4 @@
 "use client";
-
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import type { NodeStyle, ShapeNodeType } from "@/components/canves/nodes/types";

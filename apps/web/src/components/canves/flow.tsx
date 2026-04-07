@@ -38,12 +38,10 @@ import { edgeTypes, type CustomEdgeType } from "@/components/canves/edges";
 import { nodeTypes, type CustomNodeType } from "@/components/canves/nodes";
 import type { FreehandNodeType } from "./nodes/freehandNode";
 import type { ShapeNodeType } from "./nodes/types";
-
 import { useDiagramEditorStore } from "@/store/diagramEditorStore";
 import { useTheme } from "@/hooks/use-theme";
 import { DEFAULT_NODE_STYLE, ShapeKind } from "./nodes/types";
 import { SHAPE_DEFAULT_SIZES } from "./nodes/nodes.config";
-
 import { Eraser } from "./editor/Eraser";
 
 function isSameViewport(a: Viewport, b: Viewport) {

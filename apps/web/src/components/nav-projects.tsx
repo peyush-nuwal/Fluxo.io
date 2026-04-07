@@ -78,30 +78,12 @@ export function NavProjects({ projects: _projects }: NavProjectsProps) {
   }, [fetchProject]);
 
   useEffect(() => {
-    if (routeProjectId) {
-      setSelectedProjectId(routeProjectId);
-    }
-  }, [routeProjectId]);
-
-  useEffect(() => {
     return () => {
       if (clickTimeoutRef.current) {
         clearTimeout(clickTimeoutRef.current);
       }
     };
   }, []);
-
-  useEffect(() => {
-    const projectIdToTrack = pendingDeleteProjectId ?? activeProjectId;
-    if (!projectIdToTrack) return;
-    const stillVisible = projectResources.some(
-      (project) => project.id === projectIdToTrack,
-    );
-    if (!stillVisible) {
-      setPendingDeleteProjectId(null);
-      setConfirmDeleteOpen(false);
-    }
-  }, [activeProjectId, pendingDeleteProjectId, projectResources]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

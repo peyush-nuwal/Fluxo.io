@@ -1,4 +1,3 @@
-import React from "react";
 import ResourceRow from "./resource-row";
 import type { Resource } from "./types";
 import {

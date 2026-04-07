@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
   ThemeSchema,
@@ -29,8 +28,16 @@ const ALL_THEMES: Theme[] = [
 ];
 
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme | null>(null);
-  const [mode, setMode] = useState<Mode>("system");
+  const [theme, setTheme] = useState<Theme | null>(() => {
+    if (typeof window === "undefined") return null;
+    const storedTheme = ThemeSchema.safeParse(localStorage.getItem(THEME_KEY));
+    return storedTheme.success ? storedTheme.data : null;
+  });
+  const [mode, setMode] = useState<Mode>(() => {
+    if (typeof window === "undefined") return "system";
+    const storedMode = ModeSchema.safeParse(localStorage.getItem(MODE_KEY));
+    return storedMode.success ? storedMode.data : "system";
+  });
 
   // ---- helpers ----
   const applyResolvedMode = (resolved: "light" | "dark") => {
@@ -57,26 +64,19 @@ export function useTheme() {
   };
 
   const applyThemeInternal = (next: Theme | null) => {
-    const root = document.documentElement;
-    root.classList.remove(...ALL_THEMES);
-    if (next) root.classList.add(next);
     setTheme(next);
   };
 
   const applyModeInternal = (next: Mode) => {
     setMode(next);
-    if (next === "system") {
-      applyResolvedMode(getSystemMode());
-    } else {
-      applyResolvedMode(next);
-    }
   };
 
-  // ---- mount (BEFORE PAINT) ----
   useLayoutEffect(() => {
-    applyThemeInternal(readStoredTheme());
-    applyModeInternal(readStoredMode());
-  }, []);
+    const root = document.documentElement;
+    root.classList.remove(...ALL_THEMES);
+    if (theme) root.classList.add(theme);
+    applyResolvedMode(mode === "system" ? getSystemMode() : mode);
+  }, [theme, mode]);
 
   // ---- system listener (AFTER PAINT) ----
   useEffect(() => {

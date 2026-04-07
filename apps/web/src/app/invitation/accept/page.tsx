@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { CheckCircle2, Loader2, ShieldAlert } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api";
+import { getErrorStatus, isRecord } from "@/lib/error-utils";
 
 type AcceptState = "loading" | "success" | "error";
 
@@ -24,9 +24,11 @@ function getText(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function getErrorMessage(status: number | undefined, error: any): ErrorView {
+function getErrorView(status: number | undefined, error: unknown): ErrorView {
   const rawMessage =
-    getText(error?.data?.message) || getText(error?.message) || "";
+    (isRecord(error) && isRecord(error.data) && getText(error.data.message)) ||
+    (isRecord(error) && getText(error.message)) ||
+    "";
   const normalizedMessage = rawMessage.toLowerCase();
 
   if (status === 401) {
@@ -110,34 +112,41 @@ function getErrorMessage(status: number | undefined, error: any): ErrorView {
   };
 }
 
+const MISSING_TOKEN_VIEW: ErrorView = {
+  title: "Invalid invitation link",
+  message:
+    "The invitation token is missing. Please use the full link from your email.",
+  actionLabel: "Back to Home",
+  actionHref: "/home",
+};
+
 export default function AcceptInvitationPage() {
   const searchParams = useSearchParams();
   const token = useMemo(
     () => searchParams.get("token")?.trim() ?? "",
     [searchParams],
   );
+  const isTokenMissing = token.length === 0;
 
-  const [state, setState] = useState<AcceptState>("loading");
+  const [state, setState] = useState<AcceptState>(
+    isTokenMissing ? "error" : "loading",
+  );
   const [successMessage, setSuccessMessage] = useState(
     "Invitation accepted successfully.",
   );
-  const [errorView, setErrorView] = useState<ErrorView>({
-    title: "Unable to accept invitation",
-    message: "Something went wrong while processing this invitation.",
-    actionLabel: "Back to Home",
-    actionHref: "/home",
-  });
+  const [errorView, setErrorView] = useState<ErrorView>(
+    isTokenMissing
+      ? MISSING_TOKEN_VIEW
+      : {
+          title: "Unable to accept invitation",
+          message: "Something went wrong while processing this invitation.",
+          actionLabel: "Back to Home",
+          actionHref: "/home",
+        },
+  );
 
   useEffect(() => {
     if (!token) {
-      setState("error");
-      setErrorView({
-        title: "Invalid invitation link",
-        message:
-          "The invitation token is missing. Please use the full link from your email.",
-        actionLabel: "Back to Home",
-        actionHref: "/home",
-      });
       return;
     }
 
@@ -156,14 +165,14 @@ export default function AcceptInvitationPage() {
 
         setState("success");
         setSuccessMessage(
-          getText(data?.message) ||
+          getText((data as Record<string, unknown>)?.message) ||
             "Invitation accepted successfully. You can now access this project.",
         );
-      } catch (error: any) {
+      } catch (error: unknown) {
         if (!active) return;
 
         setState("error");
-        setErrorView(getErrorMessage(error?.status, error));
+        setErrorView(getErrorView(getErrorStatus(error), error));
       }
     };
 

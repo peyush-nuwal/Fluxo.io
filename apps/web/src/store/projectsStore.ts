@@ -12,6 +12,7 @@ import {
   UpdateProjectPayload,
 } from "@/types/project";
 import { create } from "zustand";
+import { getErrorMessage } from "@/lib/error-utils";
 
 type ProjectState = {
   projects: ProjectType[];
@@ -63,9 +64,9 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
       try {
         const data = await getProjects();
         set({ projects: data?.data?.projects ?? [], loading: false });
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
-          error: err?.message ?? "Failed to fetch projects",
+          error: getErrorMessage(err, "Failed to fetch projects"),
           loading: false,
         });
       }
@@ -76,9 +77,9 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
         const data = await getProjectById(projectId);
         const project = data?.data?.project ?? null;
         set({ selectedProject: project, loading: false });
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
-          error: err?.message ?? "Failed to fetch project",
+          error: getErrorMessage(err, "Failed to fetch project"),
           loading: false,
         });
       }
@@ -97,14 +98,14 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
 
         set({ projects: [project, ...get().projects], loading: false });
         return { success: true, project, message };
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
-          error: err?.message ?? "Failed to create project",
+          error: getErrorMessage(err, "Failed to create project"),
           loading: false,
         });
         return {
           success: false,
-          message: err?.message ?? "Failed to create project",
+          message: getErrorMessage(err, "Failed to create project"),
         };
       }
     },
@@ -135,14 +136,14 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
         });
 
         return { success: true, project, message };
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
-          error: err?.message ?? "Failed to update project",
+          error: getErrorMessage(err, "Failed to update project"),
           loading: false,
         });
         return {
           success: false,
-          message: err?.message ?? "Failed to update project",
+          message: getErrorMessage(err, "Failed to update project"),
         };
       }
     },
@@ -164,14 +165,14 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
         });
 
         return { success: true, projectId, message };
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
-          error: err?.message ?? "Failed to delete project",
+          error: getErrorMessage(err, "Failed to delete project"),
           loading: false,
         });
         return {
           success: false,
-          message: err?.message ?? "Failed to delete project",
+          message: getErrorMessage(err, "Failed to delete project"),
         };
       }
     },

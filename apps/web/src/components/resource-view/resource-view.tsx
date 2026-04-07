@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useMemo } from "react";
 import { hardDeleteDiagram, softDeleteDiagram } from "@/lib/diagrams/client";
 import { useDiagramStore } from "@/store/diagramsStore";

@@ -1,6 +1,7 @@
 "use client";
 
 import { ApiError } from "../api";
+import { isRecord } from "../error-utils";
 import { frontendApiGet, frontendApiPost } from "../frontend-api";
 
 export type OAuthProvider = "google" | "github";
@@ -122,7 +123,7 @@ export async function login(email: string, password: string) {
 
     clearUserCache();
     return data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     const data = error instanceof ApiError ? error.data : error;
     const payload = data && typeof data === "object" ? data : {};
     const message =
@@ -157,7 +158,7 @@ export async function signup(
 
     clearUserCache();
     return { ok: true, data };
-  } catch (error: any) {
+  } catch (error: unknown) {
     const data = error instanceof ApiError ? error.data : {};
     const payload = data && typeof data === "object" ? data : {};
     const message =
@@ -187,7 +188,7 @@ export async function onLogout() {
       "/api/v1/auth/logout",
     );
     return data?.message;
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof ApiError) {
       throw error.data;
     }
@@ -199,7 +200,7 @@ export function startOAuth(provider: OAuthProvider) {
   if (!API_BASE_URL) {
     throw new Error("Missing env variable: NEXT_PUBLIC_API_BASE_URL");
   }
-  console.log("clicked ", provider);
+
   window.location.href = `${API_BASE_URL}/api/v1/auth/oauth/${provider}`;
 }
 
@@ -227,7 +228,7 @@ export async function verifyOtp(body: VerifyEmailOtpPayload) {
     await frontendApiPost("/api/v1/auth/otp/verify", body);
     clearUserCache();
     return { ok: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     const data = error instanceof ApiError ? error.data : {};
     return {
       ok: false,
@@ -240,7 +241,7 @@ export async function resendEmailOtp(body: ResendOtpToEmailPayload) {
   try {
     await frontendApiPost("/api/v1/auth/otp/generate", body);
     return { ok: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     const data = error instanceof ApiError ? error.data : {};
     return {
       ok: false,
@@ -295,8 +296,11 @@ export async function getCurrentUser(): Promise<User | null> {
 
   try {
     const user = await frontendApiGet<User>("/api/v1/auth/users/me");
-    writeCache(user);
-    return user;
+    if (isRecord(user)) {
+      writeCache(user as User);
+      return user as User;
+    }
+    return null;
   } catch {
     clearUserCache();
     return null;

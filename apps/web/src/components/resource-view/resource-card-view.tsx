@@ -1,4 +1,3 @@
-import React from "react";
 import ResourceCard from "./resource-card";
 import type { Resource } from "./types";
 import CardSkeleton from "./resource-card-skeleton";

@@ -534,7 +534,7 @@ export const getPendingInviteUsers = async (req, res) => {
       return sendError(res, 404, "Project not found");
     }
     const pendingUsers = await getPendingInvites(projectId);
-    console.log("pending users", pendingUsers);
+
     return sendSuccess(res, 200, "all Pending users", { pendingUsers });
   } catch (error) {
     logger.error("Error getting pending collaborators:", error);

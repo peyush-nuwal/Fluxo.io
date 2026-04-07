@@ -1,5 +1,4 @@
 "use client";
-
 import type { ReactNode } from "react";
 import { ReactFlowProvider as XYFlowProvider } from "@xyflow/react";
 

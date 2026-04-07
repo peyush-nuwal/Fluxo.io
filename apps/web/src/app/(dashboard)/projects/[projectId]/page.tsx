@@ -1,5 +1,4 @@
 "use client";
-
 import { useParams } from "next/navigation";
 import { ResourceView } from "@/components/resource-view";
 import { useProjectStore } from "@/store/projectsStore";

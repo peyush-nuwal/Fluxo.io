@@ -11,7 +11,7 @@ export type DiagramResource = {
   owner_name?: string | null;
   owner_username?: string | null;
   owner_avatar_url?: string | null;
-  data: Record<string, any>; // JSON
+  data: Record<string, unknown>; // JSON
   is_active: boolean;
   is_public: boolean;
 
@@ -48,7 +48,7 @@ export type DropDownFilterProps = {
 export type DiagramPayload = {
   name?: string | null;
   projectId?: string | null;
-  data?: Record<string, any> | null;
+  data?: Record<string, unknown> | null;
   description?: string | null;
   thumbnail_url?: string | null;
   owner_name?: string | null;

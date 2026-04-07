@@ -9,6 +9,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { login, onAuthSuccess, startOAuth } from "@/lib/auth/client";
 import PasswordInput from "@/components/password-input";
+import { isRecord } from "@/lib/error-utils";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,13 +30,17 @@ export default function LoginPage() {
       onAuthSuccess();
       toast.success("Logged in successfully!");
       router.replace("/home");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Login error:", error);
 
-      if (error?.details) {
-        setErrors(error.details);
+      if (isRecord(error) && isRecord(error.details)) {
+        setErrors(error.details as Record<string, string[]>);
       } else {
-        toast.error(error?.message || "Login failed");
+        const message =
+          isRecord(error) && typeof error.message === "string"
+            ? error.message
+            : "Login failed";
+        toast.error(message);
       }
     } finally {
       setIsSubmitting(false);

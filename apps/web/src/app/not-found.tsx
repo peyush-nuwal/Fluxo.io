@@ -1,6 +1,5 @@
 "use client";
-
-import { useCallback, useRef, type CSSProperties } from "react";
+import { useCallback, useRef } from "react";
 import ReactFlow, {
   addEdge,
   Background,
@@ -185,7 +184,7 @@ export default function NotFoundFlow() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onPaneClick = useCallback(
-    (event: any) => {
+    (event: { clientX: number; clientY: number }) => {
       const flowPos = reactFlowRef.current?.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
@@ -266,7 +265,7 @@ export default function NotFoundFlow() {
     [setEdges],
   );
 
-  const onNodeClick = (_: any, node: Node) => {
+  const onNodeClick = (_event: unknown, node: Node) => {
     if (node.id === "home") {
       router.push("/home");
     }

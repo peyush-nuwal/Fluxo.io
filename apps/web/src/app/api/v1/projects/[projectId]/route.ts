@@ -46,11 +46,8 @@ export async function GET(
     return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
       status: res.status,
     });
-  } catch (_error) {
-    return NextResponse.json(
-      buildProxyErrorPayload(null, "Internal server error"),
-      { status: 500 },
-    );
+  } catch (error) {
+    return NextResponse.json(buildProxyErrorPayload(error), { status: 500 });
   }
 }
 
@@ -104,11 +101,8 @@ export async function PUT(
     return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
       status: res.status,
     });
-  } catch (_error) {
-    return NextResponse.json(
-      buildProxyErrorPayload(null, "Internal server error"),
-      { status: 500 },
-    );
+  } catch (error) {
+    return NextResponse.json(buildProxyErrorPayload(error), { status: 500 });
   }
 }
 
@@ -153,10 +147,7 @@ export async function DELETE(
     return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
       status: res.status,
     });
-  } catch (_error) {
-    return NextResponse.json(
-      buildProxyErrorPayload(null, "Internal server error"),
-      { status: 500 },
-    );
+  } catch (error) {
+    return NextResponse.json(buildProxyErrorPayload(error), { status: 500 });
   }
 }

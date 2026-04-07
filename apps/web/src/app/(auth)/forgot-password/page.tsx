@@ -13,6 +13,7 @@ import {
   updatePassword,
   verifyPasswordResetOTP,
 } from "@/lib/auth/password.client";
+import { getErrorMessage } from "@/lib/error-utils";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -57,8 +58,8 @@ const ForgotPasswordpage = () => {
       handleOtpSentCount(res.expiresIn);
       setStep(2);
       setLoading(false);
-    } catch (err: any) {
-      toast.error(err?.error || "Failed to resend code");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Failed to resend code"));
       setLoading(false);
     }
   };
@@ -80,8 +81,8 @@ const ForgotPasswordpage = () => {
       toast.success(res.message);
       setResetToken(res.resetToken || "");
       setStep(3);
-    } catch (err: any) {
-      toast.error(err?.error || "Failed to verify otp");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Failed to verify otp"));
     } finally {
       setLoading(false);
     }
@@ -97,8 +98,8 @@ const ForgotPasswordpage = () => {
       toast.success(res.message);
       setLoading(false);
       router.replace("/login");
-    } catch (err: any) {
-      toast.error(err?.error || "Failed to update password");
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, "Failed to update password"));
       setLoading(false);
     }
   };

@@ -45,9 +45,7 @@ export async function PATCH(
     }
 
     if (!res.ok) {
-      const message =
-        data && typeof data.error === "string" ? data.error : "Request failed";
-      return NextResponse.json(buildProxyErrorPayload(data, message), {
+      return NextResponse.json(buildProxyErrorPayload(data), {
         status: res.status,
       });
     }
@@ -55,10 +53,7 @@ export async function PATCH(
     return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
       status: res.status,
     });
-  } catch {
-    return NextResponse.json(
-      buildProxyErrorPayload(null, "Internal server error"),
-      { status: 500 },
-    );
+  } catch (error) {
+    return NextResponse.json(buildProxyErrorPayload(error), { status: 500 });
   }
 }

@@ -403,7 +403,6 @@ function getDisplayName(profile) {
 export const authenticateOAuthUser = async (profile, provider) => {
   const email = profile.emails[0].value;
   let user = await isUserExist(email);
-  console.log("profile----------", profile);
 
   if (!user) {
     // Create OAuth user

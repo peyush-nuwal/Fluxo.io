@@ -1,6 +1,5 @@
 "use client";
-
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Layers, LayoutGrid, List } from "lucide-react";
 import type { FilterOption } from "@/types/diagrams";
 import { SegmentRadioGroup } from "../ui/segment-radio";
@@ -135,12 +134,12 @@ const ResourceBrowser = ({
     [filter, searchFilteredResources],
   );
 
-  useEffect(() => {
-    if (!selectedResourceId) return;
+  const resolvedSelectedResourceId = useMemo(() => {
+    if (!selectedResourceId) return null;
     const stillVisible = filteredResources.some(
       (resource) => resource.id === selectedResourceId,
     );
-    if (!stillVisible) setSelectedResourceId(null);
+    return stillVisible ? selectedResourceId : null;
   }, [filteredResources, selectedResourceId]);
 
   const hasAnyResources = resources.length > 0;
@@ -223,7 +222,7 @@ const ResourceBrowser = ({
             resources={filteredResources}
             loading={loading}
             mode={mode}
-            selectedResourceId={selectedResourceId}
+            selectedResourceId={resolvedSelectedResourceId}
             onSelectResource={setSelectedResourceId}
             onOpenResource={onOpenResource}
             onEditResource={onEditResource}
@@ -235,7 +234,7 @@ const ResourceBrowser = ({
             resources={filteredResources}
             loading={loading}
             mode={mode}
-            selectedResourceId={selectedResourceId}
+            selectedResourceId={resolvedSelectedResourceId}
             onSelectResource={setSelectedResourceId}
             onOpenResource={onOpenResource}
             onEditResource={onEditResource}

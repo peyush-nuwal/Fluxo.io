@@ -17,6 +17,7 @@ import {
   VerifyOwnerOfDiagram,
 } from "@/lib/diagrams/client";
 import { getProjectDiagrams } from "@/lib/projects/client";
+import { getErrorMessage } from "@/lib/error-utils";
 
 type DiagramState = {
   diagrams: DiagramResource[];
@@ -76,9 +77,9 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
       try {
         const data = await getDiagramsByUser();
         set({ diagrams: data?.data?.diagrams ?? [], loading: false });
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
-          error: err?.message ?? "Failed to fetch diagrams",
+          error: getErrorMessage(err, "Failed to fetch diagrams"),
           loading: false,
         });
       }
@@ -88,9 +89,9 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
       try {
         const data = await getProjectDiagrams(projectId);
         set({ diagrams: data?.data?.diagrams ?? [], loading: false });
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
-          error: err?.message ?? "Failed to fetch project diagrams",
+          error: getErrorMessage(err, "Failed to fetch project diagrams"),
           loading: false,
         });
       }
@@ -101,9 +102,9 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
       try {
         const data = await getSoftDeletedDiagrams();
         set({ diagrams: data?.data?.diagrams ?? [], loading: false });
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
-          error: err?.message ?? "Failed to fetch deleted diagrams",
+          error: getErrorMessage(err, "Failed to fetch deleted diagrams"),
           loading: false,
         });
       }
@@ -115,9 +116,9 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
         const data = await getDiagramById(diagramId);
         const diagram = data?.data?.diagram ?? null;
         set({ selectedDiagram: diagram, loading: false });
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
-          error: err?.message ?? "Failed to fetch diagram",
+          error: getErrorMessage(err, "Failed to fetch diagram"),
           loading: false,
         });
       }
@@ -136,10 +137,10 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
         set({ diagrams: [diagram, ...get().diagrams] });
 
         return { success: true, diagram, message };
-      } catch (err: any) {
+      } catch (err: unknown) {
         return {
           success: false,
-          message: err?.message ?? "Failed to create diagram",
+          message: getErrorMessage(err, "Failed to create diagram"),
         };
       }
     },
@@ -166,10 +167,10 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
         });
 
         return { success: true, diagram, message };
-      } catch (err: any) {
+      } catch (err: unknown) {
         return {
           success: false,
-          message: err?.message ?? "Failed to update diagram",
+          message: getErrorMessage(err, "Failed to update diagram"),
         };
       }
     },
@@ -196,10 +197,10 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
         });
 
         return { success: true, diagram, message };
-      } catch (err: any) {
+      } catch (err: unknown) {
         return {
           success: false,
-          message: err?.message ?? "Failed to update diagram data",
+          message: getErrorMessage(err, "Failed to update diagram data"),
         };
       }
     },
@@ -233,10 +234,10 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
         });
 
         return { success: true, diagram, message };
-      } catch (err: any) {
+      } catch (err: unknown) {
         return {
           success: false,
-          message: err?.message ?? "Failed to update active status",
+          message: getErrorMessage(err, "Failed to update active status"),
         };
       }
     },
@@ -248,9 +249,9 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
 
         if (!data) return false;
         return Boolean(data?.data?.isOwner);
-      } catch (err: any) {
+      } catch (err: unknown) {
         set({
-          error: err?.message ?? "Failed to verify diagram ownership",
+          error: getErrorMessage(err, "Failed to verify diagram ownership"),
         });
         return false;
       }

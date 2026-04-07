@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ApiError } from "./api";
+import { isRecord } from "./error-utils";
 
 type FrontendApiMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -14,7 +15,7 @@ const frontendApi = axios.create({
   withCredentials: true,
 });
 
-export async function frontendApiRequest<T = any>(
+export async function frontendApiRequest<T = unknown>(
   path: string,
   options: FrontendApiOptions = {},
 ): Promise<T> {
@@ -37,13 +38,17 @@ export async function frontendApiRequest<T = any>(
     });
 
     return response.data;
-  } catch (error: any) {
-    const status = error?.response?.status ?? 500;
-    const data = error?.response?.data ?? {};
+  } catch (error: unknown) {
+    const response = isRecord(error) ? error.response : undefined;
+    const status =
+      isRecord(response) && typeof response.status === "number"
+        ? response.status
+        : 500;
+    const data = isRecord(response) ? (response.data ?? {}) : {};
     const message =
-      typeof data?.message === "string" && data.message.trim()
+      isRecord(data) && typeof data.message === "string" && data.message.trim()
         ? data.message
-        : typeof data?.error === "string" && data.error.trim()
+        : isRecord(data) && typeof data.error === "string" && data.error.trim()
           ? data.error
           : "API request failed";
 
@@ -51,19 +56,19 @@ export async function frontendApiRequest<T = any>(
   }
 }
 
-export const frontendApiGet = <T = any>(
+export const frontendApiGet = <T = unknown>(
   path: string,
   params?: Record<string, unknown>,
 ) => frontendApiRequest<T>(path, { method: "GET", params });
 
-export const frontendApiPost = <T = any>(path: string, data?: unknown) =>
+export const frontendApiPost = <T = unknown>(path: string, data?: unknown) =>
   frontendApiRequest<T>(path, { method: "POST", data });
 
-export const frontendApiPut = <T = any>(path: string, data?: unknown) =>
+export const frontendApiPut = <T = unknown>(path: string, data?: unknown) =>
   frontendApiRequest<T>(path, { method: "PUT", data });
 
-export const frontendApiPatch = <T = any>(path: string, data?: unknown) =>
+export const frontendApiPatch = <T = unknown>(path: string, data?: unknown) =>
   frontendApiRequest<T>(path, { method: "PATCH", data });
 
-export const frontendApiDelete = <T = any>(path: string, data?: unknown) =>
+export const frontendApiDelete = <T = unknown>(path: string, data?: unknown) =>
   frontendApiRequest<T>(path, { method: "DELETE", data });

@@ -1,5 +1,4 @@
 "use client";
-
 import dynamic from "next/dynamic";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/toaster";

@@ -13,7 +13,7 @@ export const generateDiagram = async (req, res) => {
     if (!userId) return sendError(res, 401, "Unauthorized");
 
     const { prompt } = aiPromptSchema.parse(req.body);
-    console.log(prompt);
+    // console.log(prompt);
 
     const data = await generateDiagramJSON(prompt);
     return sendSuccess(res, 200, "Diagram generated successfully", { data });

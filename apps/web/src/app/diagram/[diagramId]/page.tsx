@@ -1,5 +1,4 @@
 "use client";
-
 import { use, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Sparkles } from "lucide-react";
@@ -45,7 +44,6 @@ export default function DiagramPage({ params }: DiagramPageProps) {
   useEffect(() => {
     let active = true;
 
-    setHasLoadedOnce(false);
     setSelectedDiagram(null);
     resetEditor();
     hasInitializedEditorRef.current = false;

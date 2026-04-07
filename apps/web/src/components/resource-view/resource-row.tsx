@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import RowUI from "./rowUi";
 import type { Resource } from "./types";
 import ResourceItem from "./resource-item";

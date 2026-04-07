@@ -1,5 +1,4 @@
 import type { BuiltInNode, NodeTypes } from "@xyflow/react";
-
 import PositionLoggerNode, {
   type PositionLoggerNodeType,
 } from "./positionLoggerNode";

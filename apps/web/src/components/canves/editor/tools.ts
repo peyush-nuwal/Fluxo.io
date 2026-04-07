@@ -5,10 +5,8 @@ export const TOOL_ITEMS = [
   { id: "rectangle", kind: "insert", label: "Rectangle", key: "3" },
   { id: "diamond", kind: "insert", label: "Diamond", key: "4" },
   { id: "circle", kind: "insert", label: "Circle", key: "5" },
-
   { id: "arrow", kind: "insert", label: "Arrow", key: "6" },
   { id: "pencil", kind: "insert", label: "Draw", key: "7" },
-
   { id: "eraser", kind: "mode", label: "Eraser", key: "0" },
 ] as const;
 

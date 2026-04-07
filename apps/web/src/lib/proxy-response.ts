@@ -66,8 +66,8 @@ export function buildProxyErrorPayload(data: unknown): ApiResponse<unknown> {
     typeof data === "object" &&
     data !== null &&
     "message" in data &&
-    typeof (data as any).message === "string"
-      ? (data as any).message
+    typeof (data as Record<string, unknown>).message === "string"
+      ? (data as Record<string, string>).message
       : undefined;
 
   return {

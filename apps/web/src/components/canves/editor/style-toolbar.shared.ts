@@ -1,5 +1,4 @@
 "use client";
-
 import type { CustomNodeType } from "@/components/canves/nodes";
 import {
   DEFAULT_NODE_STYLE,

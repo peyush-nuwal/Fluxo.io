@@ -45,10 +45,10 @@ export const verifyToken = (req, res, next) => {
   try {
     // 3️⃣ Verify token
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log("Token decoded successfully:", {
-      id: decoded.id,
-      email: decoded.email,
-    });
+    // console.log("Token decoded successfully:", {
+    //   id: decoded.id,
+    //   email: decoded.email,
+    // });
 
     // 4️⃣ Normalize identity (THIS IS CRITICAL)
     const userId = decoded.userId || decoded.id || decoded.sub;
@@ -66,7 +66,7 @@ export const verifyToken = (req, res, next) => {
       email: decoded.email,
     };
 
-    console.log("VERIFY TOKEN authContext:", req.authContext);
+    // console.log("VERIFY TOKEN authContext:", req.authContext);
 
     return next();
   } catch (error) {

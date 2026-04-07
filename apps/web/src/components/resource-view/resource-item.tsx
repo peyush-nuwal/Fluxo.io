@@ -139,7 +139,7 @@ const ResourceItem = ({
   return (
     <>
       {asChild ? (
-        <Slot {...(itemProps as any)}>{content as any}</Slot>
+        <Slot {...itemProps}>{content as React.ReactElement}</Slot>
       ) : (
         <div {...itemProps}>{content}</div>
       )}

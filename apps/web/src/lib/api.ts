@@ -1,4 +1,5 @@
 import axios from "axios";
+import { isRecord } from "./error-utils";
 
 // Call API gateway directly from browser in development/production.
 // This avoids duplicate proxy route maintenance in Next route handlers.
@@ -8,7 +9,7 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
-    public data?: any,
+    public data?: unknown,
   ) {
     super(message);
     this.name = "ApiError";
@@ -20,19 +21,23 @@ const api = axios.create({
   withCredentials: true,
 });
 
-function getApiErrorMessage(data: any) {
-  if (typeof data?.message === "string" && data.message.trim()) {
+function getApiErrorMessage(data: unknown) {
+  if (
+    isRecord(data) &&
+    typeof data.message === "string" &&
+    data.message.trim()
+  ) {
     return data.message;
   }
 
-  if (typeof data?.error === "string" && data.error.trim()) {
+  if (isRecord(data) && typeof data.error === "string" && data.error.trim()) {
     return data.error;
   }
 
   return "API request failed";
 }
 
-async function rawRequest(path: string, options: Record<string, any> = {}) {
+async function rawRequest(path: string, options: Record<string, unknown> = {}) {
   try {
     const isFormData =
       typeof FormData !== "undefined" && options.data instanceof FormData;
@@ -64,16 +69,20 @@ async function rawRequest(path: string, options: Record<string, any> = {}) {
       params: options.params,
     });
     return { status: res.status, data: res.data };
-  } catch (error: any) {
-    const status = error?.response?.status ?? 500;
-    const data = error?.response?.data ?? {};
+  } catch (error: unknown) {
+    const response = isRecord(error) ? error.response : undefined;
+    const status =
+      isRecord(response) && typeof response.status === "number"
+        ? response.status
+        : 500;
+    const data = isRecord(response) ? (response.data ?? {}) : {};
     return { status, data };
   }
 }
 
 export async function apiFetch(
   path: string,
-  options: Record<string, any> = {},
+  options: Record<string, unknown> = {},
 ) {
   const first = await rawRequest(path, options);
 

@@ -1,7 +1,6 @@
 "use client";
 import { File, Plus } from "lucide-react";
 import ResourceViewClient from "./ResourceViewClient";
-
 import { useModalStore } from "@/store/useModalStore";
 
 export default function DashboardPage() {

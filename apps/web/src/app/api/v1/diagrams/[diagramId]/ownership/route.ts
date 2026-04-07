@@ -51,10 +51,7 @@ export async function GET(
     return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
       status: res.status,
     });
-  } catch {
-    return NextResponse.json(
-      buildProxyErrorPayload(null, "Internal server error"),
-      { status: 500 },
-    );
+  } catch (error) {
+    return NextResponse.json(buildProxyErrorPayload(error), { status: 500 });
   }
 }

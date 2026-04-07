@@ -32,7 +32,7 @@ export async function GET(req: NextRequest): Promise<Response> {
     }
 
     if (!res.ok) {
-      return NextResponse.json(buildProxyErrorPayload(data, "Unauthorized"), {
+      return NextResponse.json(buildProxyErrorPayload(data), {
         status: res.status,
       });
     }
@@ -40,11 +40,8 @@ export async function GET(req: NextRequest): Promise<Response> {
     return NextResponse.json(buildProxySuccessPayload(data, true), {
       status: 200,
     });
-  } catch {
-    return NextResponse.json(
-      buildProxyErrorPayload(null, "Internal server error"),
-      { status: 500 },
-    );
+  } catch (error) {
+    return NextResponse.json(buildProxyErrorPayload(error), { status: 500 });
   }
 }
 
@@ -95,10 +92,7 @@ export async function POST(req: NextRequest): Promise<Response> {
     return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
       status: res.status,
     });
-  } catch {
-    return NextResponse.json(
-      buildProxyErrorPayload(null, "Internal server error"),
-      { status: 500 },
-    );
+  } catch (error) {
+    return NextResponse.json(buildProxyErrorPayload(error), { status: 500 });
   }
 }

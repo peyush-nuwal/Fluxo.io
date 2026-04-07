@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState } from "react";
 import ResourceItem from "./resource-item";
 import CardUI from "./cardUi";
 import type { Resource } from "./types";

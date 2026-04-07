@@ -1,10 +1,22 @@
 import { Check, X } from "lucide-react";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 type PasswordStrengthCheckerProps = {
   password: string;
   onStrengthChange?: (isStrong: boolean) => void;
 };
+
+function StrengthIcon({ met }: { met: boolean }) {
+  return met ? (
+    <span className="rounded-full bg-green-600 p-0.5 text-white">
+      <Check className="h-4 w-4 " />
+    </span>
+  ) : (
+    <span className="rounded-full bg-red-600 p-0.5 text-white">
+      <X className="h-4 w-4 " />
+    </span>
+  );
+}
 
 const PasswordStrengthChecker = ({
   password,
@@ -64,17 +76,6 @@ const PasswordStrengthChecker = ({
 
   const itemClass = (met: boolean) => (met ? "text-green-600" : "text-red-500");
 
-  const Icon = ({ met }: { met: boolean }) =>
-    met ? (
-      <span className="text-white bg-green-600 rounded-full p-0.5">
-        <Check className="h-4 w-4 " />
-      </span>
-    ) : (
-      <span className="text-white bg-red-600 rounded-full p-0.5">
-        <X className="h-4 w-4 " />
-      </span>
-    );
-
   return (
     <div className="w-full flex flex-col gap-2 my-2">
       <div className="h-2 w-full rounded-full bg-gray-200 overflow-hidden">
@@ -89,23 +90,23 @@ const PasswordStrengthChecker = ({
 
       <ul className="flex flex-col gap-1 text-sm">
         <li className={`flex items-center gap-2 ${itemClass(hasUpper)}`}>
-          <Icon met={hasUpper} />
+          <StrengthIcon met={hasUpper} />
           At least 1 Uppercase.
         </li>
         <li className={`flex items-center gap-2 ${itemClass(hasLower)}`}>
-          <Icon met={hasLower} />
+          <StrengthIcon met={hasLower} />
           At least 1 Lowercase.
         </li>
         <li className={`flex items-center gap-2 ${itemClass(hasSpecial)}`}>
-          <Icon met={hasSpecial} />
+          <StrengthIcon met={hasSpecial} />
           At least 1 Special character (!@#$%^&*).
         </li>
         <li className={`flex items-center gap-2 ${itemClass(hasNumber)}`}>
-          <Icon met={hasNumber} />
+          <StrengthIcon met={hasNumber} />
           At least 1 Number.
         </li>
         <li className={`flex items-center gap-2 ${itemClass(hasMinLen)}`}>
-          <Icon met={hasMinLen} />
+          <StrengthIcon met={hasMinLen} />
           At least 8 characters.
         </li>
       </ul>

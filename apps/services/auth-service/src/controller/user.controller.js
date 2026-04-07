@@ -53,10 +53,8 @@ export const changeProfileVisibilityController = async (req, res) => {
 export const uploadAvatarController = async (req, res) => {
   const userId = req.user.id;
 
-  console.log("user id -------", userId);
   if (!userId) return res.status(401).json({ error: "Unauthorized" });
   try {
-    console.log("request file ", req.file);
     const file = req.file;
 
     if (!file) return res.status(400).json({ error: "No file uploaded" });
