@@ -19,6 +19,16 @@ import {
 import { getProjectDiagrams } from "@/lib/projects/client";
 import { getErrorMessage } from "@/lib/error-utils";
 
+type DiagramsResponse = {
+  data: { diagrams: DiagramResource[] };
+  message?: string;
+};
+type DiagramResponse = { data: { diagram: DiagramResource }; message?: string };
+type DiagramOwnershipResponse = {
+  data: { isOwner: boolean };
+  message?: string;
+};
+
 type DiagramState = {
   diagrams: DiagramResource[];
   selectedDiagram: DiagramResource | null;
@@ -75,7 +85,7 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
     fetchDiagrams: async () => {
       set({ loading: true, error: null });
       try {
-        const data = await getDiagramsByUser();
+        const data = (await getDiagramsByUser()) as DiagramsResponse;
         set({ diagrams: data?.data?.diagrams ?? [], loading: false });
       } catch (err: unknown) {
         set({
@@ -87,7 +97,8 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
     fetchProjectDiagrams: async (projectId) => {
       set({ loading: true, error: null });
       try {
-        const data = await getProjectDiagrams(projectId);
+        const data = (await getProjectDiagrams(projectId)) as DiagramsResponse;
+        console.log("data", data);
         set({ diagrams: data?.data?.diagrams ?? [], loading: false });
       } catch (err: unknown) {
         set({
@@ -100,7 +111,7 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
     fetchTrashDiagrams: async () => {
       set({ loading: true, error: null });
       try {
-        const data = await getSoftDeletedDiagrams();
+        const data = (await getSoftDeletedDiagrams()) as DiagramsResponse;
         set({ diagrams: data?.data?.diagrams ?? [], loading: false });
       } catch (err: unknown) {
         set({
@@ -113,7 +124,7 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
     fetchDiagramById: async (diagramId) => {
       set({ loading: true, error: null });
       try {
-        const data = await getDiagramById(diagramId);
+        const data = (await getDiagramById(diagramId)) as DiagramResponse;
         const diagram = data?.data?.diagram ?? null;
         set({ selectedDiagram: diagram, loading: false });
       } catch (err: unknown) {
@@ -126,7 +137,7 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
 
     createDiagram: async (payload) => {
       try {
-        const data = await createDiagram(payload);
+        const data = (await createDiagram(payload)) as DiagramResponse;
         const diagram = data?.data?.diagram ?? null;
         const message = data?.message ?? "Diagram created successfully";
 
@@ -146,7 +157,10 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
     },
     updateDiagram: async (payload, diagramId) => {
       try {
-        const data = await updateDiagram(payload, diagramId);
+        const data = (await updateDiagram(
+          payload,
+          diagramId,
+        )) as DiagramResponse;
         const diagram = data?.data?.diagram ?? null;
         const message = data?.message ?? "Diagram updated successfully";
 
@@ -176,7 +190,10 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
     },
     updateDiagramData: async (diagramId, dataPayload) => {
       try {
-        const data = await updateDiagramDataRequest(diagramId, dataPayload);
+        const data = (await updateDiagramDataRequest(
+          diagramId,
+          dataPayload,
+        )) as DiagramResponse;
         const diagram = data?.data?.diagram ?? null;
         const message = data?.message ?? "Diagram updated successfully";
 
@@ -206,9 +223,9 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
     },
     setDiagramActiveState: async (diagramId, isActive) => {
       try {
-        const data = await setDiagramActiveStateRequest(diagramId, {
+        const data = (await setDiagramActiveStateRequest(diagramId, {
           is_active: isActive,
-        });
+        })) as DiagramResponse;
         const diagram = data?.data?.diagram ?? null;
         const message =
           data?.message ?? "Diagram active state updated successfully";
@@ -245,7 +262,9 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
     reset: () => set({ ...initialState }),
     verifyDiagramOwnership: async (diagramId) => {
       try {
-        const data = await VerifyOwnerOfDiagram(diagramId);
+        const data = (await VerifyOwnerOfDiagram(
+          diagramId,
+        )) as DiagramOwnershipResponse;
 
         if (!data) return false;
         return Boolean(data?.data?.isOwner);

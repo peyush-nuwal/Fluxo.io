@@ -8,7 +8,9 @@ export type OAuthProvider = "google" | "github";
 export interface User {
   id: string;
   name: string;
+  user_name: string;
   email: string;
+  avatar_url: string;
   email_verified: boolean;
 }
 

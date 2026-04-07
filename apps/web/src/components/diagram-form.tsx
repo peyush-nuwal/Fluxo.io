@@ -28,9 +28,15 @@ import { useUser } from "@/hooks/use-user";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { FileUpload } from "./file-upload";
+import { DiagramType } from "@/types/diagrams";
 type DiagramFormState = {
   success: boolean;
   error: string | null;
+};
+
+type DiagramFormModalData = {
+  mode?: "create" | "edit";
+  diagram?: DiagramType | null;
 };
 
 const initialFormState: DiagramFormState = {
@@ -45,8 +51,9 @@ export default function DiagramForm() {
   const createDiagram = useDiagramStore((s) => s.createDiagram);
   const updateDiagram = useDiagramStore((s) => s.updateDiagram);
   const { user } = useUser();
-  const mode = data?.mode ?? "create";
-  const diagram = data?.diagram;
+  const modalData = (data ?? null) as DiagramFormModalData | null;
+  const mode = modalData?.mode ?? "create";
+  const diagram = modalData?.diagram;
   const [selectedProjectId, setSelectedProjectId] = useState<string>("");
   const hasProjects = projects.length > 0;
 

@@ -12,7 +12,7 @@ import { NavProjects } from "./nav-projects";
 import { NavPrimary } from "./nav-main";
 import { NavUtilities } from "./nav-utility";
 import { NavUser } from "./nav-user";
-import { PRIMARY_NAV, PROJECT_NAV, UTILITY_NAV } from "@/config/sidebar";
+import { PRIMARY_NAV, UTILITY_NAV } from "@/config/sidebar";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -74,7 +74,7 @@ export function AppSidebar() {
         {/* ---------- main navigation options -----------        */}
         <NavPrimary items={items} />
         {/* ---------- Projects -----------        */}
-        <NavProjects projects={PROJECT_NAV} />
+        <NavProjects />
 
         {/* ---------- utilities -----------        */}
         <NavUtilities items={utilItems} className="mt-auto" />

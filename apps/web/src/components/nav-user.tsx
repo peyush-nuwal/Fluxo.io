@@ -81,8 +81,6 @@ export function NavUser() {
     relative
     data-[state=open]:bg-sidebar-accent
     data-[state=open]:text-sidebar-accent-foreground
-
-
   "
             >
               {loading ? (

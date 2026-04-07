@@ -14,6 +14,18 @@ import {
 import { create } from "zustand";
 import { getErrorMessage } from "@/lib/error-utils";
 
+type ProjectsResponse = { data: { projects: ProjectType[] }; message?: string };
+type ProjectResponse = { data: { project: ProjectType }; message?: string };
+type CreateProjectResponse = {
+  data: { project: ProjectType };
+  message?: string;
+};
+type UpdateProjectResponse = {
+  data: { project: ProjectType };
+  message?: string;
+};
+type DeleteProjectResponse = { message?: string };
+
 type ProjectState = {
   projects: ProjectType[];
   selectedProject: ProjectType | null;
@@ -62,7 +74,8 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
     fetchProject: async () => {
       set({ loading: true, error: null });
       try {
-        const data = await getProjects();
+        const data = (await getProjects()) as ProjectsResponse;
+        console.log("data", data);
         set({ projects: data?.data?.projects ?? [], loading: false });
       } catch (err: unknown) {
         set({
@@ -74,7 +87,7 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
     fetchProjectById: async (projectId) => {
       set({ loading: true, error: null });
       try {
-        const data = await getProjectById(projectId);
+        const data = (await getProjectById(projectId)) as ProjectResponse;
         const project = data?.data?.project ?? null;
         set({ selectedProject: project, loading: false });
       } catch (err: unknown) {
@@ -87,7 +100,9 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
     createProject: async (payload) => {
       set({ loading: true, error: null });
       try {
-        const data = await createProjectRequest(payload);
+        const data = (await createProjectRequest(
+          payload,
+        )) as CreateProjectResponse;
         const project = data?.data?.project ?? null;
         const message = data?.message ?? "Project created successfully";
 
@@ -112,7 +127,10 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
     updateProject: async (projectId, payload) => {
       set({ loading: true, error: null });
       try {
-        const data = await updateProjectRequest(projectId, payload);
+        const data = (await updateProjectRequest(
+          projectId,
+          payload,
+        )) as UpdateProjectResponse;
         const project = data?.data?.project ?? null;
         const message = data?.message ?? "Project updated successfully";
 
@@ -150,7 +168,9 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
     deleteProject: async (projectId) => {
       set({ loading: true, error: null });
       try {
-        const data = await deleteProjectRequest(projectId);
+        const data = (await deleteProjectRequest(
+          projectId,
+        )) as DeleteProjectResponse;
         const message = data?.message ?? "Project deleted successfully";
 
         set({

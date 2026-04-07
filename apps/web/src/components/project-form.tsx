@@ -16,6 +16,7 @@ import { Textarea } from "./ui/textarea";
 import { toast } from "sonner";
 import { useProjectStore } from "@/store/projectsStore";
 import { FileUpload } from "./file-upload";
+import type { ProjectType } from "@/types/project";
 
 type ProjectFormState = {
   success: boolean;
@@ -27,12 +28,18 @@ const initialFormState: ProjectFormState = {
   error: null,
 };
 
+type ProjectFormModalData = {
+  mode?: "create" | "edit";
+  project?: ProjectType | null;
+};
+
 const ProjectForm = () => {
   const { modelType, close, data } = useModalStore();
   const { user } = useUser();
   const { createProject, updateProject } = useProjectStore();
-  const mode = data?.mode ?? "create";
-  const project = data?.project;
+  const modalData = (data ?? null) as ProjectFormModalData | null;
+  const mode = modalData?.mode ?? "create";
+  const project = modalData?.project ?? null;
 
   const [formState, formAction] = useActionState(
     async (_prevState: ProjectFormState, formData: FormData) => {
@@ -116,7 +123,7 @@ const ProjectForm = () => {
               id="title"
               name="title"
               placeholder="Untitled Project"
-              defaultValue={mode == "edit" ? project.title : ""}
+              defaultValue={mode === "edit" ? (project?.title ?? "") : ""}
             />
           </Field>
           <Field>
@@ -127,7 +134,7 @@ const ProjectForm = () => {
               placeholder="Write a short description (optional)"
               rows={6}
               className="min-h-32!"
-              defaultValue={mode === "edit" ? project?.description : ""}
+              defaultValue={mode === "edit" ? (project?.description ?? "") : ""}
             />
           </Field>
           <Field>

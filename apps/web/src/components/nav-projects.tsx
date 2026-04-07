@@ -34,7 +34,6 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ProjectNavItem } from "@/types/sidebar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useProjectStore } from "@/store/projectsStore";
 import { Button } from "./ui/button";
@@ -43,11 +42,7 @@ import { ProjectType } from "@/types/project";
 import DeleteAlertDialog from "./delete-alert-dialog";
 import { toast } from "sonner";
 
-type NavProjectsProps = {
-  projects: ProjectNavItem[];
-};
-
-export function NavProjects({ projects: _projects }: NavProjectsProps) {
+export function NavProjects() {
   const { isMobile } = useSidebar();
   const pathname = usePathname();
   const router = useRouter();

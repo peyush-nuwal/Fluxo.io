@@ -1,4 +1,4 @@
-export type DiagramResource = {
+export type DiagramType = {
   id: string; // UUID
   project_id: string; // UUID
   user_id: string; // UUID
@@ -14,9 +14,7 @@ export type DiagramResource = {
   data: Record<string, unknown>; // JSON
   is_active: boolean;
   is_public: boolean;
-
   views: number;
-
   created_at: string; // ISO timestamp
   updated_at: string; // ISO timestamp
   deleted_at?: string | null; // nullable
