@@ -1,5 +1,7 @@
+import UnderConstruction from "@/components/under-construction";
+
 const communityPage = () => {
-  return <div>communityPage</div>;
+  return <UnderConstruction />;
 };
 
 export default communityPage;
