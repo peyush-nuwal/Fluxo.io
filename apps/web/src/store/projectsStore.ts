@@ -75,7 +75,6 @@ export const useProjectStore = create<ProjectState & ProjectActions>(
       set({ loading: true, error: null });
       try {
         const data = (await getProjects()) as ProjectsResponse;
-        console.log("data", data);
         set({ projects: data?.data?.projects ?? [], loading: false });
       } catch (err: unknown) {
         set({

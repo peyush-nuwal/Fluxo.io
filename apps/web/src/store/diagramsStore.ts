@@ -98,7 +98,7 @@ export const useDiagramStore = create<DiagramState & DiagramActions>(
       set({ loading: true, error: null });
       try {
         const data = (await getProjectDiagrams(projectId)) as DiagramsResponse;
-        console.log("data", data);
+
         set({ diagrams: data?.data?.diagrams ?? [], loading: false });
       } catch (err: unknown) {
         set({
