@@ -144,36 +144,21 @@ export function NavUser() {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem
-                    onSelect={handleOpenThemeDialog}
-                    className="data-highlighted:bg-sidebar-accent
-    data-highlighted:text-sidebar-primary dp-group"
-                  >
-                    <Palette className="dp-group:text-sidebar-primary" />
-                    Appearance
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem
                     className="data-highlighted:bg-sidebar-accent
     data-highlighted:text-sidebar-primary dp-group"
                   >
                     <BadgeCheck className="dp-group:text-sidebar-primary" />
                     Account
                   </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuGroup>
                   <DropdownMenuItem
+                    onSelect={handleOpenThemeDialog}
                     className="data-highlighted:bg-sidebar-accent
     data-highlighted:text-sidebar-primary dp-group"
                   >
-                    <CreditCard className="dp-group:text-sidebar-primary" />
-                    Billing
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className="data-highlighted:bg-sidebar-accent
-    data-highlighted:text-sidebar-primary dp-group"
-                  >
-                    <Bell className="dp-group:text-sidebar-primary" />
-                    Notifications
+                    <Palette className="dp-group:text-sidebar-primary" />
+                    Appearance
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

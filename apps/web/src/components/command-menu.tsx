@@ -1,11 +1,10 @@
 "use client";
 import {
-  Calculator,
-  Calendar,
   CreditCard,
+  Folder,
   Palette,
+  Plus,
   Settings,
-  Smile,
   User,
 } from "lucide-react";
 import {
@@ -68,21 +67,16 @@ const CommandMenu = () => {
             <CommandEmpty>No results found.</CommandEmpty>
 
             <CommandGroup heading="Suggestions">
-              <CommandItem>
-                <Calendar />
-                <span>Calendar</span>
+              <CommandItem onSelect={() => openModal("DiagramForm")}>
+                <Plus />
+                <span>Create Diagram</span>
               </CommandItem>
-              <CommandItem>
-                <Smile />
-                <span>Search Emoji</span>
-              </CommandItem>
-              <CommandItem disabled>
-                <Calculator />
-                <span>Calculator</span>
+              <CommandItem onSelect={() => openModal("ProjectForm")}>
+                <Folder />
+                <span>Create Project</span>
               </CommandItem>
             </CommandGroup>
             <CommandSeparator />
-
             <CommandGroup heading="Settings">
               <CommandItem>
                 <User />
@@ -96,10 +90,6 @@ const CommandMenu = () => {
               >
                 <Palette />
                 <span>Appearance</span>
-              </CommandItem>
-              <CommandItem>
-                <CreditCard />
-                <span>Billing</span>
               </CommandItem>
               <CommandItem>
                 <Settings />

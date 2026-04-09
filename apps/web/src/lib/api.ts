@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { isRecord } from "./error-utils";
 
 // Call API gateway directly from browser in development/production.
@@ -42,7 +42,7 @@ async function rawRequest(path: string, options: Record<string, unknown> = {}) {
     const isFormData =
       typeof FormData !== "undefined" && options.data instanceof FormData;
 
-    const headers = { ...(options.headers || {}) };
+    const headers = { ...(options.headers || {}) } as Record<string, unknown>;
     if (isFormData) {
       delete headers["Content-Type"];
       delete headers["content-type"];
@@ -63,8 +63,8 @@ async function rawRequest(path: string, options: Record<string, unknown> = {}) {
 
     const res = await api.request({
       url: path,
-      method: options.method || "GET",
-      headers,
+      method: (options.method as string) || "GET",
+      headers: headers as AxiosRequestConfig["headers"],
       data: requestData,
       params: options.params,
     });
