@@ -5,14 +5,18 @@ import { Input } from "@/components/ui/input";
 
 type FileUploadProps = {
   name: string;
+  title?: string;
   accept?: string;
   initialPreview?: string | null;
+  onSelect?: (file: File, previewUrl: string) => void;
 };
 
 export function FileUpload({
   name,
+  title = "",
   accept = "image/*",
   initialPreview,
+  onSelect,
 }: FileUploadProps) {
   const [previewOverride, setPreviewOverride] = useState<
     string | null | undefined
@@ -26,6 +30,7 @@ export function FileUpload({
 
     const url = URL.createObjectURL(file);
     setPreviewOverride(url);
+    onSelect?.(file, url);
   };
 
   const removeImage = () => {
@@ -66,7 +71,7 @@ export function FileUpload({
         >
           <Image className="size-6 text-muted-foreground" />
 
-          <p className="text-sm font-medium">Click to upload thumbnail</p>
+          <p className="text-sm font-medium">{title}</p>
 
           <p className="text-xs text-muted-foreground">
             PNG, JPG, WEBP • Max size 2MB

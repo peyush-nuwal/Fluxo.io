@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import type {
   DiagramPayload,
-  DiagramResource,
+  DiagramType,
   UpdateDiagramPayload,
 } from "@/types/diagrams";
 import {
@@ -20,29 +20,29 @@ import { getProjectDiagrams } from "@/lib/projects/client";
 import { getErrorMessage } from "@/lib/error-utils";
 
 type DiagramsResponse = {
-  data: { diagrams: DiagramResource[] };
+  data: { diagrams: DiagramType[] };
   message?: string;
 };
-type DiagramResponse = { data: { diagram: DiagramResource }; message?: string };
+type DiagramResponse = { data: { diagram: DiagramType }; message?: string };
 type DiagramOwnershipResponse = {
   data: { isOwner: boolean };
   message?: string;
 };
 
 type DiagramState = {
-  diagrams: DiagramResource[];
-  selectedDiagram: DiagramResource | null;
+  diagrams: DiagramType[];
+  selectedDiagram: DiagramType | null;
   loading: boolean;
   error: string | null;
 };
 type diagramResult = {
   success: boolean;
-  diagram?: DiagramResource;
+  diagram?: DiagramType;
   message?: string;
 };
 type DiagramActions = {
-  setDiagrams: (diagrams: DiagramResource[]) => void;
-  setSelectedDiagram: (diagram: DiagramResource | null) => void;
+  setDiagrams: (diagrams: DiagramType[]) => void;
+  setSelectedDiagram: (diagram: DiagramType | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   fetchDiagrams: () => Promise<void>;
