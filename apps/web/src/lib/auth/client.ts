@@ -5,6 +5,14 @@ import { isRecord } from "../error-utils";
 import { frontendApiGet, frontendApiPost } from "../frontend-api";
 
 export type OAuthProvider = "google" | "github";
+
+type MetaDataType = {
+  bio: string;
+  work: string;
+  website: string;
+  location: string;
+};
+
 export interface User {
   id: string;
   name: string;
@@ -12,6 +20,7 @@ export interface User {
   email: string;
   avatar_url: string;
   email_verified: boolean;
+  metadata: MetaDataType;
 }
 
 const USER_CACHE_KEY = "user_cache";
@@ -112,6 +121,52 @@ function normalizeErrorDetails(
   }
 
   return normalized;
+}
+
+function asString(value: unknown): string {
+  return typeof value === "string" ? value : "";
+}
+
+function normalizeMetadata(value: unknown): MetaDataType {
+  const source = isRecord(value) ? value : {};
+  return {
+    bio: asString(source.bio),
+    work: asString(source.work),
+    website: asString(source.website),
+    location: asString(source.location),
+  };
+}
+
+function toUser(value: unknown): User | null {
+  if (!isRecord(value)) return null;
+
+  const userName = asString(value.user_name);
+  const email = asString(value.email);
+
+  if (!userName || !email) {
+    return null;
+  }
+
+  return {
+    id: asString(value.id),
+    name: asString(value.name),
+    user_name: userName,
+    email,
+    avatar_url: asString(value.avatar_url),
+    email_verified: Boolean(value.email_verified),
+    metadata: normalizeMetadata(value.metadata),
+  };
+}
+
+function extractUserPayload(payload: unknown): User | null {
+  // Prefer standard API envelope: { success, message, data: {...user} }
+  if (isRecord(payload) && "data" in payload) {
+    const nested = toUser(payload.data);
+    if (nested) return nested;
+  }
+
+  // Fallback for endpoints that return raw user object.
+  return toUser(payload);
 }
 
 /* ------------------ Auth ------------------ */
@@ -297,11 +352,14 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 
   try {
-    const user = await frontendApiGet<User>("/api/v1/auth/users/me");
-    if (isRecord(user)) {
-      writeCache(user as User);
-      return user as User;
+    const response = await frontendApiGet<unknown>("/api/v1/auth/users/me");
+    const user = extractUserPayload(response);
+
+    if (user) {
+      writeCache(user);
+      return user;
     }
+
     return null;
   } catch {
     clearUserCache();

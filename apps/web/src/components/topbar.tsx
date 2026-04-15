@@ -11,19 +11,19 @@ const Topbar = () => {
   const openModal = useModalStore((s) => s.open);
 
   return (
-    <div className="w-full h-16 flex items-center justify-between px-4 bg-card border-b border-b-border border-solid">
-      <div className="flex items-center gap-5">
+    <div className="w-full h-16 flex items-center justify-between px-3 sm:px-4 bg-card border-b border-b-border border-solid">
+      <div className="flex items-center gap-2 sm:gap-5">
         <SidebarTrigger className="size-10!" />
       </div>
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-2 sm:gap-3 md:gap-5 min-w-0">
         <div className="relative ">
           <Input
-            className=" min-w-3xs h-10 "
+            className="h-10 w-40 sm:w-52 md:w-64 min-w-0"
             placeholder="Search..."
             readOnly
             onClick={() => openModal("commandMenuDialog")}
           />
-          <KbdGroup className="absolute top-1/2 -translate-y-1/2 right-2 bg-background!  rounded-lg px-2 py-1">
+          <KbdGroup className="hidden sm:flex absolute top-1/2 -translate-y-1/2 right-2 bg-background! rounded-lg px-2 py-1">
             <Kbd>Ctrl</Kbd>
             <span>+</span>
             <Kbd>k</Kbd>
@@ -32,7 +32,7 @@ const Topbar = () => {
         <Button
           variant="default"
           size="sm"
-          className="bg-blue-600 text-white hover:bg-blue-700 hove:text-gray-300 transition-colors ease-in duration-150"
+          className="hidden sm:inline-flex bg-blue-600 text-white hover:bg-blue-700 hove:text-gray-300 transition-colors ease-in duration-150"
         >
           <Send />
           Invite

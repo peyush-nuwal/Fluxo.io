@@ -85,13 +85,13 @@ const ImageUploadInput = ({
   }, [userName]);
 
   return (
-    <div className="w-full max-w-md space-y-4">
+    <div className=" space-y-4">
       {previewAvatar ? (
         <div className="size-30 overflow-hidden rounded-full border border-border">
           <img
             src={previewAvatar}
-            alt={`${userName} avatar`}
-            className="h-full w-full object-cover"
+            alt={`${userName?.trim()?.[0]} `}
+            className="h-full w-full object-cover flex items-center justify-center"
           />
         </div>
       ) : (
