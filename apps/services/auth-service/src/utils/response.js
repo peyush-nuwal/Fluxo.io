@@ -8,12 +8,11 @@ const getData = (payload) => {
   return payload ?? null;
 };
 
-export const sendSuccess = (res, status, message, payload = {}) =>
+export const sendSuccess = (res, status, message, payload = null) =>
   res.status(status).json({
     success: true,
     message,
-    data: getData(payload),
-    ...(isObject(payload) ? payload : {}),
+    data: payload,
   });
 
 export const sendError = (res, status, message, payload = {}) =>

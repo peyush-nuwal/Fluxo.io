@@ -1,5 +1,6 @@
 "use client";
 
+import { unknown } from "zod";
 import { ApiError } from "../api";
 import { isRecord } from "../error-utils";
 import { frontendApiGet, frontendApiPost } from "../frontend-api";
@@ -365,6 +366,10 @@ export async function getCurrentUser(): Promise<User | null> {
     clearUserCache();
     return null;
   }
+}
+
+export function uploadUserAvatar(payload: FormData) {
+  return frontendApiPost("/api/v1/auth/users/avatar", payload);
 }
 
 /**

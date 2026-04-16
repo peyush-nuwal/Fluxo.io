@@ -37,7 +37,7 @@ export async function GET(req: NextRequest): Promise<Response> {
       });
     }
 
-    return NextResponse.json(buildProxySuccessPayload(data, true), {
+    return NextResponse.json(buildProxySuccessPayload(data), {
       status: 200,
     });
   } catch (error) {
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest): Promise<Response> {
       });
     }
 
-    return NextResponse.json(buildProxySuccessPayload(data, res.ok), {
+    return NextResponse.json(buildProxySuccessPayload(data), {
       status: res.status,
     });
   } catch (error) {

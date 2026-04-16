@@ -28,6 +28,21 @@ type UnknownRecord = Record<string, unknown>;
 const isRecord = (value: unknown): value is UnknownRecord =>
   !!value && typeof value === "object" && !Array.isArray(value);
 
+const hasSuccessFlag = (value: unknown): value is UnknownRecord =>
+  isRecord(value) && typeof value.success === "boolean";
+
+function extractPayloadData(value: UnknownRecord): unknown {
+  if ("data" in value) {
+    return value.data;
+  }
+
+  const normalized = { ...value };
+  delete normalized.success;
+  delete normalized.message;
+
+  return normalized;
+}
+
 const hasApiResponseShape = (value: unknown): value is ApiResponse<unknown> => {
   if (!isRecord(value)) return false;
   return (
@@ -39,7 +54,6 @@ const hasApiResponseShape = (value: unknown): value is ApiResponse<unknown> => {
 
 export function buildProxySuccessPayload(
   data: unknown,
-  success = true,
   fallback = "Request successful",
 ): ApiResponse<unknown> {
   if (hasApiResponseShape(data)) {
@@ -47,9 +61,9 @@ export function buildProxySuccessPayload(
   }
 
   return {
-    success,
+    success: true,
     message: getProxyResponseMessage(data, fallback),
-    data,
+    data: { data, test: "message for testing" }, // <-- no extraction magic
   };
 }
 

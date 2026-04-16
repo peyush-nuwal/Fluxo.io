@@ -33,7 +33,7 @@ export async function GET(req: Request): Promise<Response> {
       });
     }
 
-    return NextResponse.json(buildProxySuccessPayload(data, true), {
+    return NextResponse.json(buildProxySuccessPayload(data), {
       status: 200,
     });
   } catch (error) {

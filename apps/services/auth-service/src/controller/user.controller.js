@@ -17,174 +17,143 @@ import {
 } from "../../../../../packages/zod-schemas/index.js";
 import { isUsernameExist } from "../service/auth.service.js";
 import { formatValidationsError } from "../utils/format.js";
+import { sendError, sendSuccess } from "../utils/response.js";
 
 export const changeProfileVisibilityController = async (req, res) => {
   const userId = req.user?.id;
 
-  if (!userId) {
-    return res.status(401).json({ message: "Invalid or missing token" });
-  }
+  if (!userId) return sendError(res, 401, "Invalid or missing token");
 
   try {
     const { make_public } = req.body;
-
-    // normalize boolean (important)
     const isPublic = Boolean(make_public);
 
     const updatedUsers = await changeProfileVisibility(userId, isPublic);
 
     if (updatedUsers.length === 0) {
-      return res.status(404).json({ message: "User not found" });
+      return sendError(res, 404, "User not found");
     }
 
-    return res.status(200).json({
-      message: "Profile visibility updated",
+    return sendSuccess(res, 200, "Profile visibility updated", {
       is_profile_public: isPublic,
     });
   } catch (error) {
     logger.error("Failed while changing user profile visibility", error);
-
-    return res.status(500).json({
-      message: "Failed to update profile visibility",
-    });
+    return sendError(res, 500, "Failed to update profile visibility");
   }
 };
 
 export const uploadAvatarController = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user?.id;
 
-  if (!userId) return res.status(401).json({ error: "Unauthorized" });
+  if (!userId) return sendError(res, 401, "Unauthorized");
+
   try {
     const file = req.file;
-
-    if (!file) return res.status(400).json({ error: "No file uploaded" });
+    if (!file) return sendError(res, 400, "No file uploaded");
 
     const avatar = await uploadAvatar(userId, file);
 
-    // updating avatar url in neon db
     await db
       .update(users)
       .set({ avatar_url: avatar.url, updated_at: new Date() })
       .where(eq(users.id, userId));
 
-    logger.info("file uploaded successfully");
-    res.json({ success: true, avatarUrl: avatar.url });
+    logger.info("Avatar uploaded successfully");
+
+    return sendSuccess(res, 200, "Avatar uploaded successfully", {
+      avatarUrl: avatar.url,
+    });
   } catch (error) {
-    logger.error("avatar upload failed ", error);
-    console.error(error);
-    res.status(500).json({ error: "Avatar upload failed" });
+    logger.error("Avatar upload failed", error);
+    return sendError(res, 500, "Avatar upload failed");
   }
 };
 
 export const getUserProfile = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user?.id;
 
-  if (!userId) {
-    return res
-      .status(401)
-      .json({ message: "Unauthorized not getting user id" });
-  }
+  if (!userId) return sendError(res, 401, "Unauthorized");
 
   try {
     const user = await getUserProfileById(userId);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return sendError(res, 404, "User not found");
 
     logger.info({ userId }, "User profile fetched");
 
-    return res.status(200).json(user);
+    return sendSuccess(res, 200, "User profile fetched", { user });
   } catch (error) {
     logger.error({ err: error, userId }, "Failed to fetch user profile");
-
-    return res.status(500).json({
-      message: "Failed to get user profile",
-    });
+    return sendError(res, 500, "Failed getting user profile");
   }
 };
 
 export const getUserPublicProfile = async (req, res) => {
-  const userId = req.params?.id; // set by auth middleware
+  const userId = req.params?.id;
 
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+  if (!userId) return sendError(res, 401, "Unauthorized");
 
   try {
     const user = await getPublicUserProfileById(userId);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return sendError(res, 404, "User not found");
 
     logger.info({ userId }, "User public profile fetched");
 
-    return res.status(200).json(user);
+    return sendSuccess(res, 200, "User public profile fetched", { user });
   } catch (error) {
     logger.error({ err: error, userId }, "Failed to fetch user public profile");
-
-    return res.status(500).json({
-      message: "Failed to get user public profile",
-    });
+    return sendError(res, 500, "Failed getting user public profile");
   }
 };
 
 export const updateUserProfileController = async (req, res) => {
   const userId = req.user?.id;
 
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
+  if (!userId) return sendError(res, 401, "Unauthorized");
 
   try {
     const parsed = updateUserProfileSchema.safeParse(req.body);
 
     if (!parsed.success) {
-      return res.status(400).json({
-        message: "Invalid request body",
+      return sendError(res, 400, "Invalid request body", {
         errors: formatValidationsError(parsed.error),
       });
     }
 
     const payload = { ...parsed.data };
 
-    // ✅ Username update (only if provided)
+    // Username update
     if (parsed.data.user_name) {
       const normalizedUsername = parsed.data.user_name.trim().toLowerCase();
 
       const exists = await isUsernameExist(normalizedUsername, userId);
       if (exists) {
-        return res.status(409).json({
-          message: "Username already exists",
-        });
+        return sendError(res, 409, "Username already exists");
       }
 
       payload.user_name = normalizedUsername;
     }
 
-    // ✅ Avatar upload (optional)
+    // Avatar upload (optional)
     if (req.file) {
       const uploadResult = await uploadAvatar(userId, req.file);
       payload.avatar_url = uploadResult.url;
     }
 
     if (Object.keys(payload).length === 0) {
-      return res.status(400).json({ message: "Nothing to update" });
+      return sendError(res, 400, "Nothing to update");
     }
 
     const updatedUser = await updateUserProfile(userId, payload);
 
-    return res.status(200).json({
-      message: "Profile updated successfully",
-      data: updatedUser,
+    return sendSuccess(res, 200, "Profile updated successfully", {
+      user: updatedUser,
     });
   } catch (error) {
     logger.error({ err: error, userId }, "Failed updating user profile");
-
-    return res.status(500).json({
-      message: "Failed updating user profile",
-    });
+    return sendError(res, 500, "Failed updating user profile");
   }
 };
 
@@ -192,35 +161,30 @@ export const getUsersByEmailsController = async (req, res) => {
   try {
     const expectedToken = process.env.INTERNAL_SERVICE_TOKEN;
     const incomingToken = req.headers["x-internal-service-token"];
+
     if (
       !expectedToken ||
       typeof incomingToken !== "string" ||
       incomingToken !== expectedToken
     ) {
-      return res.status(403).json({
-        message: "Forbidden",
-      });
+      return sendError(res, 403, "Forbidden");
     }
 
     const parsed = getUsersByEmailsSchema.safeParse(req.body);
 
     if (!parsed.success) {
-      return res.status(400).json({
-        message: "Invalid request body",
+      return sendError(res, 400, "Invalid request body", {
         errors: formatValidationsError(parsed.error),
       });
     }
 
-    const users = await getUsersByEmails(parsed.data.emails);
+    const usersList = await getUsersByEmails(parsed.data.emails);
 
-    return res.status(200).json({
-      message: "Users fetched successfully",
-      users,
+    return sendSuccess(res, 200, "Users fetched successfully", {
+      users: usersList,
     });
   } catch (error) {
     logger.error({ err: error }, "Failed fetching users by emails");
-    return res.status(500).json({
-      message: "Failed to fetch users",
-    });
+    return sendError(res, 500, "Failed to fetch users");
   }
 };

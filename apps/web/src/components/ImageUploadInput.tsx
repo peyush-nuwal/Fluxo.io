@@ -19,6 +19,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { uploadUserAvatar } from "@/lib/auth";
+import { toast } from "sonner";
 
 type ImageUploadProps = {
   userName: string;
@@ -65,6 +67,11 @@ async function getCroppedImageDataUrl(
   return canvas.toDataURL("image/jpeg", 0.92);
 }
 
+async function dataUrlToBlob(dataUrl: string): Promise<Blob> {
+  const response = await fetch(dataUrl);
+  return response.blob();
+}
+
 const ImageUploadInput = ({
   userName,
   userAvatar,
@@ -84,6 +91,18 @@ const ImageUploadInput = ({
     return firstChar ? firstChar.toUpperCase() : "U";
   }, [userName]);
 
+  const onClickUploadAvatar = async (avatar: string) => {
+    const avatarBlob = await dataUrlToBlob(avatar);
+    const avatarFile = new File([avatarBlob], "avatar.jpg", {
+      type: avatarBlob.type || "image/jpeg",
+    });
+
+    const formData = new FormData();
+    formData.append("avatar", avatarFile);
+    setPreviewAvatar(avatar);
+    const res = await uploadUserAvatar(formData);
+    console.log(res);
+  };
   return (
     <div className=" space-y-4">
       {previewAvatar ? (
@@ -114,7 +133,7 @@ const ImageUploadInput = ({
         open={isChangePhoto}
         setOpen={setIsChangePhoto}
         initialImage={previewAvatar}
-        onSave={(croppedImage) => setPreviewAvatar(croppedImage)}
+        onSave={(croppedImage) => onClickUploadAvatar(croppedImage)}
       />
     </div>
   );
@@ -206,7 +225,7 @@ const EditImageDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[640px]">
+      <DialogContent className="sm:max-w-160">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
             Change photo

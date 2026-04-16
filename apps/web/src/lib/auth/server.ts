@@ -1,18 +1,18 @@
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 
-const API_URL = process.env.API_URL!;
+// const API_URL = process.env.API_URL!;
 
-export async function getCurrentUserServer() {
-  const cookieStore = cookies();
+// export async function getCurrentUserServer() {
+//   const cookieStore = cookies();
 
-  const res = await fetch(`${API_URL}/api/v1/auth/user/me`, {
-    headers: {
-      cookie: cookieStore.toString(),
-    },
-    credentials: "include",
-    cache: "no-store",
-  });
+//   const res = await fetch(`${API_URL}/api/v1/auth/user/me`, {
+//     headers: {
+//       cookie: cookieStore.toString(),
+//     },
+//     credentials: "include",
+//     cache: "no-store",
+//   });
 
-  if (!res.ok) return null;
-  return res.json();
-}
+//   if (!res.ok) return null;
+//   return res.json();
+// }
