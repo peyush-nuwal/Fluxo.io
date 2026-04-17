@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Dispatch, SetStateAction, useState } from "react";
 import { generateDiagramFromPrompt } from "@/lib/ai/client";
 import { toast } from "sonner";
-import DiagramLoader from "./ui/diagram-loader";
+import Loader from "./ui/Loader";
 import { useDiagramEditorStore } from "@/store/diagramEditorStore";
 import { CustomEdgeType } from "./canves/edges";
 import { CustomNodeType } from "./canves/nodes";
@@ -190,7 +190,7 @@ const GenAiForm = ({ open, setOpen }: GenAiFormProp) => {
   if (isLoading)
     return (
       <div className="fixed top-0 left-0 h-screen! w-screen! event-none flex items-center justify-center bg-black/50">
-        <DiagramLoader />
+        <Loader />
       </div>
     );
   return (

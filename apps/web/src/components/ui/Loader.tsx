@@ -2,14 +2,10 @@
 
 import { motion, cubicBezier } from "motion/react";
 
-type DiagramLoaderProps = {
-  className?: string;
-};
-
 const EASE = cubicBezier(0.785, 0.135, 0.15, 0.86);
 const DURATION = 3;
 
-export default function DiagramLoader({ className }: DiagramLoaderProps) {
+export default function Loader() {
   return (
     <div className="relative h-11 w-11 text-primary">
       {/* Dot */}

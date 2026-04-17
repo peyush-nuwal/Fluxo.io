@@ -60,10 +60,13 @@ export function buildProxySuccessPayload(
     return data;
   }
 
+  const payloadData =
+    isRecord(data) && hasSuccessFlag(data) ? extractPayloadData(data) : data;
+
   return {
     success: true,
     message: getProxyResponseMessage(data, fallback),
-    data: { data, test: "message for testing" }, // <-- no extraction magic
+    data: payloadData,
   };
 }
 

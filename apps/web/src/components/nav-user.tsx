@@ -1,12 +1,5 @@
 "use client";
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Palette,
-} from "lucide-react";
+import { BadgeCheck, ChevronsUpDown, LogOut, Palette } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -40,6 +33,9 @@ export function NavUser() {
   const { user, loading } = useUser();
   const { resetTheme, setMode } = useTheme();
   const { open } = useModalStore();
+  const displayName = user?.user_name?.trim() || "User";
+  const displayEmail = user?.email || "";
+  const isVerified = user?.email_verified === true;
 
   // handle theme opening state
   const handleOpenThemeDialog = (e: Event) => {
@@ -94,18 +90,22 @@ export function NavUser() {
               ) : (
                 <>
                   <Avatar className="h-8 w-8 rounded-lg  items-center">
-                    <AvatarImage src={user?.avatar_url} alt={user?.user_name} />
+                    <AvatarImage src={user?.avatar_url} alt={displayName} />
                     <AvatarFallback className="rounded-lg">
-                      {user?.user_name?.[0] ?? "U"}
+                      {displayName[0] ?? "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                    <span className="truncate font-medium">
-                      {user?.user_name ?? ""}
+                    <span className="inline-flex items-center gap-1 truncate font-medium">
+                      {displayName}
+                      {isVerified ? (
+                        <BadgeCheck
+                          className="size-4 shrink-0 text-emerald-500"
+                          aria-label="Email verified"
+                        />
+                      ) : null}
                     </span>
-                    <span className="truncate text-xs">
-                      {user?.email ?? ""}
-                    </span>
+                    <span className="truncate text-xs">{displayEmail}</span>
                   </div>
                   <ChevronsUpDown className="ml-auto size-4 group-data-[collapsible=icon]:hidden" />
                 </>
@@ -128,16 +128,22 @@ export function NavUser() {
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex items-center  gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={user?.avatar_url} alt={user?.name} />
+                      <AvatarImage src={user?.avatar_url} alt={displayName} />
                       <AvatarFallback className="rounded-lg">
-                        {user?.user_name?.[0] ?? "U"}
+                        {displayName[0] ?? "U"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-medium">
-                        {user?.user_name}
+                      <span className="inline-flex items-center gap-1 truncate font-medium">
+                        {displayName}
+                        {isVerified ? (
+                          <BadgeCheck
+                            className="size-4 shrink-0 text-emerald-500"
+                            aria-label="Email verified"
+                          />
+                        ) : null}
                       </span>
-                      <span className="truncate text-xs">{user?.email}</span>
+                      <span className="truncate text-xs">{displayEmail}</span>
                     </div>
                   </div>
                 </DropdownMenuLabel>

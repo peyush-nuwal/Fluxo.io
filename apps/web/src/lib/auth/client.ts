@@ -1,9 +1,9 @@
 "use client";
 
-import { unknown } from "zod";
-import { ApiError } from "../api";
+import { ApiError, apiFetch } from "../api";
 import { isRecord } from "../error-utils";
-import { frontendApiGet, frontendApiPost } from "../frontend-api";
+import { frontendApiPost } from "../frontend-api";
+import { ApiResponse } from "@/types/api";
 
 export type OAuthProvider = "google" | "github";
 
@@ -159,17 +159,6 @@ function toUser(value: unknown): User | null {
   };
 }
 
-function extractUserPayload(payload: unknown): User | null {
-  // Prefer standard API envelope: { success, message, data: {...user} }
-  if (isRecord(payload) && "data" in payload) {
-    const nested = toUser(payload.data);
-    if (nested) return nested;
-  }
-
-  // Fallback for endpoints that return raw user object.
-  return toUser(payload);
-}
-
 /* ------------------ Auth ------------------ */
 
 export async function login(email: string, password: string) {
@@ -315,7 +304,22 @@ function readCache(): CachedUser | null {
 
   try {
     const raw = sessionStorage.getItem(USER_CACHE_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw);
+    if (!isRecord(parsed) || typeof parsed.timestamp !== "number") {
+      return null;
+    }
+
+    const user = toUser(parsed.user);
+    if (!user) {
+      return null;
+    }
+
+    return {
+      user,
+      timestamp: parsed.timestamp,
+    };
   } catch {
     return null;
   }
@@ -353,8 +357,10 @@ export async function getCurrentUser(): Promise<User | null> {
   }
 
   try {
-    const response = await frontendApiGet<unknown>("/api/v1/auth/users/me");
-    const user = extractUserPayload(response);
+    const response = (await apiFetch("/api/v1/auth/users/me")) as ApiResponse<{
+      user: User;
+    }>;
+    const user = response.data.user;
 
     if (user) {
       writeCache(user);

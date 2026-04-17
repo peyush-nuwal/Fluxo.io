@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import DiagramLoader from "@/components/ui/diagram-loader";
+import Loader from "@/components/ui/Loader";
 import ReactFlowProvider from "@/components/canves/ReactFlowProvider";
 import FlowCanves from "@/components/canves/flow";
 import { useDiagramAutosave } from "@/hooks/use-diagram-autosave";
@@ -118,7 +118,7 @@ export default function DiagramPage({ params }: DiagramPageProps) {
     <div className="relative h-screen overflow-hidden">
       {(!hasLoadedOnce || loading) && !diagram ? (
         <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
-          <DiagramLoader />
+          <Loader />
           <div className="space-y-1">
             <h1 className="text-xl font-semibold">Opening diagram</h1>
             <p className="text-sm text-muted-foreground">

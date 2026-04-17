@@ -17,6 +17,15 @@ import {
 } from "../../../../../packages/zod-schemas/index.js";
 import { sendError, sendSuccess } from "../utils/response.js";
 
+const toUserResponse = (user) => ({
+  id: user.id,
+  name: user.name,
+  user_name: user.user_name ?? null,
+  avatar_url: user.avatar_url ?? null,
+  email: user.email,
+  email_verified: user.email_verified,
+});
+
 /**
  * SIGN UP
  */
@@ -66,13 +75,7 @@ export const signUp = async (req, res) => {
     }
 
     return sendSuccess(res, 200, "User registered. OTP sent for verification", {
-      user: {
-        id: user.id,
-        userName: user.user_name,
-        name: user.name,
-        email: user.email,
-        email_verified: user.email_verified,
-      },
+      user: toUserResponse(user),
       requiresEmailVerification: true,
     });
   } catch (error) {
@@ -130,12 +133,7 @@ export const signIn = async (req, res) => {
     });
 
     return sendSuccess(res, 200, "Sign in success", {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        email_verified: user.email_verified,
-      },
+      user: toUserResponse(user),
     });
   } catch (error) {
     logger.error("Sign in failed:", error);
@@ -164,7 +162,9 @@ export const signOut = (req, res) => {
     res.clearCookie("access_token", { path: "/" });
     res.clearCookie("refresh_token", { path: "/" });
 
-    return sendSuccess(res, 200, "Signed out successfully");
+    return sendSuccess(res, 200, "Signed out successfully", {
+      signed_out: true,
+    });
   } catch (error) {
     logger.error("Sign out error:", error);
     return sendError(res, 500, "Sign out failed");
@@ -192,7 +192,9 @@ export const updatePassword = async (req, res) => {
 
     await changeUserPassword(decoded.email, oldPassword, newPassword);
 
-    return sendSuccess(res, 200, "Password changed successfully");
+    return sendSuccess(res, 200, "Password changed successfully", {
+      password_updated: true,
+    });
   } catch (error) {
     logger.error("Password change failed:", error);
 
@@ -223,12 +225,7 @@ export const me = async (req, res) => {
     if (!user) return sendError(res, 401, "User not found");
 
     return sendSuccess(res, 200, "User fetched", {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        email_verified: user.email_verified,
-      },
+      user: toUserResponse(user),
     });
   } catch (error) {
     logger.error("ME error:", error);
@@ -261,8 +258,11 @@ export const refresh = async (req, res) => {
       path: "/",
     });
 
-    return sendSuccess(res, 200, "Token refreshed");
-  } catch {
+    return sendSuccess(res, 200, "Token refreshed", {
+      token_refreshed: true,
+    });
+  } catch (error) {
+    logger.error("Refresh token error:", error);
     return sendError(res, 401, "Session expired");
   }
 };

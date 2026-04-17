@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import DiagramLoader from "@/components/ui/diagram-loader";
+import Loader from "@/components/ui/Loader";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -31,8 +31,8 @@ const SettingPage = () => {
 
   if (loading)
     return (
-      <div className="flex items-center justify-center">
-        <DiagramLoader />
+      <div className="w-full h-full flex items-center justify-center">
+        <Loader />
       </div>
     );
   return (
