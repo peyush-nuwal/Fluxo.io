@@ -11,14 +11,14 @@ const Topbar = () => {
   const openModal = useModalStore((s) => s.open);
 
   return (
-    <div className="w-full h-16 flex items-center justify-between px-3 sm:px-4 bg-card border-b border-b-border border-solid">
-      <div className="flex items-center gap-2 sm:gap-5">
+    <div className="w-full h-16 flex items-center justify-between px-2 sm:px-4 bg-card border-b border-b-border border-solid">
+      <div className="flex items-center gap-2 sm:gap-5 min-w-0">
         <SidebarTrigger className="size-10!" />
       </div>
       <div className="flex items-center gap-2 sm:gap-3 md:gap-5 min-w-0">
         <div className="relative ">
           <Input
-            className="h-10 w-40 sm:w-52 md:w-64 min-w-0"
+            className="h-10 w-32 sm:w-52 md:w-64 min-w-0"
             placeholder="Search..."
             readOnly
             onClick={() => openModal("commandMenuDialog")}

@@ -109,9 +109,9 @@ export default function VerifyEmailPage() {
   }
 
   return (
-    <div className="px-6 py-4 flex items-center justify-center md:justify-between">
+    <div className="min-h-dvh px-4 py-4 sm:px-6 flex items-center justify-center md:justify-between">
       {/* LEFT ART */}
-      <div className="hidden lg:block relative h-[calc(100vh-40px)] w-[60%] overflow-hidden rounded-4xl border border-border shadow-lg shadow-muted">
+      <div className="hidden lg:block relative min-h-[calc(100dvh-40px)] w-[60%] overflow-hidden rounded-4xl border border-border shadow-lg shadow-muted">
         <Image
           src="/assets/art_2.png"
           alt="Verify email artwork"
@@ -122,11 +122,13 @@ export default function VerifyEmailPage() {
       </div>
 
       {/* RIGHT CONTENT */}
-      <div className="h-[calc(100vh-40px)] w-full lg:w-1/2 flex items-center justify-center">
+      <div className="min-h-[calc(100dvh-40px)] w-full lg:w-1/2 flex items-center justify-center py-6">
         <div className="w-full max-w-md space-y-8 text-center">
           {/* HEADER */}
           <div className="space-y-2">
-            <h1 className="text-4xl font-bold">Verify your email</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold">
+              Verify your email
+            </h1>
             <p className="text-muted-foreground">
               {email ? (
                 <>
@@ -152,7 +154,7 @@ export default function VerifyEmailPage() {
                   <InputOTPSlot
                     key={i}
                     index={i}
-                    className="h-12 w-12 text-lg rounded-lg shadow-none! border border-border border-solid"
+                    className="h-10 w-10 sm:h-12 sm:w-12 text-base sm:text-lg rounded-lg shadow-none! border border-border border-solid"
                   />
                 ))}
               </InputOTPGroup>

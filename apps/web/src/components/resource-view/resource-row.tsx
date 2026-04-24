@@ -50,6 +50,7 @@ const ResourceRow = ({
           onEdit={actions.onEdit}
           onDelete={actions.onDelete}
           onDoubleClick={actions.handleDoubleClick}
+          canManageActions={actions.canManage}
         />
       )}
     </ResourceItem>

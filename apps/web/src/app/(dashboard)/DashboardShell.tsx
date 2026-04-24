@@ -22,9 +22,9 @@ export default function DashboardShell({
         } as React.CSSProperties
       }
     >
-      <div className="flex h-screen w-full">
+      <div className="flex min-h-dvh w-full overflow-hidden">
         <AppSidebar />
-        <SidebarInset className="flex-1 ">
+        <SidebarInset className="flex-1 min-w-0 overflow-hidden">
           <Topbar />
           {children}
         </SidebarInset>

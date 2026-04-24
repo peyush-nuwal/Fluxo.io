@@ -616,7 +616,7 @@ const SettingPage = () => {
                 <p className="text-xs text-muted-foreground">
                   Choose an accent color for the interface.
                 </p>
-                <div className="grid grid-cols-7 gap-2 max-w-sm">
+                <div className="grid grid-cols-5 sm:grid-cols-7 gap-2 max-w-sm">
                   {THEME_PALETTE.map(({ theme, name, color }) => {
                     const isActive = activeTheme === theme;
 

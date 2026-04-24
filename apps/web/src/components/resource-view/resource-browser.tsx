@@ -147,40 +147,44 @@ const ResourceBrowser = ({
 
   return (
     <div className="flex flex-col gap-5 py-5">
-      <div className="flex gap-3 items-center justify-between px-6 md:px-8">
+      <div className="flex flex-col gap-3 px-4 sm:px-6 md:px-8">
         {showAccessFilter && mode === "active" ? (
-          <SegmentRadioGroup
-            type="ghost"
-            value={accessFilter}
-            onChange={(value) =>
-              setAccessFilter(value as "all" | "mine" | "shared")
-            }
-            options={[
-              { value: "all", label: "All" },
-              { value: "mine", label: "Mine" },
-              { value: "shared", label: "Shared" },
-            ]}
-            className="text-base font-medium"
-          />
+          <div className="w-full overflow-x-auto">
+            <SegmentRadioGroup
+              type="ghost"
+              value={accessFilter}
+              onChange={(value) =>
+                setAccessFilter(value as "all" | "mine" | "shared")
+              }
+              options={[
+                { value: "all", label: "All" },
+                { value: "mine", label: "Mine" },
+                { value: "shared", label: "Shared" },
+              ]}
+              className="w-max text-base font-medium "
+            />
+          </div>
         ) : (
           <div />
         )}
 
-        <div className="flex gap-3 items-center">
+        <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
           <Input
             placeholder={queryPlaceholder}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            className="w-62.5"
+            className="w-full sm:w-72 md:w-80"
           />
           <DropDownFilter
             filter={filter}
             options={filterOptions}
             onFilterChange={setFilter}
+            triggerClassName="w-full sm:w-48"
           />
           <SegmentRadioGroup
             value={layoutMode}
             onChange={setLayoutMode}
+            className="w-full sm:w-auto ml-full md:ml-0"
             options={[
               {
                 value: "card",
@@ -252,10 +256,12 @@ function DropDownFilter({
   filter,
   options,
   onFilterChange,
+  triggerClassName,
 }: {
   filter: FilterOption;
   options: ResourceFilterOption[];
   onFilterChange: (value: FilterOption) => void;
+  triggerClassName?: string;
 }) {
   const currentLabel =
     options.find((option) => option.value === filter)?.label ?? "Filter";
@@ -265,7 +271,7 @@ function DropDownFilter({
       value={filter}
       onValueChange={(value) => onFilterChange(value as FilterOption)}
     >
-      <SelectTrigger className="w-full max-w-48">
+      <SelectTrigger className={triggerClassName ?? "w-full max-w-48"}>
         <SelectValue placeholder={currentLabel} />
       </SelectTrigger>
       <SelectContent

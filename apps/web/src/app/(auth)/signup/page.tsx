@@ -48,9 +48,9 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="px-6 py-4 flex items-center justify-center md:justify-between">
+    <div className="min-h-dvh px-4 py-4 sm:px-6 flex items-center justify-center md:justify-between">
       {/* LEFT ART */}
-      <div className="hidden lg:block relative h-[calc(100vh-40px)] w-[60%] overflow-hidden rounded-2xl border border-border shadow-lg shadow-muted">
+      <div className="hidden lg:block relative min-h-[calc(100dvh-40px)] w-[60%] overflow-hidden rounded-2xl border border-border shadow-lg shadow-muted">
         <Image
           src="/assets/art_2.png"
           alt="Signup artwork"
@@ -61,12 +61,12 @@ export default function SignupPage() {
       </div>
 
       {/* RIGHT FORM */}
-      <div className="h-[calc(100vh-40px)] w-full lg:w-1/2 flex items-center justify-center">
+      <div className="min-h-[calc(100dvh-40px)] w-full lg:w-1/2 flex items-center justify-center py-6">
         <div className="w-full max-w-md space-y-6">
           {/* HEADER */}
           <div className="text-center space-y-2">
-            <h1 className="text-5xl font-bold">Create account</h1>
-            <h3 className="text-lg font-medium text-muted-foreground">
+            <h1 className="text-3xl sm:text-5xl font-bold">Create account</h1>
+            <h3 className="text-base sm:text-lg font-medium text-muted-foreground">
               Join Fluxo today
             </h3>
           </div>
@@ -149,7 +149,7 @@ export default function SignupPage() {
             OR{" "}
           </span>{" "}
           {/* O-auth btns */}{" "}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             {" "}
             <Button
               onClick={() => startOAuth("google")}

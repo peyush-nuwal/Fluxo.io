@@ -19,6 +19,7 @@ type Props = {
   onMenuOpenChange: (open: boolean) => void;
   onEdit: () => void;
   onDelete: () => Promise<void>;
+  canManageActions: boolean;
 } & Omit<React.ComponentPropsWithoutRef<typeof TableRow>, "resource">;
 
 const RowUI = ({
@@ -27,6 +28,7 @@ const RowUI = ({
   onMenuOpenChange,
   onEdit,
   onDelete,
+  canManageActions,
   ...rowProps
 }: Props) => {
   return (
@@ -36,36 +38,38 @@ const RowUI = ({
       <TableCell>{resource.is_public ? "Public" : "Private"}</TableCell>
       <TableCell className="text-right">{resource.views}</TableCell>
       <TableCell className="text-right flex items-center justify-center ">
-        <DropdownMenu open={menuOpen} onOpenChange={onMenuOpenChange}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <EllipsisVertical className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuItem
-              onClick={() => {
-                onEdit();
-                onMenuOpenChange(false);
-              }}
-            >
-              <Edit />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={async () => {
-                await onDelete();
-                onMenuOpenChange(false);
-              }}
-            >
-              <Trash />
-              Delete
-              <DropdownMenuShortcut>Del</DropdownMenuShortcut>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {canManageActions ? (
+          <DropdownMenu open={menuOpen} onOpenChange={onMenuOpenChange}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <EllipsisVertical className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuItem
+                onClick={() => {
+                  onEdit();
+                  onMenuOpenChange(false);
+                }}
+              >
+                <Edit />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={async () => {
+                  await onDelete();
+                  onMenuOpenChange(false);
+                }}
+              >
+                <Trash />
+                Delete
+                <DropdownMenuShortcut>Del</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : null}
       </TableCell>
     </TableRow>
   );

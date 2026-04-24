@@ -51,6 +51,7 @@ const ResourceCard = ({
           onEdit={actions.onEdit}
           onDelete={actions.onDelete}
           handleDoubleClick={actions.handleDoubleClick}
+          canManageActions={actions.canManage}
         />
       )}
     </ResourceItem>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { Viewport } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -15,6 +16,12 @@ export const metadata: Metadata = {
   description: "Fluxo web app",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -22,7 +29,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>
+      <body
+        className={`${poppins.variable} min-h-dvh overflow-x-hidden antialiased`}
+      >
         <ThemeProvider>{children}</ThemeProvider>
         <Toaster position="top-right" />
       </body>

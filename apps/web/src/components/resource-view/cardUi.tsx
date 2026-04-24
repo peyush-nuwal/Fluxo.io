@@ -26,6 +26,7 @@ type Props = {
   onEdit: () => void;
   onDelete: () => Promise<void>;
   handleDoubleClick: () => void;
+  canManageActions: boolean;
 };
 
 const CardUI = ({
@@ -36,6 +37,7 @@ const CardUI = ({
   onEdit,
   onDelete,
   handleDoubleClick,
+  canManageActions,
 }: Props) => {
   const ownerName = resource.owner_username?.trim() || "Unknown";
   const ownerAvatar = resource.owner_avatar_url?.trim();
@@ -93,13 +95,15 @@ const CardUI = ({
             </span> */}
           </p>
         </div>
-        <DropdownEllipsisMenu
-          className="ml-auto shrink-0"
-          open={menuOpen}
-          onOpenChange={onMenuOpenChange}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
+        {canManageActions ? (
+          <DropdownEllipsisMenu
+            className="ml-auto shrink-0"
+            open={menuOpen}
+            onOpenChange={onMenuOpenChange}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        ) : null}
       </div>
     </div>
   );
@@ -139,7 +143,6 @@ const DropdownEllipsisMenu = ({
           <Edit />
           Edit
         </DropdownMenuItem>
-
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"

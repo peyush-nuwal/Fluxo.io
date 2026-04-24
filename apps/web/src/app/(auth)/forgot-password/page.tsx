@@ -105,9 +105,9 @@ const ForgotPasswordpage = () => {
   };
 
   return (
-    <div className="px-6 py-4 flex items-center  justify-center md:justify-between">
+    <div className="min-h-dvh px-4 py-4 sm:px-6 flex items-center justify-center md:justify-between">
       {/* LEFT ART */}
-      <div className="hidden lg:block relative h-[calc(100vh-40px)] w-[50%] overflow-hidden rounded-2xl border border-border shadow-lg shadow-muted">
+      <div className="hidden lg:block relative min-h-[calc(100dvh-40px)] w-[50%] overflow-hidden rounded-2xl border border-border shadow-lg shadow-muted">
         <Image
           src="/assets/auth-ill.svg"
           alt="forgot password artwork"
@@ -119,7 +119,7 @@ const ForgotPasswordpage = () => {
       </div>
 
       {/* right ART */}
-      <div className="relative h-[calc(100vh-40px)] w-full lg:w-[50%] overflow-hidden rounded-2xl p-5">
+      <div className="relative min-h-[calc(100dvh-40px)] w-full lg:w-[50%] overflow-hidden rounded-2xl p-4 sm:p-5">
         {/* SLIDER */}
         <div
           className={cn(
@@ -129,15 +129,15 @@ const ForgotPasswordpage = () => {
           )}
         >
           {/* STEP 1 */}
-          <div className="w-1/2 flex items-center justify-center">
+          <div className="w-1/3 flex items-center justify-center">
             <div className="max-w-lg flex flex-col gap-4">
-              <h1 className="text-6xl font-bold">
+              <h1 className="text-4xl sm:text-6xl font-bold">
                 Forgot
                 <br />
                 Password?
               </h1>
 
-              <p className="text-lg">
+              <p className="text-base sm:text-lg">
                 Enter the email address associated with your account.
               </p>
 
@@ -193,11 +193,11 @@ const ForgotPasswordpage = () => {
           </div>
 
           {/* STEP 2 */}
-          <div className="w-1/2 flex items-center justify-center">
+          <div className="w-1/3 flex items-center justify-center">
             <div className="max-w-lg flex flex-col gap-4">
-              <h1 className="text-6xl font-bold">Verify</h1>
+              <h1 className="text-4xl sm:text-6xl font-bold">Verify</h1>
 
-              <p className="text-lg">
+              <p className="text-base sm:text-lg">
                 Check your email to continue password recovery.
               </p>
 
@@ -209,12 +209,12 @@ const ForgotPasswordpage = () => {
                   onChange={setOtp}
                   pattern={"[0-9]*"}
                 >
-                  <InputOTPGroup className="gap-3">
+                  <InputOTPGroup className="gap-2 sm:gap-3">
                     {Array.from({ length: 6 }).map((_, i) => (
                       <InputOTPSlot
                         key={i}
                         index={i}
-                        className="h-12 w-12 text-lg rounded-lg shadow-none! border border-border border-solid"
+                        className="h-10 w-10 sm:h-12 sm:w-12 text-base sm:text-lg rounded-lg shadow-none! border border-border border-solid"
                       />
                     ))}
                   </InputOTPGroup>
@@ -283,11 +283,15 @@ const ForgotPasswordpage = () => {
           </div>
 
           {/* STEP 3 */}
-          <div className="w-1/2 flex items-center justify-center">
+          <div className="w-1/3 flex items-center justify-center">
             <div className="max-w-lg flex flex-col gap-4">
-              <h1 className="text-6xl font-bold">Change Password</h1>
+              <h1 className="text-4xl sm:text-6xl font-bold">
+                Change Password
+              </h1>
 
-              <p className="text-lg">Enter a new password for your account.</p>
+              <p className="text-base sm:text-lg">
+                Enter a new password for your account.
+              </p>
 
               <div className="flex flex-col">
                 <PasswordInput
