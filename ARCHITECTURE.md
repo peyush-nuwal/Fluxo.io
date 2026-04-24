@@ -1,263 +1,90 @@
-# Fluxo.io Architecture Guide
+# Fluxo.io Architecture
 
-## 📁 Project Structure
+## Current Topology
 
-```
-fluxo.io/
-├── apps/                          # Applications
-│   ├── web/                       # Frontend (Next.js + React Flow)
-│   ├── api-gateway/               # API Gateway (Next.js API)
-│   ├── auth/                      # Auth microservice (Next.js API)
-│   ├── user-service/              # User microservice (Next.js API)
-│   └── docs/                      # Documentation site
-├── packages/                      # Shared packages
-│   ├── auth-utils/                # Auth utilities, middleware & service clients
-│   ├── database-utils/            # Database utilities & Prisma
-│   ├── ui/                        # Shared UI components
-│   ├── eslint-config/             # ESLint configurations
-│   └── typescript-config/         # TypeScript configurations
-└── root files...
+Fluxo uses an API Gateway in front of independently deployable backend services.
+
+```text
+Web Client (Next.js)
+    |
+    v
+API Gateway (Express, :4000)
+    |-- Auth Service (:4001)
+    |-- Diagram Service (:4002)
+    |-- AI Service (:4004)
+    \-- Subscription Service (:4006)
 ```
 
-## 📦 Dependency Management Strategy
+## Responsibilities
 
-### 1. **App-Specific Dependencies**
+### Web App (`apps/web`)
 
-Install in the **respective app folder**:
+- User-facing UI and dashboard flows.
+- Calls internal API routes that proxy to the gateway.
+- Handles client auth state and settings UI.
 
-```bash
-# Frontend dependencies (React Flow, UI libraries)
-cd apps/web
-pnpm add reactflow @headlessui/react
+### API Gateway (`apps/api-gateway`)
 
-# Auth microservice dependencies (NextAuth, OAuth providers)
-cd apps/auth
-pnpm add next-auth @auth/prisma-adapter
+- Single API entrypoint for clients.
+- JWT verification middleware.
+- Proxies traffic to downstream services.
+- Adds trusted identity headers for services (`x-user-id`, `x-user-email`).
 
-# Backend microservice dependencies
-cd apps/api
-pnpm add express prisma @prisma/client
-```
+### Auth Service (`apps/services/auth-service`)
 
-### 2. **Shared Dependencies**
+- Signup/signin/logout/refresh.
+- OTP flows (email verification, email change, password reset).
+- OAuth (Google, GitHub).
+- User profile and username update APIs.
 
-Install in **packages** for reuse across apps:
+### Diagram Service (`apps/services/diagram-service`)
 
-```bash
-# Shared auth utilities
-cd packages/auth-utils
-pnpm add jsonwebtoken bcryptjs
+- Projects and diagrams CRUD.
+- Likes, visibility, active status, soft delete/restore.
+- Collaborator management and invitation acceptance.
+- Uses Redis for collaboration/profile caching.
 
-# Shared database utilities
-cd packages/database-utils
-pnpm add prisma @prisma/client
+### AI Service (`apps/services/ai-service`)
 
-# Shared UI components (if multiple apps need React Flow)
-cd packages/ui
-pnpm add reactflow
-```
+- Prompt-to-diagram generation endpoint.
+- Integrates with Google Gemini.
 
-### 3. **Root Dependencies**
+### Subscription Service (`apps/services/subscription-service`)
 
-Only for **build tools, dev tools, and workspace management**:
+- Razorpay order creation.
+- Payment signature verification and subscription status updates.
 
-```bash
-# At root level
-pnpm add -D -w typescript eslint prettier turbo
-```
+## Request Flow
 
-## 🔐 Authentication Architecture
+1. Client sends request to API Gateway (`/api/v1/...`).
+2. Gateway verifies JWT (except public routes).
+3. Gateway forwards request to target service.
+4. Gateway injects user context headers where needed.
+5. Service returns JSON response.
 
-### **Shared Auth Package** (`packages/auth-utils/`)
+## Routing Map
 
-```typescript
-// packages/auth-utils/src/index.ts
-export * from "./jwt"; // JWT token utilities
-export * from "./user"; // User validation & password hashing
-export * from "./middleware"; // Auth middleware for Next.js
-```
+- `/api/v1/auth/*` -> Auth Service
+- `/api/v1/diagram/*` -> Diagram Service (rewritten upstream to `/api/v1/*`)
+- `/api/v1/projects/*`, `/api/v1/diagrams/*`, `/api/v1/invitations/*` -> Diagram Service (compat aliases)
+- `/api/v1/ai/*` -> AI Service
+- `/api/v1/subscription/*` -> Subscription Service
 
-### **Auth Middleware Usage**
+## Data & Integrations
 
-#### 1. **Protect API Routes**
+- PostgreSQL (primary persistence for auth, diagrams, subscription)
+- Redis (diagram service caching and collaboration support)
+- Supabase Storage (avatar/thumbnail upload flows)
+- Google Gemini (`@google/genai`) for AI generation
+- Razorpay for payments
 
-```typescript
-// apps/web/app/api/profile/route.ts
-import { authMiddleware, AuthenticatedRequest } from "@repo/auth-utils";
+## Security Model
 
-export async function GET(request: NextRequest) {
-  const authResponse = authMiddleware(request);
-  if (authResponse.status !== 200) return authResponse;
+- Gateway verifies JWT from cookie or bearer token.
+- Downstream services trust gateway-provided identity headers.
+- Auth cookies: `access_token`, `refresh_token`.
+- Helmet + CORS + request logging enabled across services.
 
-  const authRequest = request as AuthenticatedRequest;
-  const { userId, email, role } = authRequest.auth!;
+## Environment Strategy
 
-  return NextResponse.json({ user: { id: userId, email, role } });
-}
-```
-
-#### 2. **Role-Based Access Control**
-
-```typescript
-// apps/web/app/api/admin/route.ts
-import { withRole } from "@repo/auth-utils";
-
-export async function POST(request: NextRequest) {
-  const roleResponse = withRole(["admin"])(request);
-  if (roleResponse.status !== 200) return roleResponse;
-
-  // Only admins can access this route
-  return NextResponse.json({ message: "Admin action completed" });
-}
-```
-
-#### 3. **Next.js Middleware (Route Protection)**
-
-```typescript
-// apps/web/middleware.ts
-import { authMiddleware, optionalAuthMiddleware } from "@repo/auth-utils";
-
-export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Protect dashboard routes
-  if (pathname.startsWith("/home")) {
-    return authMiddleware(request);
-  }
-
-  // Optional auth for other routes
-  return optionalAuthMiddleware(request);
-}
-```
-
-## 🏗️ Microservice Structure
-
-### **Auth Microservice** (`apps/auth/`)
-
-```
-apps/auth/
-├── app/
-│   ├── api/
-│   │   └── auth/
-│   │       ├── login/route.ts      # POST /api/auth/login
-│   │       ├── register/route.ts   # POST /api/auth/register
-│   │       └── refresh/route.ts    # POST /api/auth/refresh
-│   └── page.tsx                    # Auth service dashboard
-├── package.json
-└── middleware.ts                   # Auth-specific middleware
-```
-
-### **Frontend App** (`apps/web/`)
-
-```
-apps/web/
-├── app/
-│   ├── dashboard/                  # Protected routes
-│   ├── api/
-│   │   └── profile/route.ts        # Uses auth middleware
-│   └── page.tsx
-├── components/
-│   └── FlowDiagram.tsx             # React Flow component
-├── middleware.ts                   # Route protection
-└── package.json                    # Includes reactflow dependency
-```
-
-## 🔄 Data Flow Example (API Gateway Pattern)
-
-### **1. User Login Flow**
-
-```
-Frontend (web) → API Gateway → Auth Service → Database
-     ↓
-API Gateway → Frontend (tokens)
-```
-
-### **2. Protected Route Access**
-
-```
-User Request → API Gateway → Auth Service (validate token) → Microservice
-```
-
-### **3. Service Communication**
-
-```
-Frontend → API Gateway → Auth Service (validate) → User Service → Database
-```
-
-### **4. Microservice Communication**
-
-```
-API Gateway → Auth Service (port 3001)
-API Gateway → User Service (port 3002)
-API Gateway → Payment Service (port 3003)
-```
-
-## 🚀 Development Commands
-
-### **Install Dependencies**
-
-```bash
-# Install all workspace dependencies
-pnpm install
-
-# Install app-specific dependency
-cd apps/web && pnpm add reactflow
-
-# Install shared package dependency
-cd packages/auth-utils && pnpm add jsonwebtoken
-```
-
-### **Run Applications**
-
-```bash
-# Run all apps in development
-pnpm dev
-
-# Run specific app
-cd apps/web && pnpm dev
-cd apps/auth && pnpm dev --port 3001
-```
-
-### **Build & Deploy**
-
-```bash
-# Build all packages and apps
-pnpm build
-
-# Build specific app
-cd apps/web && pnpm build
-```
-
-## 📋 Best Practices
-
-### **1. Package Organization**
-
-- **Apps**: Self-contained applications with their own dependencies
-- **Packages**: Reusable utilities shared across apps
-- **Root**: Only build tools and workspace management
-
-### **2. Middleware Placement**
-
-- **Shared middleware**: In `packages/auth-utils/src/middleware.ts`
-- **App-specific middleware**: In each app's `middleware.ts`
-- **API route middleware**: Imported from shared packages
-
-### **3. Dependency Management**
-
-- Install app-specific deps in app folders
-- Install shared deps in package folders
-- Use workspace references (`workspace:*`) for internal packages
-
-### **4. Type Safety**
-
-- Export types from shared packages
-- Use TypeScript across all packages
-- Share type definitions via `@repo/typescript-config`
-
-This architecture ensures:
-
-- ✅ **Code Reusability**: Shared auth logic across all apps
-- ✅ **Type Safety**: Consistent types across the monorepo
-- ✅ **Scalability**: Easy to add new microservices
-- ✅ **Maintainability**: Clear separation of concerns
-- ✅ **Performance**: Optimized builds with Turborepo caching
+Each app/service owns its `.env` file with its own `.env.example`. Keep secrets out of source control and ensure the same `INTERNAL_SERVICE_TOKEN` is shared where cross-service internal auth is required.

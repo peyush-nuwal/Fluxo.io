@@ -1,219 +1,130 @@
 # Fluxo.io
 
-A modern monorepo built with Turborepo, featuring automated CI/CD with GitHub Actions and code quality tools.
+Fluxo.io is a microservice-based diagram and collaboration platform built in a Turborepo monorepo.
 
-## 🚀 Quick Start
+## Overview
 
-1. **Install dependencies:**
+- Frontend app: Next.js (`apps/web`)
+- API entrypoint: Express API Gateway (`apps/api-gateway`)
+- Backend services:
+  - Auth Service (`apps/services/auth-service`)
+  - Diagram Service (`apps/services/diagram-service`)
+  - AI Service (`apps/services/ai-service`)
+  - Subscription Service (`apps/services/subscription-service`)
+- Shared packages: Zod schemas, ESLint config, TypeScript config
 
-   ```bash
-   pnpm install
-   ```
+## Tech Stack (Image Section)
 
-2. **Start development:**
+![Tech Stack](https://skillicons.dev/icons?i=nextjs,react,ts,js,nodejs,express,postgres,redis,tailwind,github,git,pnpm)
 
-   ```bash
-   pnpm dev
-   ```
+## Architecture
 
-3. **Build all packages:**
-   ```bash
-   pnpm build
-   ```
+```mermaid
+flowchart LR
+  C[Client / Web App] --> G[API Gateway :4000]
+  G --> A[Auth Service :4001]
+  G --> D[Diagram Service :4002]
+  G --> AI[AI Service :4004]
+  G --> S[Subscription Service :4006]
 
-## 🔧 Git Hooks (Husky)
-
-This project uses Husky to manage Git hooks for code quality:
-
-### Pre-commit Hook
-
-- Runs `lint-staged` to check only staged files
-- Automatically fixes ESLint issues and formats code with Prettier
-- **Location:** `.husky/pre-commit`
-
-### Commit Message Hook
-
-- Validates commit message format using Conventional Commits
-- Ensures consistent commit history
-- **Location:** `.husky/commit-msg`
-
-### Available Scripts
-
-- `pnpm prepare` - Initialize Husky git hooks
-- `pnpm dev` - Start development server
-- `pnpm build` - Build all packages
-- `pnpm lint` - Run ESLint across the codebase
-- `pnpm format` - Format code with Prettier
-- `pnpm type-check` - Run TypeScript type checking
-
-## 🤖 CI/CD Pipeline
-
-This project includes a minimal GitHub Actions workflow (`.github/workflows/ci.yml`) that runs on every push and pull request:
-
-- **Build**: Compiles all packages and apps
-- **Lint**: Runs ESLint across the codebase
-- **Type Check**: Validates TypeScript types
-
-### Adding More Jobs
-
-To add more CI jobs, uncomment and modify the example in `.github/workflows/ci.yml`:
-
-```yaml
-# Example: How to add more jobs
-test:
-  name: 🧪 Test
-  runs-on: ubuntu-latest
-  needs: build
-
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: "18"
-
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v2
-      with:
-        version: 8
-
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-
-    - name: Run tests
-      run: pnpm test
+  A --> P[(PostgreSQL)]
+  D --> P
+  D --> R[(Redis)]
+  S --> P
+  AI --> M[Google Gemini]
 ```
 
-## Using this example
+For detailed architecture, see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
-Run the following command:
+## Service Ports
 
-```sh
-npx create-turbo@latest
+| Component            | Default Port |
+| -------------------- | ------------ |
+| Web App              | `3000`       |
+| API Gateway          | `4000`       |
+| Auth Service         | `4001`       |
+| Diagram Service      | `4002`       |
+| AI Service           | `4004`       |
+| Subscription Service | `4006`       |
+
+## API Surface (Gateway)
+
+- Auth: `/api/v1/auth/*`
+- Diagram: `/api/v1/diagram/*`
+- Diagram aliases (backward compatible): `/api/v1/projects/*`, `/api/v1/diagrams/*`, `/api/v1/invitations/*`
+- AI: `/api/v1/ai/*`
+- Subscription: `/api/v1/subscription/*`
+
+## Monorepo Structure
+
+```text
+apps/
+  api-gateway/
+  web/
+  landing/
+  services/
+    auth-service/
+    diagram-service/
+    ai-service/
+    subscription-service/
+packages/
+  zod-schemas/
+  eslint-config/
+  typescript-config/
 ```
 
-## What's inside?
+## Quick Start
 
-This Turborepo includes the following packages/apps:
+### 1. Install dependencies
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+pnpm install
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### 2. Configure environment variables
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+Create `.env` from each app's `.env.example`:
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+- `apps/api-gateway/.env`
+- `apps/services/auth-service/.env`
+- `apps/services/diagram-service/.env`
+- `apps/services/ai-service/.env`
+- `apps/services/subscription-service/.env`
+- `apps/web/.env`
 
-### Develop
+### 3. Start all apps in development
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+```bash
+pnpm dev
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### 4. Build all workspaces
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```bash
+pnpm build
 ```
 
-### Remote Caching
+## Useful Commands
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+- `pnpm dev` - run all workspace dev servers
+- `pnpm build` - build all workspaces
+- `pnpm lint` - run lint tasks
+- `pnpm type-check` - run type-check tasks
+- `pnpm format` - format `ts/tsx/md`
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+## Service Docs
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+- [API Gateway](./apps/api-gateway/README.md)
+- [Services Index](./apps/services/README.md)
+- [Auth Service](./apps/services/auth-service/README.md)
+- [Auth API Reference](./apps/services/auth-service/API_REFERENCE.md)
+- [Diagram Service](./apps/services/diagram-service/README.md)
+- [AI Service](./apps/services/ai-service/README.md)
+- [Subscription Service](./apps/services/subscription-service/README.md)
+- [Web App](./apps/web/README.md)
 
-```
-cd my-turborepo
+## Notes
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+- The gateway validates JWT and forwards identity headers (`x-user-id`, `x-user-email`) to downstream services.
+- Some diagram routes are intentionally kept as aliases for backward compatibility.
+- Cookie names used by auth flow: `access_token`, `refresh_token`.

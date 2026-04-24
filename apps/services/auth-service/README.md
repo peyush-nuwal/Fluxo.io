@@ -1,467 +1,122 @@
-# 🔐 Auth Service
+# Auth Service
 
-A comprehensive, production-ready authentication service built with Node.js, Express, and PostgreSQL. This service provides secure user authentication, email verification, password management, and OTP-based security features.
+The Auth Service is responsible for identity, authentication, OTP workflows, OAuth, and user profile APIs.
 
-## 📋 Table of Contents
+## Default Port
 
-- [Features](#-features)
-- [Architecture](#-architecture)
-- [Quick Start](#-quick-start)
-- [API Documentation](#-api-documentation)
-- [Configuration](#-configuration)
-- [Security](#-security)
-- [Deployment](#-deployment)
-- [Contributing](#-contributing)
+- `4001`
 
-## ✨ Features
+## Base Path
 
-### 🔑 Core Authentication
+- `/api/v1/auth`
 
-- ✅ **User Registration** with email verification
-- ✅ **User Login** with JWT tokens
-- ✅ **Password Management** (change, reset)
-- ✅ **Email Verification** via OTP
-- ✅ **Secure Cookie Handling**
-- ✅ **Social Login Support** (Google, GitHub)
+## Core Capabilities
 
-### 🛡️ Security Features
+- Local auth: signup, signin, logout, token refresh
+- OTP flows: verification, resend, status, cleanup
+- Password flows: update, set initial password, forgot/reset
+- Email change via OTP
+- OAuth: Google and GitHub
+- User profile APIs: current profile, public profile, username, avatar, visibility
 
-- ✅ **OTP-based Email Verification** (6-digit codes)
-- ✅ **Password Reset** via OTP
-- ✅ **Email Change** via OTP verification
-- ✅ **Rate Limiting** (3 attempts per OTP)
-- ✅ **JWT Token Management**
-- ✅ **Password Hashing** (bcrypt)
-- ✅ **Input Validation** (Zod schemas)
-- ✅ **Security Headers**
+## Auth Model
 
-### 📧 Email Services
+- Cookies issued by service:
+  - `access_token`
+  - `refresh_token`
+- Gateway validates JWT and forwards identity headers for protected routes.
 
-- ✅ **Nodemailer Integration**
-- ✅ **Multiple Email Providers** (Gmail, Outlook, etc.)
-- ✅ **Professional Email Templates**
-- ✅ **Email Configuration Testing**
+## Endpoint Groups
 
-### 🔧 Developer Experience
+### Authentication
 
-- ✅ **Comprehensive Error Handling**
-- ✅ **Structured Logging**
-- ✅ **Database Migrations** (Drizzle ORM)
-- ✅ **TypeScript Support**
-- ✅ **API Documentation**
+- `POST /signup`
+- `POST /signin`
+- `POST /logout`
+- `GET /me`
+- `GET /refresh`
 
-## 🏗️ Architecture
+### Password
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   API Gateway   │───▶│   Auth Service  │───▶│   PostgreSQL    │
-│   (Arcjet)      │    │   (Express)     │    │   (Database)    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Rate Limiting   │    │ JWT Tokens      │    │ User Data       │
-│ Bot Detection   │    │ OTP Service     │    │ OTP Storage     │
-│ Shield Protection│   │ Email Service   │    │ Session Data    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
+- `POST /update-password`
+- `POST /set-password`
+- `POST /password/forgot-password`
+- `POST /password/verify-reset-password-otp`
+- `POST /password/reset`
 
-### Service Components
+### OTP
 
-- **Controllers**: Handle HTTP requests and responses
-- **Services**: Business logic and data operations
-- **Models**: Database schema definitions
-- **Middleware**: Security and validation
-- **Utils**: Helper functions (JWT, cookies, formatting)
+- `POST /otp/generate`
+- `POST /otp/verify`
+- `POST /otp/resend`
+- `GET /otp/status`
+- `GET /otp/test-email`
+- `DELETE /otp/cleanup`
 
-## 🚀 Quick Start
+### Email Change
 
-### Prerequisites
+- `POST /email/change/request`
+- `POST /email/change/verify`
 
-- Node.js 18+
-- PostgreSQL 14+
-- pnpm (recommended) or npm
+### OAuth
 
-### Installation
+- `GET /oauth/google`
+- `GET /oauth/google/callback`
+- `GET /oauth/github`
+- `GET /oauth/github/callback`
 
-```bash
-# Clone the repository
-git clone <repository-url>
-cd fluxo.io/apps/auth-service
+### User Profile
 
-# Install dependencies
-pnpm install
+- `GET /users/me`
+- `PATCH /users/me`
+- `PATCH /users/me/username`
+- `POST /users/me/upload-avatar`
+- `PATCH /users/me/visibility`
+- `GET /users/:id/profile`
+- `POST /users/bulk-by-email` (internal service token required)
 
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your configuration
-
-# Run database migrations
-pnpm db:migrate
-
-# Start the service
-pnpm dev
-```
-
-### Environment Variables
+## Environment Variables
 
 ```env
-# Database
-DATABASE_URL="postgresql://username:password@localhost:5432/fluxo_auth"
-
-# JWT
-JWT_SECRET="your-super-secret-jwt-key"
-
-# Email Configuration
-EMAIL_SERVICE="gmail"
-EMAIL_USER="your-email@gmail.com"
-EMAIL_PASSWORD="your-app-password"
-EMAIL_FROM_NAME="Fluxo.io"
-
-# Server
-PORT=3001
-NODE_ENV="development"
-LOG_LEVEL="info"
-```
-
-## 📚 API Documentation
-
-### Authentication Endpoints
-
-#### Register User
-
-```http
-POST /api/v1/auth/signup
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "securePassword123"
-}
-```
-
-**Response:**
-
-```json
-{
-  "message": "User registered successfully. A verification OTP has been sent to your email.",
-  "user": {
-    "id": "uuid",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "email_verified": false
-  },
-  "requiresEmailVerification": true
-}
-```
-
-#### Sign In
-
-```http
-POST /api/v1/auth/signin
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "securePassword123"
-}
-```
-
-#### Sign Out
-
-```http
-POST /api/v1/auth/signout
-```
-
-#### Update Password
-
-```http
-POST /api/v1/auth/update-password
-Authorization: Bearer <jwt_token>
-Content-Type: application/json
-
-{
-  "oldPassword": "oldPassword123",
-  "newPassword": "newPassword123"
-}
-```
-
-### OTP Endpoints
-
-#### Generate OTP
-
-```http
-POST /api/v1/auth/otp/generate
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "purpose": "email_verification"
-}
-```
-
-#### Verify OTP
-
-```http
-POST /api/v1/auth/otp/verify
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "otpCode": "123456",
-  "purpose": "email_verification"
-}
-```
-
-#### Resend OTP
-
-```http
-POST /api/v1/auth/otp/resend
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "purpose": "email_verification"
-}
-```
-
-### Email Change Endpoints
-
-#### Request Email Change
-
-```http
-POST /api/v1/auth/email/change/request
-Authorization: Bearer <jwt_token>
-Content-Type: application/json
-
-{
-  "newEmail": "newemail@example.com"
-}
-```
-
-#### Verify Email Change
-
-```http
-POST /api/v1/auth/email/change/verify
-Authorization: Bearer <jwt_token>
-Content-Type: application/json
-
-{
-  "newEmail": "newemail@example.com",
-  "otpCode": "123456"
-}
-```
-
-### Password Reset Endpoints
-
-#### Forgot Password
-
-```http
-POST /api/v1/auth/password/forgot-password
-Content-Type: application/json
-
-{
-  "email": "john@example.com"
-}
-```
-
-#### Verify Password Reset OTP
-
-```http
-POST /api/v1/auth/password/verify-reset-password-otp
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "otpCode": "123456"
-}
-```
-
-#### Reset Password
-
-```http
-POST /api/v1/auth/password/reset
-Content-Type: application/json
-
-{
-  "resetToken": "jwt-reset-token",
-  "newPassword": "newPassword123"
-}
-```
-
-## ⚙️ Configuration
-
-### Database Schema
-
-#### Users Table
-
-```sql
-CREATE TABLE users (
-  id VARCHAR PRIMARY KEY,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL UNIQUE,
-  password TEXT,
-  auth_provider TEXT NOT NULL,
-  email_verified BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT NOW()
-);
-```
-
-#### OTPs Table
-
-```sql
-CREATE TABLE otps (
-  id VARCHAR PRIMARY KEY,
-  user_id VARCHAR NOT NULL,
-  email TEXT NOT NULL,
-  otp_code VARCHAR(6) NOT NULL,
-  purpose TEXT NOT NULL,
-  expires_at TIMESTAMP NOT NULL,
-  is_used BOOLEAN DEFAULT FALSE,
-  attempts INTEGER DEFAULT 0,
-  created_at TIMESTAMP DEFAULT NOW(),
-  used_at TIMESTAMP
-);
-```
-
-### Email Configuration
-
-See [EMAIL_CONFIGURATION_GUIDE.md](./EMAIL_CONFIGURATION_GUIDE.md) for detailed email setup instructions.
-
-### OTP Configuration
-
-- **OTP Length**: 6 digits
-- **Expiration**: 10 minutes
-- **Max Attempts**: 3 per OTP
-- **Purposes**: `email_verification`, `password_reset`, `email_change`
-
-## 🔒 Security
-
-### Security Features
-
-1. **Password Security**
-   - bcrypt hashing with salt rounds
-   - Minimum password length validation
-   - Password strength requirements
-
-2. **JWT Security**
-   - Secure token generation
-   - Token expiration (1 day)
-   - Secure cookie handling
-
-3. **OTP Security**
-   - Time-limited codes (10 minutes)
-   - Attempt limiting (3 tries)
-   - One-time use only
-   - Secure random generation
-
-4. **Input Validation**
-   - Zod schema validation
-   - Email format validation
-   - SQL injection prevention
-   - XSS protection
-
-5. **Rate Limiting**
-   - API Gateway level (Arcjet)
-   - OTP attempt limiting
-   - Request throttling
-
-### Security Headers
-
-```javascript
-// Applied by security middleware
-X-Content-Type-Options: nosniff
-X-Frame-Options: DENY
-X-XSS-Protection: 1; mode=block
-```
-
-## 🚀 Deployment
-
-### Production Checklist
-
-- [ ] Set strong JWT_SECRET
-- [ ] Configure production database
-- [ ] Set up email service
-- [ ] Enable HTTPS
-- [ ] Configure logging
-- [ ] Set up monitoring
-- [ ] Test all endpoints
-- [ ] Run security audit
-
-### Docker Deployment
-
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-EXPOSE 3001
-CMD ["npm", "start"]
-```
-
-### Environment Variables (Production)
-
-```env
-NODE_ENV=production
-DATABASE_URL=postgresql://user:pass@db:5432/fluxo_auth
-JWT_SECRET=your-super-secure-jwt-secret
+PORT=4001
+DATABASE_URL=YOUR-NEON-DB-URL
+SUPABASE_URL=YOUR-SUPABASE-URL
+SUPABASE_SERVICE_ROLE_KEY=YOUR-SUPABASE-ROLE-KEY
+JWT_SECRET=YOUR-JWT-TOKEN
 EMAIL_SERVICE=gmail
-EMAIL_USER=your-production-email@gmail.com
-EMAIL_PASSWORD=your-app-password
-LOG_LEVEL=warn
+EMAIL_FROM=EMAIL-USER-ID
+EMAIL_USER=EMAIL-YOU-WANT-SEND-MAIL-FROM
+EMAIL_PASSWORD=your-email-password
+EMAIL_DOMAIN=gmail.com
+GOOGLE_CLIENT_ID=YOUR-GOOGLE-CLIENT-ID
+GOOGLE_CLIENT_SECRET=YOUR-GOOGLE-CLIENT-SECRET
+GOOGLE_CALLBACK_URL=YOUR-GOOGLE-CALLBACK-URL
+GITHUB_CLIENT_ID=YOUR-GITHUB-CLIENT-ID
+GITHUB_CLIENT_SECRET=YOUR-GITHUB-CLIENT-SECRET
+GITHUB_CALLBACK_URL=YOUR-GITHUB-CALLBACK-URL
+INTERNAL_SERVICE_TOKEN=LONG-RANDOM-SECRET
+FRONTEND_URL=http://localhost:3000
 ```
 
-## 📖 Additional Documentation
-
-- [OTP Implementation Guide](./OTP_IMPLEMENTATION.md)
-- [OTP Usage Examples](./OTP_USAGE_EXAMPLE.md)
-- [Email Configuration Guide](./EMAIL_CONFIGURATION_GUIDE.md)
-- [Email Verification Flow](./EMAIL_VERIFICATION_FLOW.md)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
-
-### Development Commands
+## Run
 
 ```bash
-# Start development server
-pnpm dev
-
-# Run tests
-pnpm test
-
-# Run linting
-pnpm lint
-
-# Run database migrations
-pnpm db:migrate
-
-# Generate new migration
-pnpm db:generate
-
-# Reset database
-pnpm db:reset
+pnpm -C apps/services/auth-service dev
+pnpm -C apps/services/auth-service start
 ```
 
-## 📄 License
+## Database Commands
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+```bash
+pnpm -C apps/services/auth-service db:generate
+pnpm -C apps/services/auth-service db:migrate
+pnpm -C apps/services/auth-service db:studio
+```
 
-## 🆘 Support
+## Additional Docs
 
-For support and questions:
-
-- Create an issue in the repository
-- Check the documentation
-- Review the API examples
-
----
-
-**Built with ❤️ by the Fluxo Team**
+- [API_REFERENCE.md](./API_REFERENCE.md)
+- [OTP_IMPLEMENTATION.md](./OTP_IMPLEMENTATION.md)
+- [OTP_USAGE_EXAMPLE.md](./OTP_USAGE_EXAMPLE.md)
+- [EMAIL_CONFIGURATION_GUIDE.md](./EMAIL_CONFIGURATION_GUIDE.md)
+- [SECURITY_GUIDE.md](./SECURITY_GUIDE.md)
