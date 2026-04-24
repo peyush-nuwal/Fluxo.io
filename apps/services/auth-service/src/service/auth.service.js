@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import logger from "../config/logger.js";
 import { db } from "../config/database.js";
-import { eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { users } from "../models/index.model.js";
 import { v4 as uuidv4 } from "uuid";
 import { getOTPStatus, verifyOTP } from "./otp.service.js";
@@ -131,11 +131,12 @@ export const createUser = async ({
  * Authenticate user with email and password
  */
 export const authenticateUser = async (email, password) => {
-  const user = await isUserExist(email);
+  const normalizedEmail = email.trim().toLowerCase();
+  const user = await isUserExist(normalizedEmail);
 
   if (!user) throw new Error("User does not exist");
 
-  if (user.auth_provider !== "local") {
+  if (!user.password && user.auth_provider !== "local") {
     throw new Error(`Login with ${user.auth_provider}`);
   }
 
@@ -155,11 +156,12 @@ export const authenticateUser = async (email, password) => {
  */
 export const changeUserPassword = async (email, oldPassword, newPassword) => {
   try {
-    const user = await isUserExist(email);
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await isUserExist(normalizedEmail);
     if (!user) throw new Error("User does not exist");
 
-    if (user.auth_provider !== "local") {
-      throw new Error(`Login with ${user.auth_provider}`);
+    if (!user.password) {
+      throw new Error("Password not set");
     }
 
     const isPasswordCorrect = await comparePassword(oldPassword, user.password);
@@ -169,9 +171,9 @@ export const changeUserPassword = async (email, oldPassword, newPassword) => {
     await db
       .update(users)
       .set({ password: hashed_password, updated_at: new Date() })
-      .where(eq(users.email, email));
+      .where(eq(users.email, normalizedEmail));
 
-    logger.info(`Password changed for user ${email}`);
+    logger.info(`Password changed for user ${normalizedEmail}`);
     return { message: "Password changed successfully" };
   } catch (error) {
     logger.error("Error changing password:", error);
@@ -228,10 +230,6 @@ export const changeUserEmail = async (email, newEmail) => {
     const user = await isUserExist(normalizedCurrent);
     if (!user) throw new Error("User does not exist");
 
-    if (user.auth_provider !== "local") {
-      throw new Error(`Login with ${user.auth_provider}`);
-    }
-
     // Ensure new email not already taken
     const newEmailUser = await isUserExist(normalizedNew);
     if (newEmailUser) {
@@ -251,9 +249,7 @@ export const changeUserEmail = async (email, newEmail) => {
     logger.error("Error changing email:", error);
     if (
       error.message === "User does not exist" ||
-      error.message === "Email already in use" ||
-      (typeof error.message === "string" &&
-        error.message.startsWith("Login with"))
+      error.message === "Email already in use"
     ) {
       throw error;
     }
@@ -270,10 +266,6 @@ export const resetUserPassword = async (email, newPassword) => {
     const user = await isUserExist(normalizedEmail);
     if (!user) throw new Error("User does not exist");
 
-    if (user.auth_provider !== "local") {
-      throw new Error(`Login with ${user.auth_provider}`);
-    }
-
     const hashedPassword = await hashPassword(newPassword);
     await db
       .update(users)
@@ -284,14 +276,40 @@ export const resetUserPassword = async (email, newPassword) => {
     return { message: "Password reset successfully" };
   } catch (error) {
     logger.error("Error resetting password:", error);
-    if (
-      error.message === "User does not exist" ||
-      (typeof error.message === "string" &&
-        error.message.startsWith("Login with"))
-    ) {
+    if (error.message === "User does not exist") {
       throw error;
     }
     throw new Error("Internal server error while resetting password");
+  }
+};
+
+export const setUserPassword = async (email, newPassword) => {
+  try {
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await isUserExist(normalizedEmail);
+    if (!user) throw new Error("User does not exist");
+
+    if (user.password) {
+      throw new Error("Password already set");
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+    await db
+      .update(users)
+      .set({ password: hashedPassword, updated_at: new Date() })
+      .where(eq(users.email, normalizedEmail));
+
+    logger.info(`Password set for user ${normalizedEmail}`);
+    return { message: "Password set successfully" };
+  } catch (error) {
+    logger.error("Error setting password:", error);
+    if (
+      error.message === "User does not exist" ||
+      error.message === "Password already set"
+    ) {
+      throw error;
+    }
+    throw new Error("Internal server error while setting password");
   }
 };
 
@@ -401,7 +419,21 @@ function getDisplayName(profile) {
 
 // Authenticate or create OAuth user
 export const authenticateOAuthUser = async (profile, provider) => {
-  const email = profile.emails[0].value;
+  const email = profile.emails[0].value.trim().toLowerCase();
+  const providerId = profile.id;
+  const providerColumn =
+    provider === "google" ? users.google_id : users.github_id;
+
+  const [providerUser] = await db
+    .select()
+    .from(users)
+    .where(eq(providerColumn, providerId))
+    .limit(1);
+
+  if (providerUser) {
+    return providerUser;
+  }
+
   let user = await isUserExist(email);
 
   if (!user) {
@@ -413,20 +445,39 @@ export const authenticateOAuthUser = async (profile, provider) => {
       password: null,
       avatar_url: profile.photos?.[0]?.value ?? null,
       auth_provider: provider,
-      google_id: provider === "google" ? profile.id : null,
-      github_id: provider === "github" ? profile.id : null,
+      google_id: provider === "google" ? providerId : null,
+      github_id: provider === "github" ? providerId : null,
       email_verified: true,
     });
-  } else if (user.auth_provider !== provider) {
-    throw new Error(`Login with ${user.auth_provider}`);
+
+    return user;
   }
 
-  return user; // Controller or route generates JWT
+  const updatePayload =
+    provider === "google"
+      ? { google_id: providerId, updated_at: new Date() }
+      : { github_id: providerId, updated_at: new Date() };
+
+  const [linkedUser] = await db
+    .update(users)
+    .set(updatePayload)
+    .where(eq(users.id, user.id))
+    .returning();
+
+  return linkedUser ?? user;
 };
 
-export const isUsernameExist = async (username) => {
+export const isUsernameExist = async (username, excludeUserId = null) => {
+  const normalizedUsername = username?.trim().toLowerCase();
+
+  if (!normalizedUsername) return false;
+
+  const whereClause = excludeUserId
+    ? and(eq(users.user_name, normalizedUsername), ne(users.id, excludeUserId))
+    : eq(users.user_name, normalizedUsername);
+
   const user = await db.query.users.findFirst({
-    where: eq(users.user_name, username),
+    where: whereClause,
     columns: { id: true }, // fetch minimal data
   });
 

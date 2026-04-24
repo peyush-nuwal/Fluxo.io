@@ -47,7 +47,10 @@ export const updateUserProfileSchema = z
       .string({
         invalid_type_error: "website must be a string",
       })
-      .url("website must be a valid URL")
+      .trim()
+      .refine((value) => value.length === 0 || /^https?:\/\/.+/.test(value), {
+        message: "website must be a valid URL",
+      })
       .optional(),
 
     work: z
@@ -61,3 +64,20 @@ export const updateUserProfileSchema = z
   .refine((data) => Object.keys(data).length > 0, {
     message: "At least one field must be provided",
   });
+
+export const updateUsernameSchema = z
+  .object({
+    user_name: z
+      .string({
+        required_error: "username is required",
+        invalid_type_error: "username must be a string",
+      })
+      .trim()
+      .min(2, "username must be at least 2 characters")
+      .max(255, "username is too long")
+      .regex(/^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+[a-zA-Z0-9]$/, {
+        message:
+          "Username may contain letters, numbers, dots and underscores, and cannot start or end with dot or underscore",
+      }),
+  })
+  .strict();

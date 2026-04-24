@@ -4,6 +4,7 @@ import {
   signIn,
   signOut,
   updatePassword,
+  setPassword,
   refresh,
   me,
 } from "../controller/auth.controller.js";
@@ -30,6 +31,7 @@ import {
   getUsersByEmailsController,
   getUserProfile,
   getUserPublicProfile,
+  updateUsernameController,
   updateUserProfileController,
 } from "../controller/user.controller.js";
 
@@ -47,6 +49,7 @@ router.get("/refresh", refresh);
 // Password Management Routes
 // ========================================
 router.post("/update-password", updatePassword);
+router.post("/set-password", setPassword);
 
 // ========================================
 // OTP Management Routes
@@ -170,6 +173,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.get("/users/me", getUserProfile);
 router.patch("/users/me", upload.single("avatar"), updateUserProfileController);
+router.patch("/users/me/username", updateUsernameController);
 router.get("/users/:id/profile", getUserPublicProfile);
 router.post("/users/bulk-by-email", getUsersByEmailsController);
 

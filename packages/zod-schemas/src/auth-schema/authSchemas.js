@@ -68,6 +68,15 @@ export const changePasswordSchema = z.object({
     .min(6, { error: "New password must be at least 6 characters" }),
 });
 
+/**
+ * Set Password (for OAuth users without local password)
+ */
+export const setPasswordSchema = z.object({
+  newPassword: z
+    .string({ error: "New password is required" })
+    .min(6, { error: "New password must be at least 6 characters" }),
+});
+
 /* =====================================================
    OTP SCHEMAS
 ===================================================== */
@@ -83,7 +92,13 @@ export const generateOTPSchema = z.object({
     .email({ error: "Invalid email address" }),
 
   purpose: z
-    .enum(["email_verification", "password_reset", "login", "two_factor"])
+    .enum([
+      "email_verification",
+      "email_change",
+      "password_reset",
+      "login",
+      "two_factor",
+    ])
     .default("email_verification"),
 });
 
@@ -103,7 +118,13 @@ export const verifyOTPSchema = z.object({
     .regex(/^\d{6}$/, { error: "OTP must contain only numbers" }),
 
   purpose: z
-    .enum(["email_verification", "password_reset", "login", "two_factor"])
+    .enum([
+      "email_verification",
+      "email_change",
+      "password_reset",
+      "login",
+      "two_factor",
+    ])
     .default("email_verification"),
 });
 
@@ -118,7 +139,13 @@ export const resendOTPSchema = z.object({
     .email({ error: "Invalid email address" }),
 
   purpose: z
-    .enum(["email_verification", "password_reset", "login", "two_factor"])
+    .enum([
+      "email_verification",
+      "email_change",
+      "password_reset",
+      "login",
+      "two_factor",
+    ])
     .default("email_verification"),
 });
 
@@ -127,7 +154,13 @@ export const resendOTPSchema = z.object({
  */
 export const getOTPStatusSchema = z.object({
   purpose: z
-    .enum(["email_verification", "password_reset", "login", "two_factor"])
+    .enum([
+      "email_verification",
+      "email_change",
+      "password_reset",
+      "login",
+      "two_factor",
+    ])
     .default("email_verification"),
 });
 

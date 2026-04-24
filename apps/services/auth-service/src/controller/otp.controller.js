@@ -204,7 +204,7 @@ export const verifyOTPCode = async (req, res) => {
 export const requestEmailChange = async (req, res) => {
   try {
     // Verify JWT token first
-    const decoded = jwttoken.verify(req.cookies.token);
+    const decoded = jwttoken.verifyAccessToken(req.cookies.access_token);
 
     if (!decoded) {
       return res.status(401).json({ error: "Invalid or expired token" });
@@ -286,7 +286,7 @@ export const requestEmailChange = async (req, res) => {
 export const verifyEmailChange = async (req, res) => {
   try {
     // Verify JWT token first
-    const decoded = jwttoken.verify(req.cookies.token);
+    const decoded = jwttoken.verifyAccessToken(req.cookies.access_token);
 
     if (!decoded) {
       return res.status(401).json({ error: "Invalid or expired token" });
@@ -317,6 +317,30 @@ export const verifyEmailChange = async (req, res) => {
 
     // Perform the change
     await changeUserEmail(normalizedCurrent, normalizedNew);
+
+    const accessToken = jwttoken.signAccessToken({
+      id: user.id,
+      email: normalizedNew,
+    });
+    const refreshToken = jwttoken.signRefreshToken({
+      id: user.id,
+      email: normalizedNew,
+    });
+
+    cookies.set(res, "access_token", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+
+    cookies.set(res, "refresh_token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
 
     logger.info(
       `Email changed after OTP verification: ${normalizedCurrent} -> ${normalizedNew}`,
@@ -427,9 +451,9 @@ export const resendOTPCode = async (req, res) => {
  */
 export const getOTPStatusController = async (req, res) => {
   try {
-    // Verify JWT token first
-    const decoded = req.auth; // Assuming auth middleware sets this
-    if (!decoded) {
+    const userId = req.user?.id;
+
+    if (!userId) {
       return res.status(401).json({ error: "Invalid or expired token" });
     }
 
@@ -445,7 +469,7 @@ export const getOTPStatusController = async (req, res) => {
     const { purpose } = validationResult.data;
 
     // Get OTP status
-    const status = await getOTPStatus(decoded.id, purpose);
+    const status = await getOTPStatus(userId, purpose);
 
     return res.status(200).json({
       status,

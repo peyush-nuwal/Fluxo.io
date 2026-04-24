@@ -6,6 +6,7 @@ import {
   getPublicUserProfileById,
   getUserProfileById,
   updateUserProfile,
+  updateUserUsername,
 } from "../service/user.service.js";
 import { users } from "../models/index.model.js";
 import { eq } from "drizzle-orm";
@@ -13,6 +14,7 @@ import { db } from "../config/database.js";
 import { uploadAvatar } from "../service/avatar.service.js";
 import {
   getUsersByEmailsSchema,
+  updateUsernameSchema,
   updateUserProfileSchema,
 } from "../../../../../packages/zod-schemas/index.js";
 import { isUsernameExist } from "../service/auth.service.js";
@@ -186,5 +188,41 @@ export const getUsersByEmailsController = async (req, res) => {
   } catch (error) {
     logger.error({ err: error }, "Failed fetching users by emails");
     return sendError(res, 500, "Failed to fetch users");
+  }
+};
+
+export const updateUsernameController = async (req, res) => {
+  const userId = req.user?.id;
+
+  if (!userId) return sendError(res, 401, "Unauthorized");
+
+  try {
+    const parsed = updateUsernameSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return sendError(res, 400, "Invalid request body", {
+        errors: formatValidationsError(parsed.error),
+      });
+    }
+
+    const normalizedUsername = parsed.data.user_name.trim().toLowerCase();
+    const exists = await isUsernameExist(normalizedUsername, userId);
+
+    if (exists) {
+      return sendError(res, 409, "Username already exists");
+    }
+
+    const updatedUser = await updateUserUsername(userId, normalizedUsername);
+
+    if (!updatedUser) {
+      return sendError(res, 404, "User not found");
+    }
+
+    return sendSuccess(res, 200, "Username updated successfully", {
+      user: updatedUser,
+    });
+  } catch (error) {
+    logger.error({ err: error, userId }, "Failed updating username");
+    return sendError(res, 500, "Failed updating username");
   }
 };

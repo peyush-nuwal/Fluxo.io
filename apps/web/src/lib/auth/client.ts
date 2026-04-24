@@ -2,7 +2,7 @@
 
 import { ApiError, apiFetch } from "../api";
 import { isRecord } from "../error-utils";
-import { frontendApiPost } from "../frontend-api";
+import { frontendApiPatch, frontendApiPost } from "../frontend-api";
 import { ApiResponse } from "@/types/api";
 
 export type OAuthProvider = "google" | "github";
@@ -21,6 +21,8 @@ export interface User {
   email: string;
   avatar_url: string;
   email_verified: boolean;
+  auth_provider?: string;
+  has_password?: boolean;
   metadata: MetaDataType;
 }
 
@@ -128,6 +130,24 @@ function asString(value: unknown): string {
   return typeof value === "string" ? value : "";
 }
 
+function asBoolean(value: unknown): boolean | undefined {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true" || normalized === "t" || normalized === "1") {
+      return true;
+    }
+    if (normalized === "false" || normalized === "f" || normalized === "0") {
+      return false;
+    }
+  }
+  if (typeof value === "number") {
+    if (value === 1) return true;
+    if (value === 0) return false;
+  }
+  return undefined;
+}
+
 function normalizeMetadata(value: unknown): MetaDataType {
   const source = isRecord(value) ? value : {};
   return {
@@ -155,6 +175,8 @@ function toUser(value: unknown): User | null {
     email,
     avatar_url: asString(value.avatar_url),
     email_verified: Boolean(value.email_verified),
+    auth_provider: asString(value.auth_provider) || undefined,
+    has_password: asBoolean(value.has_password),
     metadata: normalizeMetadata(value.metadata),
   };
 }
@@ -376,6 +398,94 @@ export async function getCurrentUser(): Promise<User | null> {
 
 export function uploadUserAvatar(payload: FormData) {
   return frontendApiPost("/api/v1/auth/users/avatar", payload);
+}
+
+type UpdateProfilePayload = {
+  name?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+  work?: string;
+};
+
+export async function updateCurrentUserProfile(payload: UpdateProfilePayload) {
+  const response = await frontendApiPatch<
+    ApiResponse<{
+      user: User;
+    }>
+  >("/api/v1/auth/users/me", payload);
+
+  clearUserCache();
+  return response;
+}
+
+export async function updateCurrentUsername(userName: string) {
+  const normalizedUsername = userName.trim().toLowerCase();
+
+  const response = await frontendApiPatch<
+    ApiResponse<{
+      user: User;
+    }>
+  >("/api/v1/auth/users/username", {
+    user_name: normalizedUsername,
+  });
+
+  clearUserCache();
+  return response;
+}
+
+export async function updateCurrentPassword(
+  oldPassword: string,
+  newPassword: string,
+) {
+  const response = await frontendApiPost<
+    ApiResponse<{
+      password_updated: boolean;
+    }>
+  >("/api/v1/auth/update-password", {
+    oldPassword,
+    newPassword,
+  });
+
+  return response;
+}
+
+export async function setCurrentPassword(newPassword: string) {
+  const response = await frontendApiPost<
+    ApiResponse<{
+      password_set: boolean;
+    }>
+  >("/api/v1/auth/set-password", {
+    newPassword,
+  });
+
+  clearUserCache();
+  return response;
+}
+
+export async function requestEmailChange(newEmail: string) {
+  const response = await frontendApiPost<
+    ApiResponse<{
+      expiresIn?: number;
+    }>
+  >("/api/v1/auth/email/change/request", {
+    newEmail: newEmail.trim().toLowerCase(),
+  });
+
+  return response;
+}
+
+export async function verifyEmailChange(newEmail: string, otpCode: string) {
+  const response = await frontendApiPost<ApiResponse<unknown>>(
+    "/api/v1/auth/email/change/verify",
+    {
+      newEmail: newEmail.trim().toLowerCase(),
+      otpCode: otpCode.trim(),
+    },
+  );
+
+  clearUserCache();
+  return response;
 }
 
 /**

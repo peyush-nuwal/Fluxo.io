@@ -3,6 +3,7 @@ import {
   authenticateUser,
   createUser,
   changeUserPassword,
+  setUserPassword,
   isUsernameExist,
   isUserExist,
 } from "../service/auth.service.js";
@@ -14,6 +15,7 @@ import {
   signInSchema,
   signUpSchema,
   changePasswordSchema,
+  setPasswordSchema,
 } from "../../../../../packages/zod-schemas/index.js";
 import { sendError, sendSuccess } from "../utils/response.js";
 
@@ -206,7 +208,54 @@ export const updatePassword = async (req, res) => {
       return sendError(res, 401, "Incorrect current password");
     }
 
+    if (error.message === "Password not set") {
+      return sendError(res, 400, "No password set. Use set password first");
+    }
+
     return sendError(res, 500, "Password change failed");
+  }
+};
+
+/**
+ * SET PASSWORD (for social users without password)
+ */
+export const setPassword = async (req, res) => {
+  try {
+    const decoded = jwttoken.verifyAccessToken(req.cookies.access_token);
+
+    if (!decoded) return sendError(res, 401, "Invalid or expired token");
+
+    const validationResult = setPasswordSchema.safeParse(req.body);
+
+    if (!validationResult.success) {
+      return sendError(res, 400, "Validation failed", {
+        errors: formatValidationsError(validationResult.error),
+      });
+    }
+
+    const { newPassword } = validationResult.data;
+
+    await setUserPassword(decoded.email, newPassword);
+
+    return sendSuccess(res, 200, "Password set successfully", {
+      password_set: true,
+    });
+  } catch (error) {
+    logger.error("Set password failed:", error);
+
+    if (error.message === "User does not exist") {
+      return sendError(res, 404, "User not found");
+    }
+
+    if (error.message === "Password already set") {
+      return sendError(
+        res,
+        400,
+        "Password already exists. Use update password",
+      );
+    }
+
+    return sendError(res, 500, "Set password failed");
   }
 };
 
