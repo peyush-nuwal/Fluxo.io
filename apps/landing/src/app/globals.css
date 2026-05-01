@@ -1,26 +1,94 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+   --radius: 0.625rem;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+
+  --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+
+    /* status colors */
+  --destructive: oklch(0.62 0.22 25);
+  --destructive-foreground: oklch(0.985 0 0);
+
+  --success: oklch(0.70 0.18 145);
+  --success-foreground: oklch(0.985 0 0); 
+  /* FINAL font system */
+  --font-heading: "Poppins", sans-serif;
+  --font-body: "Plus Jakarta Sans", sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* THIS is the key fix */
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+}
+
+/* Base typography */
+.font-heading {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.heading {
+  @apply font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight;
+}
+
+.subheading {
+  @apply font-heading text-xl sm:text-2xl md:text-3xl font-medium leading-snug;
+}
+
+.description {
+  @apply text-sm sm:text-base md:text-lg leading-relaxed text-foreground/70 max-w-xl;
+}
+
+.paragraph {
+  @apply text-sm sm:text-base leading-relaxed text-foreground/90;
+}
+.caption {
+  @apply text-xs sm:text-sm text-foreground/60;
+}
+.eyebrow {
+  @apply text-xs uppercase tracking-widest font-medium text-foreground/60;
+}
+
+
+.flexCenter{
+  @apply flex items-center justify-center;
 }
