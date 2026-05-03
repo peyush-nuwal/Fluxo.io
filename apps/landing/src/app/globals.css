@@ -1,10 +1,11 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
    --radius: 0.625rem;
-
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
 
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -29,7 +30,7 @@
   --ring: oklch(0.708 0 0);
 
     /* status colors */
-  --destructive: oklch(0.62 0.22 25);
+  --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0 0);
 
   --success: oklch(0.70 0.18 145);
@@ -37,6 +38,21 @@
   /* FINAL font system */
   --font-heading: "Poppins", sans-serif;
   --font-body: "Plus Jakarta Sans", sans-serif;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 @theme inline {
@@ -44,15 +60,47 @@
   --color-foreground: var(--foreground);
 
   /* THIS is the key fix */
-  --font-sans: var(--font-body);
+  --font-sans: var(--font-sans);
   --font-heading: var(--font-heading);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-
-
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: var(--font-body);
 }
 
@@ -66,29 +114,113 @@ body {
   font-family: var(--font-body);
 }
 
-.heading {
-  @apply font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight tracking-tight;
+
+.dark {
+   --background: oklch(0.145 0 0);
+   --foreground: oklch(0.985 0 0);
+   --card: oklch(0.205 0 0);
+   --card-foreground: oklch(0.985 0 0);
+   --popover: oklch(0.205 0 0);
+   --popover-foreground: oklch(0.985 0 0);
+   --primary: oklch(0.922 0 0);
+   --primary-foreground: oklch(0.205 0 0);
+   --secondary: oklch(0.269 0 0);
+   --secondary-foreground: oklch(0.985 0 0);
+   --muted: oklch(0.269 0 0);
+   --muted-foreground: oklch(0.708 0 0);
+   --accent: oklch(0.269 0 0);
+   --accent-foreground: oklch(0.985 0 0);
+   --destructive: oklch(0.704 0.191 22.216);
+   --border: oklch(1 0 0 / 10%);
+   --input: oklch(1 0 0 / 15%);
+   --ring: oklch(0.556 0 0);
+   --chart-1: oklch(0.87 0 0);
+   --chart-2: oklch(0.556 0 0);
+   --chart-3: oklch(0.439 0 0);
+   --chart-4: oklch(0.371 0 0);
+   --chart-5: oklch(0.269 0 0);
+   --sidebar: oklch(0.205 0 0);
+   --sidebar-foreground: oklch(0.985 0 0);
+   --sidebar-primary: oklch(0.488 0.243 264.376);
+   --sidebar-primary-foreground: oklch(0.985 0 0);
+   --sidebar-accent: oklch(0.269 0 0);
+   --sidebar-accent-foreground: oklch(0.985 0 0);
+   --sidebar-border: oklch(1 0 0 / 10%);
+   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+   }
+  body {
+    @apply bg-background text-foreground;
+   }
+  html {
+    @apply font-heading;
+   }
+}
+
+/* =========================
+   TYPOGRAPHY SYSTEM
+   ========================= */
+
+/* 🔹 Eyebrow (labels, tags, section intro) */
+.eyebrow {
+  @apply text-xs font-medium uppercase tracking-wider text-foreground/60;
+}
+/* Use: "New", "Features", "Dashboard", section labels */
+
+/* 🔹 Heading XL (hero only) */
+.heading-xl {
+  @apply font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.1];
+}
+/* Use: Landing hero headline ONLY */
+
+/* 🔹 Heading LG (section titles) */
+.heading-lg {
+  @apply font-heading text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight leading-tight;
+}
+/* Use: Section titles (Features, Pricing, etc.) */
+
+/* 🔹 Heading MD (card titles / components) */
+.heading-md {
+  @apply font-heading text-xl sm:text-2xl font-semibold leading-snug;
+}
+/* Use: Cards, feature blocks, modal titles */
+
+/* 🔹 Heading SM (minor titles) */
+.heading-sm {
+  @apply font-heading text-lg font-medium leading-snug;
+}
+/* Use: Small UI sections, sidebar titles */
+
+/* 🔹 Subheading (supporting heading text) */
 .subheading {
-  @apply font-heading text-xl sm:text-2xl md:text-3xl font-medium leading-snug;
+  @apply text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed max-w-2xl;
 }
+/* Use: Under hero or section heading */
 
+/* 🔹 Description (important supporting text) */
 .description {
-  @apply text-sm sm:text-base md:text-lg leading-relaxed text-foreground/70 max-w-xl;
+  @apply text-sm sm:text-base md:text-lg text-foreground/70 leading-relaxed max-w-xl;
 }
+/* Use: Feature descriptions, landing content */
 
+/* 🔹 Paragraph (default readable text) */
 .paragraph {
-  @apply text-sm sm:text-base leading-relaxed text-foreground/90;
+  @apply text-sm sm:text-base text-foreground/90 leading-relaxed;
 }
+/* Use: Normal UI text, dashboards, content */
+
+/* 🔹 Caption (low emphasis text) */
 .caption {
   @apply text-xs sm:text-sm text-foreground/60;
 }
-.eyebrow {
-  @apply text-xs uppercase tracking-widest font-medium text-foreground/60;
-}
+/* Use: Metadata, timestamps, helper text */
 
-
-.flexCenter{
-  @apply flex items-center justify-center;
+/* 🔹 Handwritten Accent (Gochi Hand) */
+.font-hand {
+  font-family: var(--font-heading-secondary);
 }
+/* Use: Highlights, annotations, playful UI (VERY LIMITED) */
