@@ -40,14 +40,6 @@ export function AppSidebar() {
       {/* -----Header ----- */}
       <SidebarHeader className="px-3 py-2 mt-2">
         <div className="flex items-center gap-2">
-          {/* Logo */}
-          {/* <Image
-            src="/assets/logo.svg"
-            alt="Fluxo logo"
-            width={50}
-            height={50}
-            className="shrink-0"
-          /> */}
           <span className="text-sidebar-primary w-10 inline-flex items-center justify-center">
             <svg
               width="47"

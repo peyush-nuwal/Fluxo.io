@@ -210,7 +210,7 @@ export default function ToolPanel({
                 <div
                   className={cn(
                     "absolute bottom-1 right-2 text-xs",
-                    isActive ? "text-black" : " text-muted-foreground",
+                    isActive ? "text-background" : " text-muted-foreground",
                   )}
                 >
                   {tool.key}

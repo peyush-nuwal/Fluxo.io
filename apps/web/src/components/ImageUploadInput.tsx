@@ -291,7 +291,7 @@ const EditImageDialog = ({
                   onCropChange={setCrop}
                   onCropComplete={onCropComplete}
                   onZoomChange={setZoom}
-                  objectFit="horizontal-cover"
+                  objectFit="vertical-cover"
                 />
               </div>
 
