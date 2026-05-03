@@ -1,12 +1,21 @@
 const Features = () => {
   return (
-    <div className="min-h-screen bg-green-200 py-10 ">
-      <div className="flex flex-col justify-center items-center ">
-        <p className="eyebrow">section</p>
-        <h1 className="heading">dfsdfsa</h1>
-        <p className="description">
-          AI that handles onboarding, verification, and activation—without
-          friction.
+    <div className="min-h-screen  py-10 ">
+      <div className="flex flex-col items-center text-center mb-12">
+        <p className="eyebrow">Features</p>
+        <h2 className="heading-lg max-w-2xl">
+          Everything you need to{" "}
+          <span className="font-hand bg-green-400/20 px-3 rounded-lg">
+            think
+          </span>{" "}
+          and build{" "}
+          <span className="font-hand bg-blue-400/20 px-3 rounded-lg">
+            visually
+          </span>{" "}
+        </h2>
+        <p className="description max-w-xl">
+          Brainstorm ideas, map workflows, and collaborate in real time —
+          without complexity.
         </p>
       </div>
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

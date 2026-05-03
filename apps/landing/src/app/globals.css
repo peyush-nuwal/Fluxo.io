@@ -178,7 +178,7 @@ body {
 
 /* 🔹 Heading LG (section titles) */
 .heading-lg {
-  @apply font-heading text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight leading-tight;
+  @apply font-heading text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight leading-tight;
 }
 /* Use: Section titles (Features, Pricing, etc.) */
 
