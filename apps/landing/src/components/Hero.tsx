@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "./ui/button";
 import { Star } from "lucide-react";
+import Link from "next/link";
 
 const Hero = () => {
   const heroFeatures = [
@@ -31,7 +32,14 @@ const Hero = () => {
           size="lg"
           className="h-13 px-6 text-lg cursor-pointer bg-yellow-400 text-gray-700"
         >
-          <Star /> Give it a Star
+          <Link
+            href="https://github.com/peyush-nuwal/Fluxo.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3"
+          >
+            <Star /> Give it a Star
+          </Link>
         </Button>
       </div>
       <div className="w-[85%] max-w-7xl mx-auto">
