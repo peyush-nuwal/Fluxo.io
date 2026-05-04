@@ -38,7 +38,7 @@ const Nav = () => {
     <>
       <div
         className={cn(
-          "top-5 left-1/2 -translate-x-1/2 z-50 h-16 max-w-9/10 lg:max-w-6xl w-full  fixed  flex justify-between items-center px-4 rounded-lg   ",
+          "top-5 left-1/2 -translate-x-1/2 z-50 h-16 max-w-9/10 lg:max-w-6xl w-full  fixed  flex justify-between items-center px-4 rounded-lg transition-colors ease-in duration-300   ",
           scrollActive ? "bg-white shadow sh" : "bg-transparent",
         )}
       >
@@ -63,7 +63,13 @@ const Nav = () => {
             transition={{ duration: 0.5, ease: "easeInOut" }}
             className="absolute inset-0 flex items-center"
           >
-            <Image src="/logo.svg" alt="logo" width={40} height={40} />
+            <Image
+              src="/logo.svg"
+              alt="logo"
+              width={40}
+              height={40}
+              className="w-10 h-auto"
+            />
           </motion.div>
         </motion.div>
 
