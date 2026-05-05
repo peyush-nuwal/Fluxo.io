@@ -13,6 +13,14 @@ Fluxo.io is a microservice-based diagram and collaboration platform built in a T
   - Subscription Service (`apps/services/subscription-service`)
 - Shared packages: Zod schemas, ESLint config, TypeScript config
 
+## App Screenshot
+
+<!-- Replace the path below with your actual screenshot file -->
+
+![Fluxo App Screenshot](./docs/images/s1.png)
+![Fluxo App Screenshot](./docs/images/s2.png)
+![Fluxo App Screenshot](./docs/images/s3.png)
+
 ## Tech Stack (Image Section)
 
 ![Tech Stack](https://skillicons.dev/icons?i=nextjs,react,ts,js,nodejs,express,postgres,redis,tailwind,github,git,pnpm)
@@ -69,9 +77,28 @@ apps/
     subscription-service/
 packages/
   zod-schemas/
+  ui/
   eslint-config/
   typescript-config/
 ```
+
+## Dependencies Overview
+
+### Root Tooling (dev)
+
+- `turbo`, `typescript`, `eslint`, `prettier`, `husky`, `lint-staged`, `commitlint`
+
+### App and Service Runtime
+
+- Web (`apps/web`): Next.js, React, TanStack Query/Table, XYFlow/React Flow, Monaco, Zod, Zustand, Radix UI, Next Intl, Next Themes
+- Landing (`apps/landing`): Next.js, React, Tailwind/shadcn UI stack, Lucide, Motion
+- API Gateway (`apps/api-gateway`): Express, JWT, Helmet, CORS, Morgan, Arcjet, proxy middleware
+- Auth Service (`apps/services/auth-service`): Express, Drizzle ORM, PostgreSQL, Supabase, Passport (Google/GitHub), Nodemailer
+- Diagram Service (`apps/services/diagram-service`): Express, Drizzle ORM, PostgreSQL, Supabase, Redis, Nodemailer
+- AI Service (`apps/services/ai-service`): Express, Google GenAI SDK
+- Subscription Service (`apps/services/subscription-service`): Express, Drizzle ORM, PostgreSQL, Razorpay
+
+For exact versions, see each workspace `package.json`.
 
 ## Quick Start
 

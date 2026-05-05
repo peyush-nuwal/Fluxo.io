@@ -57,6 +57,12 @@ PORT=4004
 GEMINI_API_KEY=YOUR-GEMINI-KEY
 ```
 
+## Dependencies
+
+- `express`, `helmet`, `morgan`
+- `@google/genai`
+- `axios`, `p-limit`, `dotenv`, `winston`
+
 ## Run
 
 ```bash

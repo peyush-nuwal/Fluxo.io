@@ -98,6 +98,15 @@ INTERNAL_SERVICE_TOKEN=LONG-RANDOM-SECRET
 FRONTEND_URL=http://localhost:3000
 ```
 
+## Dependencies
+
+- `express`, `helmet`, `cors`, `morgan`
+- `drizzle-orm`, `pg`, `@neondatabase/serverless`
+- `jsonwebtoken`, `cookie-parser`, `bcrypt`
+- `@supabase/supabase-js`
+- `passport`, `passport-google-oauth20`, `passport-github`, `passport-github2`
+- `nodemailer`, `multer`, `winston`, `zod`
+
 ## Run
 
 ```bash

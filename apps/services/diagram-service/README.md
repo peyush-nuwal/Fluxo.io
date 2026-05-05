@@ -104,6 +104,14 @@ AUTH_USERS_TIMEOUT_MS=1500
 USER_PROFILE_CACHE_TTL_SECONDS=600
 ```
 
+## Dependencies
+
+- `express`, `helmet`, `cors`, `morgan`
+- `drizzle-orm`, `pg`, `@neondatabase/serverless`
+- `@supabase/supabase-js`
+- `redis`, `ioredis`
+- `multer`, `nodemailer`, `uuid`, `winston`
+
 ## Run
 
 ```bash

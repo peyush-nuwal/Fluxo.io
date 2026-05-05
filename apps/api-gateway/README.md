@@ -99,6 +99,14 @@ SUBSCRIPTION_SERVICE_URL=http://127.0.0.1:4006
 ACCESS_TOKEN_SECRET=your-access-token-secret
 ```
 
+## Dependencies
+
+- `express`, `express-http-proxy`
+- `jsonwebtoken`, `cookie-parser`
+- `helmet`, `cors`, `morgan`
+- `@arcjet/node`, `@arcjet/inspect`
+- `dotenv`, `multer`, `winston`
+
 ## Run
 
 ```bash

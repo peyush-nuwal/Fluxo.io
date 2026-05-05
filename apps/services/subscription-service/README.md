@@ -58,6 +58,12 @@ RAZORPAY_KEY_ID=YOUR-RAZORPAY-ID
 RAZORPAY_KEY_SECRET=YOUR-RAZORPAY-SECRET
 ```
 
+## Dependencies
+
+- `express`, `helmet`, `cors`, `morgan`
+- `drizzle-orm`, `pg`, `@neondatabase/serverless`
+- `razorpay`, `dotenv`, `uuid`, `winston`
+
 ## Run
 
 ```bash
